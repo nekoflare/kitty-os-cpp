@@ -1,0 +1,11 @@
+/limine
+/ovmf
+*.iso
+*.hdd
+/.vscode
+kernel/bin/kernel
+kernel/obj/
+builds/*.iso
+eth_null-txdump.txt
+eth_null-tx.log
+kernel/bin/kernel

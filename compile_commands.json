@@ -1,0 +1,35 @@
+[
+    {
+        "arguments": [
+            "c++",
+            "-c",
+            "-g",
+            "-O2",
+            "-pipe",
+            "-std=c++20",
+            "-fno-rtti",
+            "-fno-exceptions",
+            "-Wall",
+            "-Wextra",
+            "-ffreestanding",
+            "-fno-stack-protector",
+            "-fno-stack-check",
+            "-fno-lto",
+            "-fPIE",
+            "-m64",
+            "-march=x86-64",
+            "-mno-mmx",
+            "-msse",
+            "-msse2",
+            "-mno-red-zone",
+            "-Isrc/kkd",
+            "-I",
+            "src",
+            "-o",
+            "obj/kernel/hal/x64/gdt/gdt.cpp.o",
+            "src/kernel/hal/x64/gdt/gdt.cpp"
+        ],
+        "directory": "/mnt/c/Users/Piotr/Desktop/Projects/kitty-os-cpp/kernel",
+        "file": "src/kernel/hal/x64/gdt/gdt.cpp"
+    }
+]
