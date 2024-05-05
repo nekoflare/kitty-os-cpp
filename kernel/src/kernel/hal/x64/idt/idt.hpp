@@ -6,6 +6,7 @@
 #define KITTY_OS_CPP_IDT_HPP
 
 #include <kstd/kstdint.hpp>
+#include <kstd/kstdio.hpp>
 
 struct IDTR
 {
@@ -15,17 +16,17 @@ struct IDTR
 
 struct GateDescriptor64
 {
-    kstd::uint16_t offset_one;
-    kstd::uint16_t segment_selector;
-    kstd::uint8_t ist : 3;
-    kstd::uint8_t reserved_one : 5;
-    kstd::uint8_t gate_type : 4;
-    kstd::uint8_t zero : 1;
-    kstd::uint8_t dpl : 2;
-    kstd::uint8_t present : 1;
-    kstd::uint16_t offset_two;
-    kstd::uint32_t offset_three;
-    kstd::uint32_t reserved_two;
+    unsigned short offset_one;
+    unsigned short segment_selector;
+    unsigned char ist : 3;
+    unsigned char reserved_one : 5;
+    unsigned char gate_type : 4;
+    unsigned char zero : 1;
+    unsigned char dpl : 2;
+    unsigned char present : 1;
+    unsigned short offset_two;
+    unsigned long offset_three;
+    unsigned long reserved_two;
 } __attribute__((packed));
 
 #define IDT_GATE_TYPE_INTERRUPT 0xE
@@ -38,18 +39,27 @@ struct GateDescriptor64
 #define IDT_NO_IST 0
 #define IDT_DEFAULT_SEGMENT 0x8
 
-#define IDT_ENTRY(_Offset, _Segment_selector, _Gate_type, _Dpl_layer, _Is_present, _Ist) { \
-    .offset_one = static_cast<kstd::uint16_t>(reinterpret_cast<kstd::uint64_t>(_Offset) & 0xffff),\
-    .segment_selector = _Segment_selector,\
-    .ist = _Ist,\
-    .reserved_one = 0,\
-    .gate_type = _Gate_type,\
-    .zero = 0,\
-    .dpl = _Dpl_layer,\
-    .present = _Is_present,\
-    .offset_two = static_cast<kstd::uint16_t>((reinterpret_cast<kstd::uint64_t>(_Offset) & 0xffff0000) >> 16),\
-    .offset_three = (static_cast<kstd::uint32_t>((reinterpret_cast<kstd::uint64_t>(_Offset) & 0xffffffff00000000))>> 32) ,\
-    .reserved_two = 0\
+constexpr GateDescriptor64 IDT_ENTRY(
+        void(*offset)(),
+        kstd::uint16_t segment_selector,
+        kstd::uint8_t gate_type,
+        kstd::uint8_t dpl_layer,
+        kstd::uint8_t is_present,
+        kstd::uint8_t ist )
+{
+    return {
+        .offset_one = static_cast<unsigned short>(reinterpret_cast<kstd::uint64_t>(offset) & 0xFFFF),
+        .segment_selector = segment_selector,
+        .ist = ist,
+        .reserved_one = 0,
+        .gate_type = gate_type,
+        .zero = 0,
+        .dpl = dpl_layer,
+        .present = is_present,
+        .offset_two = static_cast<unsigned short>((reinterpret_cast<kstd::uint64_t>(offset) & 0xFFFF0000) >> 16),
+        .offset_three = static_cast<unsigned long>((reinterpret_cast<kstd::uint64_t>(offset) & 0xFFFFFFFF00000000) >> 32),
+        .reserved_two = 0
+    };
 }
 
 struct Registers_x86_64

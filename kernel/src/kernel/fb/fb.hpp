@@ -25,6 +25,6 @@ namespace Framebuffer
     void DrawCircle(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b, kstd::size_t radius);
     void DrawFilledCircle(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b, kstd::size_t radius);
     void DrawLine(kstd::size_t _FbIdx, kstd::size_t x0, kstd::size_t y0, kstd::size_t x1, kstd::size_t y1, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b);
-};
+}
 
 #endif //FB_HPP

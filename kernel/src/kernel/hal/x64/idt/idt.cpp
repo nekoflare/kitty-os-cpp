@@ -4,6 +4,8 @@
 
 #include "idt.hpp"
 
+
+
 extern "C" void interrupt_handler(Registers_x86_64 regs)
 {
     return;

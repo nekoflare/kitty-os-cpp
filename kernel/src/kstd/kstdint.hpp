@@ -31,7 +31,6 @@ namespace kstd
 
     typedef unsigned long long size_t;
     typedef signed long long ssize_t;
-
-};
+}
 
 #endif //KSTDINT_HPP

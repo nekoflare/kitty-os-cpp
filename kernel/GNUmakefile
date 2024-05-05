@@ -66,6 +66,7 @@ override SHARED_FLAGS := \
     -mno-red-zone \
     -static \
     -Isrc/kkd \
+    -pedantic \
 
 # Internal C++ flags that should not be changed by the user.
 override CXXFLAGS += \
