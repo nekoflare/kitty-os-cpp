@@ -19,16 +19,16 @@ bool is_sb16_available()
     return true;
 }
 
-void dsp_write(kstd::uint8_t value)
+void dsp_write(uint8_t value)
 {
-    kstd::size_t status;
+    size_t status;
 
-    status = static_cast<kstd::size_t>(inb(DSP_WRITE));
+    status = static_cast<size_t>(inb(DSP_WRITE));
 
     outb(DSP_WRITE, value);
 }
 
-kstd::uint8_t dsp_read()
+uint8_t dsp_read()
 {
     return inb(DSP_READ);
 }

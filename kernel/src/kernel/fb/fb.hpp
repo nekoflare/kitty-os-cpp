@@ -7,24 +7,26 @@
 
 #include <limine.h>
 #include <control/control.hpp>
-#include <kstd/kstdint.hpp>
+
+#include <stdint.h>
+#include <sys/types.h>
 
 namespace Framebuffer
 {
     extern limine_framebuffer** _Framebuffers;
     extern limine_framebuffer* _MainFramebuffer;
     extern volatile limine_framebuffer_request _FramebuffersRequest;
-    extern kstd::size_t _Fbcount;
+    extern size_t _Fbcount;
 
     void Initialize();
-    limine_framebuffer* GetFramebuffer(kstd::size_t _FbIdx);
-    void DrawPixel(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b);
-    kstd::uint32_t GetPixel(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos);
-    void DrawRectangle(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b, kstd::size_t rectw, kstd::size_t recth);
-    void DrawFilledRectangle(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b, kstd::size_t rectw, kstd::size_t recth);
-    void DrawCircle(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b, kstd::size_t radius);
-    void DrawFilledCircle(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b, kstd::size_t radius);
-    void DrawLine(kstd::size_t _FbIdx, kstd::size_t x0, kstd::size_t y0, kstd::size_t x1, kstd::size_t y1, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b);
+    limine_framebuffer* GetFramebuffer(size_t _FbIdx);
+    void DrawPixel(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b);
+    uint32_t GetPixel(size_t _FbIdx, size_t xpos, size_t ypos);
+    void DrawRectangle(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b, size_t rectw, size_t recth);
+    void DrawFilledRectangle(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b, size_t rectw, size_t recth);
+    void DrawCircle(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b, size_t radius);
+    void DrawFilledCircle(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b, size_t radius);
+    void DrawLine(size_t _FbIdx, size_t x0, size_t y0, size_t x1, size_t y1, uint8_t r, uint8_t g, uint8_t b);
 }
 
 #endif //FB_HPP

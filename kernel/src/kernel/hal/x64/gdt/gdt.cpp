@@ -23,7 +23,7 @@ void flush_gdt()
 {
     struct GDTR gdtr = {
         .size = sizeof(gdt) - 1,
-        .gdt_address = reinterpret_cast<kstd::uint64_t>(&gdt)
+        .gdt_address = reinterpret_cast<uint64_t>(&gdt)
     };
 
     flush_gdt_asm(&gdtr);

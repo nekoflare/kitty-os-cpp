@@ -8,6 +8,9 @@
 #include <flanterm/flanterm.h>
 #include <flanterm/backends/fb.h>
 
+#include <stdint.h>
+#include <sys/types.h>
+
 namespace kstd
 {
     extern flanterm_context* ft_ctx;

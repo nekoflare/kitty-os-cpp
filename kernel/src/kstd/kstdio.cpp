@@ -6,6 +6,7 @@
 #include <kernel/fb/fb.hpp>
 #include <kstd/kstring.hpp>
 #include <cstdarg>
+#include <kernel/hal/x64/io.hpp>
 
 namespace kstd
 {
@@ -33,13 +34,28 @@ namespace kstd
         );
     }
 
+    void bochs_debug_putc(char c)
+    {
+        outb(0xe9, c);
+    }
+
+    void bochs_debug_puts(const char* s)
+    {
+        while(*s++ != 0)
+        {
+            bochs_debug_putc(*s);
+        }
+    }
+
     void puts(const char* s)
     {
+        bochs_debug_puts(s);
         flanterm_write(ft_ctx, s, kstd::strlen(s));
     }
 
     void putc(const char c)
     {
+        bochs_debug_putc(c);
         flanterm_write(ft_ctx, (const char*)&c, 1);
     }
 
@@ -257,13 +273,13 @@ namespace kstd
         va_start(args, fmt);
 
         char c;
-        unsigned char uc;
-        unsigned short us;
-        signed short ss;
-        unsigned long ul;
-        signed long sl;
-        unsigned long long ull;
-        signed long long sll;
+        uint8_t uc;
+        uint16_t us;
+        int16_t ss;
+        uint32_t ul;
+        int32_t sl;
+        uint64_t ull;
+        int64_t sll;
         char* strptr;
         double d;
 
@@ -284,14 +300,17 @@ namespace kstd
                                     switch (*fmt)
                                     {
                                         case 'x': //hhx
+                                            fmt++;
                                             uc = static_cast<unsigned char>(va_arg(args, int)); // promote char -> int
                                             print_hex_char(uc);
                                             break;
                                         case 'd': // hhd
+                                            fmt++;
                                             sl = va_arg(args, int); // char -> int
                                             print_long(sl);
                                             break;
                                         case 'u': // hhu
+                                            fmt++;
                                             ul = va_arg(args, unsigned int); // char -> uint
                                             print_unsigned_long(ul);
                                             break;
@@ -302,14 +321,17 @@ namespace kstd
 
                                     break;
                                 case 'x':
+                                    fmt++;
                                     us = static_cast<unsigned short>(va_arg(args, int)); // promote short -> int
                                     print_hex_short(us);
                                     break;
                                 case 'd':
+                                    fmt++;
                                     ss = static_cast<signed short>(va_arg(args, int)); // promote short -> int
                                     print_short(ss);
                                     break;
                                 case 'u':
+                                    fmt++;
                                     us = static_cast<unsigned short>(va_arg(args, int)); // promote short -> int
                                     print_unsigned_short(us);
                                     break;
@@ -327,15 +349,18 @@ namespace kstd
                                     switch(*fmt)
                                     {
                                         case 'x':
-                                            ull = va_arg(args, unsigned long long);
+                                            fmt++;
+                                            ull = va_arg(args, uint64_t);
                                             print_hex_long_long(ull);
                                             break;
                                         case 'd':
-                                            sll = va_arg(args, long long);
+                                            fmt++;
+                                            sll = va_arg(args, int64_t);
                                             print_long_long(sll);
                                             break;
                                         case 'u':
-                                            ull = va_arg(args, unsigned long long);
+                                            fmt++;
+                                            ull = va_arg(args, uint64_t);
                                             print_unsigned_long_long(ull);
                                             break;
                                         default:
@@ -344,15 +369,18 @@ namespace kstd
                                     }
                                     break;
                                 case 'x':
-                                    ul = va_arg(args, unsigned long);
+                                    fmt++;
+                                    ul = va_arg(args, uint32_t);
                                     print_hex_long(ul);
                                     break;
                                 case 'd':
-                                    sl = va_arg(args, long);
+                                    fmt++;
+                                    sl = va_arg(args, int32_t);
                                     print_long(sl);
                                     break;
                                 case 'u':
-                                    ul = va_arg(args, unsigned long);
+                                    fmt++;
+                                    ul = va_arg(args, uint32_t);
                                     print_unsigned_long(ul);
                                     break;
                                 default:
@@ -361,14 +389,17 @@ namespace kstd
                             }
                             break;
                         case 's':
+                            fmt++;
                             strptr = va_arg(args, char *);
                             puts(strptr);
                             break;
                         case 'c':
+                            fmt++;
                             c = static_cast<char>(va_arg(args, int));
                             putc(c);
                             break;
                         case 'f':
+                            fmt++;
                             d = va_arg(args, double); // promotion float -> double. if double, no promotion.
                             print_double(d);
                             break;

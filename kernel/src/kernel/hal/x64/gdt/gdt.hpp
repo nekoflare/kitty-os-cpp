@@ -5,23 +5,25 @@
 #ifndef GDT_H
 #define GDT_H
 
-#include "kstd/kstdint.hpp"
+
+#include <stdint.h>
+#include <sys/types.h>
 
 struct GDTR
 {
-    kstd::uint16_t size;               // Note: It's size of the GDT table minus 1.
-    kstd::uint64_t gdt_address;        // Note: Virtual address of GDT.
+    uint16_t size;               // Note: It's size of the GDT table minus 1.
+    uint64_t gdt_address;        // Note: Virtual address of GDT.
 } __attribute__((packed));
 
 struct GDTAccessByte
 {
-    kstd::uint8_t accessed_bit : 1;
-    kstd::uint8_t read_write_bit : 1;
-    kstd::uint8_t direction_bit : 1;
-    kstd::uint8_t executable_bit : 1;
-    kstd::uint8_t descriptor_type_bit : 1;
-    kstd::uint8_t descriptor_privilege_level_bits : 2;
-    kstd::uint8_t present_bit : 1;
+    uint8_t accessed_bit : 1;
+    uint8_t read_write_bit : 1;
+    uint8_t direction_bit : 1;
+    uint8_t executable_bit : 1;
+    uint8_t descriptor_type_bit : 1;
+    uint8_t descriptor_privilege_level_bits : 2;
+    uint8_t present_bit : 1;
 } __attribute__((packed));
 
 enum GDTAccessByteBits
@@ -47,26 +49,26 @@ enum GDTFlagsBits
 
 struct GDTSegmentDescriptor
 {
-    kstd::uint16_t limit_one;
-    kstd::uint16_t base_zero;
-    kstd::uint8_t base_two;
-    kstd::uint8_t access_byte;
-    kstd::uint8_t limit_two : 4;
-    kstd::uint8_t flags : 4;
-    kstd::uint8_t base_three;
+    uint16_t limit_one;
+    uint16_t base_zero;
+    uint8_t base_two;
+    uint8_t access_byte;
+    uint8_t limit_two : 4;
+    uint8_t flags : 4;
+    uint8_t base_three;
 } __attribute__((packed));
 
 void flush_gdt();
 extern "C" void flush_gdt_asm(GDTR* gdtr);
 
 #define GDT_ENTRY(_Base, _Limit, _Access, _Flags) {                    \
-    .limit_one = static_cast<kstd::uint16_t>(_Limit & 0xFFFF),               \
-    .base_zero = static_cast<kstd::uint16_t>(_Base & 0xFFFF),                \
-    .base_two = static_cast<kstd::uint8_t>((_Base & 0xFF0000) >> 16),        \
+    .limit_one = static_cast<uint16_t>(_Limit & 0xFFFF),               \
+    .base_zero = static_cast<uint16_t>(_Base & 0xFFFF),                \
+    .base_two = static_cast<uint8_t>((_Base & 0xFF0000) >> 16),        \
     .access_byte = (_Access),                                          \
-    .limit_two = static_cast<kstd::uint8_t>((_Limit & 0xF0000) >> 16),       \
+    .limit_two = static_cast<uint8_t>((_Limit & 0xF0000) >> 16),       \
     .flags = _Flags,                                                   \
-    .base_three = static_cast<kstd::uint8_t>((_Base & 0xFF000000) >> 24)     \
+    .base_three = static_cast<uint8_t>((_Base & 0xFF000000) >> 24)     \
 }                                                                      \
 
 #endif //GDT_H

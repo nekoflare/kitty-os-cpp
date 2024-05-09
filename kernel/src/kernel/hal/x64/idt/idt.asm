@@ -26,8 +26,8 @@ flush_idt_asm:
 
 %include 'src/kernel/hal/x64/idt/isr_expansions.inc'
 
+global isr_common
 isr_common:
-    swapgs
     push rax
     push rbx
     push rcx
@@ -46,6 +46,9 @@ isr_common:
     push r15
 
     cld
+
+    ; Push the address of the structure onto the stack
+    lea rdi, [rsp]   ; Address of the saved registers
     call interrupt_handler
 
     pop r15
@@ -65,15 +68,9 @@ isr_common:
     pop rbx
     pop rax
 
-    swapgs
-
     add rsp, 16
     iretq
 
-
-    call interrupt_handler
-    add rsp, 16
-    iretq
 
 global enable_interrupts
 enable_interrupts:

@@ -54,7 +54,6 @@ enable_avx512f_if_exists:
     test rbx, 1 << 16
     jz .exit
 
-
     push rax
     push rcx
     push rdx
@@ -69,6 +68,7 @@ enable_avx512f_if_exists:
     pop rax
     ret
 .exit: ret
+
 
 _start:
     ; enable sse

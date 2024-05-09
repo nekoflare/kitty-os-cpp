@@ -6,23 +6,54 @@
 #include "kernel/hal/x64/gdt/gdt.hpp"
 #include "control/control.hpp"
 #include "kstd/kstdio.hpp"
-// #include <kernel/hal/x64/idt/idt.hpp>
-#include <kernel/drivers/sb16/sb16.hpp>
+#include <kernel/hal/x64/idt/idt.hpp>
+#include <kernel/memory/mm.hpp>
+#include <stdint.h>
+#include <stddef.h>
+#include <sys/types.h>
+#include <kernel/hal/x64/bus/pci/pci.hpp>
 
-extern "C" void kernel_main() {
+extern void (*__init_array[])();
+extern void (*__init_array_end[])();
+
+extern "C" void kernel_main()
+{
+    for (size_t i = 0; &__init_array[i] != __init_array_end; i++)
+    {
+        __init_array[i]();
+    }
+
     Framebuffer::Initialize();
     kstd::InitializeTerminal();
     flush_gdt();
-    //flush_idt();
+    flush_idt();
+    enable_interrupts();
 
-    if (is_sb16_available())
+    mm_initialize();
+    mm_enumerate_memmap_entries(true);
+
+    mm_test();
+
+    pml4e* _Pml4e = reinterpret_cast<pml4e*>(get_logical_address_pml4());
+    size_t free_pml4e = 0;
+
+    for (size_t i = 0; 256 > i; i++)
     {
-        kstd::printf("SB16 is available on the system.");
+        if (_Pml4e[i + 256].pdpe_base_address == 0 )
+        {
+            kstd::printf("E%lld of PML4E is free to take!\n", i + 256);
+            free_pml4e = i + 256;
+            break;
+        }
     }
-    else
-    {
-        kstd::printf("No SB16 is on the system.");
-    }
+
+    // mm_map_pages(_Pml4e, 0xffffffff80000000, 0x6e000, 512, PROT_FORCE_MAP | PROT_RW | PROT_EXEC | PROT_SUPERVISOR, MAP_PRESENT, MISC_INVLPG, 0);
+
+    //mm_map_page(_Pml4e, mm_create_va(false, free_pml4e, 0, 0, 0, 0), 0x6e000, PROT_RW | PROT_EXEC | PROT_SUPERVISOR, MAP_PRESENT, MISC_INVLPG, 0);
+
+    uint8_t pci_conf = read_pci_config_byte(0, 0, 0, 0);
+
+    pci_init();
 
     while (true)
     {

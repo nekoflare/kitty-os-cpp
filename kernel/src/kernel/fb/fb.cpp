@@ -13,7 +13,7 @@ namespace Framebuffer
             .response = nullptr,
     };
 
-    kstd::size_t _Fbcount = 0;
+    size_t _Fbcount = 0;
     limine_framebuffer** _Framebuffers = nullptr;
     limine_framebuffer* _MainFramebuffer = nullptr;
 
@@ -30,7 +30,7 @@ namespace Framebuffer
         if (_Fbcount > 0)
         _MainFramebuffer = _Framebuffers[0];
     }
-    void DrawPixel(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b)
+    void DrawPixel(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b)
     {
         if (_FbIdx >= _Fbcount)
         {
@@ -48,10 +48,10 @@ namespace Framebuffer
         }
 
         // Calculate the offset of the pixel in memory
-        kstd::size_t offset = (ypos * fbwidth + xpos) * (fb->bpp / 8);
+        size_t offset = (ypos * fbwidth + xpos) * (fb->bpp / 8);
 
         // Calculate the address of the pixel in memory
-        volatile kstd::uint8_t* pixelAddress = reinterpret_cast<volatile kstd::uint8_t*>(fb->address) + offset;
+        volatile uint8_t* pixelAddress = reinterpret_cast<volatile uint8_t*>(fb->address) + offset;
 
         // Calculate the shift for each color component
         uint8_t rShift = fb->red_mask_shift;
@@ -59,21 +59,21 @@ namespace Framebuffer
         uint8_t bShift = fb->blue_mask_shift;
 
         // Calculate the mask for each color component
-        kstd::uint32_t rMask = (1 << fb->red_mask_size) - 1;
-        kstd::uint32_t gMask = (1 << fb->green_mask_size) - 1;
-        kstd::uint32_t bMask = (1 << fb->blue_mask_size) - 1;
+        uint32_t rMask = (1 << fb->red_mask_size) - 1;
+        uint32_t gMask = (1 << fb->green_mask_size) - 1;
+        uint32_t bMask = (1 << fb->blue_mask_size) - 1;
 
         // Clear the existing color components at the pixel address
-        *reinterpret_cast<volatile kstd::uint32_t*>(pixelAddress) &= ~(rMask << rShift);
-        *reinterpret_cast<volatile kstd::uint32_t*>(pixelAddress) &= ~(gMask << gShift);
-        *reinterpret_cast<volatile kstd::uint32_t*>(pixelAddress) &= ~(bMask << bShift);
+        *reinterpret_cast<volatile uint32_t*>(pixelAddress) &= ~(rMask << rShift);
+        *reinterpret_cast<volatile uint32_t*>(pixelAddress) &= ~(gMask << gShift);
+        *reinterpret_cast<volatile uint32_t*>(pixelAddress) &= ~(bMask << bShift);
 
         // Write the color components to the framebuffer memory
-        *reinterpret_cast<volatile kstd::uint32_t*>(pixelAddress) |= (r & rMask) << rShift;
-        *reinterpret_cast<volatile kstd::uint32_t*>(pixelAddress) |= (g & gMask) << gShift;
-        *reinterpret_cast<volatile kstd::uint32_t*>(pixelAddress) |= (b & bMask) << bShift;
+        *reinterpret_cast<volatile uint32_t*>(pixelAddress) |= (r & rMask) << rShift;
+        *reinterpret_cast<volatile uint32_t*>(pixelAddress) |= (g & gMask) << gShift;
+        *reinterpret_cast<volatile uint32_t*>(pixelAddress) |= (b & bMask) << bShift;
     }
-    void DrawRectangle(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b, kstd::size_t rectw, kstd::size_t recth)
+    void DrawRectangle(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b, size_t rectw, size_t recth)
     {
         if (_FbIdx >= _Fbcount)
         {
@@ -95,30 +95,30 @@ namespace Framebuffer
         recth = Math::min(recth, fbheight - ypos);
 
         // Draw top edge
-        for (kstd::size_t x = xpos; x < xpos + rectw; ++x)
+        for (size_t x = xpos; x < xpos + rectw; ++x)
         {
             DrawPixel(_FbIdx, x, ypos, r, g, b);
         }
 
         // Draw bottom edge
-        for (kstd::size_t x = xpos; x < xpos + rectw; ++x)
+        for (size_t x = xpos; x < xpos + rectw; ++x)
         {
             DrawPixel(_FbIdx, x, ypos + recth - 1, r, g, b);
         }
 
         // Draw left edge
-        for (kstd::size_t y = ypos; y < ypos + recth; ++y)
+        for (size_t y = ypos; y < ypos + recth; ++y)
         {
             DrawPixel(_FbIdx, xpos, y, r, g, b);
         }
 
         // Draw right edge
-        for (kstd::size_t y = ypos; y < ypos + recth; ++y)
+        for (size_t y = ypos; y < ypos + recth; ++y)
         {
             DrawPixel(_FbIdx, xpos + rectw - 1, y, r, g, b);
         }
     }
-    void DrawFilledRectangle(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b, kstd::size_t rectw, kstd::size_t recth)
+    void DrawFilledRectangle(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b, size_t rectw, size_t recth)
     {
         if (_FbIdx >= _Fbcount)
         {
@@ -140,15 +140,15 @@ namespace Framebuffer
         recth = Math::min(recth, fbheight - ypos);
 
         // Draw each pixel within the rectangle with the specified color
-        for (kstd::size_t y = ypos; y < ypos + recth; ++y)
+        for (size_t y = ypos; y < ypos + recth; ++y)
         {
-            for (kstd::size_t x = xpos; x < xpos + rectw; ++x)
+            for (size_t x = xpos; x < xpos + rectw; ++x)
             {
                 DrawPixel(_FbIdx, x, y, r, g, b);
             }
         }
     }
-    void DrawCircle(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b, kstd::size_t radius)
+    void DrawCircle(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b, size_t radius)
     {
         if (_FbIdx >= _Fbcount)
         {
@@ -165,9 +165,9 @@ namespace Framebuffer
             return; // Invalid starting coordinates, exit function
         }
 
-        kstd::size_t x = radius;
-        kstd::size_t y = 0;
-        kstd::ssize_t radiusError = 1 - x;
+        size_t x = radius;
+        size_t y = 0;
+        ssize_t radiusError = 1 - x;
 
         while (x >= y)
         {
@@ -192,7 +192,7 @@ namespace Framebuffer
             }
         }
     }
-    void DrawFilledCircle(kstd::size_t _FbIdx, kstd::size_t xpos, kstd::size_t ypos, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b, kstd::size_t radius)
+    void DrawFilledCircle(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b, size_t radius)
     {
         if (_FbIdx >= _Fbcount)
         {
@@ -209,18 +209,18 @@ namespace Framebuffer
             return; // Invalid starting coordinates, exit function
         }
 
-        kstd::size_t x = radius;
-        kstd::size_t y = 0;
-        kstd::ssize_t radiusError = 1 - x;
+        size_t x = radius;
+        size_t y = 0;
+        ssize_t radiusError = 1 - x;
 
         while (x >= y)
         {
             // Draw horizontal lines to fill the circle
-            for (kstd::size_t i = xpos - x; i <= xpos + x; ++i)
+            for (size_t i = xpos - x; i <= xpos + x; ++i)
             {
                 DrawLine(_FbIdx, i, ypos + y, i, ypos - y, r, g, b);
             }
-            for (kstd::size_t i = xpos - y; i <= xpos + y; ++i)
+            for (size_t i = xpos - y; i <= xpos + y; ++i)
             {
                 DrawLine(_FbIdx, i, ypos + x, i, ypos - x, r, g, b);
             }
@@ -238,13 +238,13 @@ namespace Framebuffer
         }
     }
 
-    void DrawLine(kstd::size_t _FbIdx, kstd::size_t x0, kstd::size_t y0, kstd::size_t x1, kstd::size_t y1, kstd::uint8_t r, kstd::uint8_t g, kstd::uint8_t b)
+    void DrawLine(size_t _FbIdx, size_t x0, size_t y0, size_t x1, size_t y1, uint8_t r, uint8_t g, uint8_t b)
     {
-        kstd::ssize_t dx = static_cast<kstd::ssize_t>(Math::abs(static_cast<kstd::ssize_t>(x1) - static_cast<kstd::ssize_t>(x0)));
-        kstd::ssize_t dy = static_cast<kstd::ssize_t>(Math::abs(static_cast<kstd::ssize_t>(y1) - static_cast<kstd::ssize_t>(y0)));
-        kstd::ssize_t sx = x0 < x1 ? 1 : -1;
-        kstd::ssize_t sy = y0 < y1 ? 1 : -1;
-        kstd::ssize_t err = dx - dy;
+        ssize_t dx = static_cast<ssize_t>(Math::abs(static_cast<ssize_t>(x1) - static_cast<ssize_t>(x0)));
+        ssize_t dy = static_cast<ssize_t>(Math::abs(static_cast<ssize_t>(y1) - static_cast<ssize_t>(y0)));
+        ssize_t sx = x0 < x1 ? 1 : -1;
+        ssize_t sy = y0 < y1 ? 1 : -1;
+        ssize_t err = dx - dy;
 
         while (true)
         {
@@ -252,7 +252,7 @@ namespace Framebuffer
 
             if (x0 == x1 && y0 == y1) break;
 
-            kstd::ssize_t e2 = 2 * err;
+            ssize_t e2 = 2 * err;
             if (e2 > -dy)
             {
                 err -= dy;
@@ -266,7 +266,7 @@ namespace Framebuffer
         }
     }
 
-    limine_framebuffer* GetFramebuffer(kstd::size_t _FbIdx)
+    limine_framebuffer* GetFramebuffer(size_t _FbIdx)
     {
         if (_FbIdx >= _Fbcount) return nullptr;
         return _Framebuffers[_FbIdx];

@@ -6,9 +6,9 @@
 
 namespace kstd
 {
-    kstd::size_t strlen(const char* s)
+    size_t strlen(const char* s)
     {
-        kstd::size_t len = 0;
+        size_t len = 0;
         while (*s++ != 0)
         {
             len++;
@@ -16,7 +16,7 @@ namespace kstd
         return len;
     }
 
-    void* memset(void* ptr, int v, kstd::size_t num)
+    void* memset(void* ptr, int v, size_t num)
     {
         char* _Ptr = static_cast<char*>(ptr);
         char _Value = static_cast<char>(v); // Cast v to char
@@ -29,20 +29,20 @@ namespace kstd
         return _Ptr; // Return the end pointer
     }
 
-    void* memcpy(void* dest, const void* src, kstd::size_t num)
+    void* memcpy(void* dest, const void* src, size_t num)
     {
         char* _Dest = static_cast<char*>(dest);
         const char* _Src = static_cast<const char*>(src);
 
         // Copy byte by byte
-        for (kstd::size_t i = 0; i < num; ++i) {
+        for (size_t i = 0; i < num; ++i) {
             _Dest[i] = _Src[i];
         }
 
         return dest;
     }
 
-    void* memmove(void* dest, const void* src, kstd::size_t num)
+    void* memmove(void* dest, const void* src, size_t num)
     {
         char* _Dest = static_cast<char*>(dest);
         const char* _Src = static_cast<const char*>(src);
@@ -50,13 +50,13 @@ namespace kstd
         // If source and destination addresses overlap
         if (_Dest > _Src && _Dest < _Src + num) {
             // Copy from end to start to avoid overwriting
-            for (kstd::size_t i = num; i != 0; --i)
+            for (size_t i = num; i != 0; --i)
             {
                 _Dest[i - 1] = _Src[i - 1];
             }
         } else {
             // Copy from start to end
-            for (kstd::size_t i = 0; i < num; ++i)
+            for (size_t i = 0; i < num; ++i)
             {
                 _Dest[i] = _Src[i];
             }
@@ -66,12 +66,12 @@ namespace kstd
     }
 
 
-    int memcmp(const void* ptr1, const void* ptr2, kstd::size_t num)
+    int memcmp(const void* ptr1, const void* ptr2, size_t num)
     {
         const unsigned char* p1 = static_cast<const unsigned char*>(ptr1);
         const unsigned char* p2 = static_cast<const unsigned char*>(ptr2);
 
-        for (kstd::size_t i = 0; i < num; ++i)
+        for (size_t i = 0; i < num; ++i)
         {
             if (p1[i] != p2[i])
             {
@@ -81,10 +81,10 @@ namespace kstd
         return 0;
     }
 
-    void* memchr(const void* ptr, int value, kstd::size_t num)
+    void* memchr(const void* ptr, int value, size_t num)
     {
         const unsigned char* p = static_cast<const unsigned char*>(ptr);
-        for (kstd::size_t i = 0; i < num; ++i)
+        for (size_t i = 0; i < num; ++i)
         {
             if (p[i] == value)
             {
@@ -94,10 +94,10 @@ namespace kstd
         return nullptr;
     }
 
-    void* memrchr(const void* ptr, int value, kstd::size_t num)
+    void* memrchr(const void* ptr, int value, size_t num)
     {
         const unsigned char* p = static_cast<const unsigned char*>(ptr);
-        for (kstd::size_t i = num; i > 0; --i)
+        for (size_t i = num; i > 0; --i)
         {
             if (p[i - 1] == value)
             {
@@ -107,12 +107,12 @@ namespace kstd
         return nullptr;
     }
 
-    void* memccpy(void* dest, const void* src, int c, kstd::size_t num)
+    void* memccpy(void* dest, const void* src, int c, size_t num)
     {
         unsigned char* d = static_cast<unsigned char*>(dest);
         const unsigned char* s = static_cast<const unsigned char*>(src);
 
-        for (kstd::size_t i = 0; i < num; ++i)
+        for (size_t i = 0; i < num; ++i)
         {
             d[i] = s[i];
             if (s[i] == static_cast<unsigned char>(c))
@@ -123,12 +123,12 @@ namespace kstd
         return nullptr;
     }
 
-    void memswap(void* ptr1, void* ptr2, kstd::size_t num)
+    void memswap(void* ptr1, void* ptr2, size_t num)
     {
         unsigned char* p1 = static_cast<unsigned char*>(ptr1);
         unsigned char* p2 = static_cast<unsigned char*>(ptr2);
 
-        for (kstd::size_t i = 0; i < num; ++i)
+        for (size_t i = 0; i < num; ++i)
         {
             unsigned char temp = p1[i];
             p1[i] = p2[i];
