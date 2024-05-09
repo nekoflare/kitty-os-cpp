@@ -53,7 +53,7 @@ extern "C" void interrupt_handler(Registers_x86_64* regs)
 {
     kstd::printf("We've received an interrupt!\n");
 
-    kstd::printf("RAX: %llx RBX: %llx RCX: %llx RDX: %llx\nR8: %llx R9: %llx R10: %llx R11: %llx\nR12: %llx R13: %llx R14: %llx R15: %llx\nRSI: %llx RDI: %llx RBP: %llx\nRSP: %llx CS@RIP: %llx@%llx\n",
+    kstd::printf("RAX: %lx RBX: %lx RCX: %lx RDX: %lx\nR8: %lx R9: %lx R10: %lx R11: %lx\nR12: %lx R13: %lx R14: %lx R15: %lx\nRSI: %lx RDI: %lx RBP: %lx\nRSP: %lx CS@RIP: %lx@%lx\n",
                  regs->rax, regs->rbx, regs->rcx, regs->rdx,
                  regs->r8, regs->r9, regs->r10, regs->r11,
                  regs->r12, regs->r13, regs->r13, regs->r15,

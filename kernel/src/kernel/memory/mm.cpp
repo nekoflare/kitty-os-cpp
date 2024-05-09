@@ -139,7 +139,7 @@ void mm_initialize()
                 mm_memory_reserved += length;
                 break;
             default:
-                kstd::printf("[MM] Invalid entry type. Entry index: %lld.\n", i);
+                kstd::printf("[MM] Invalid entry type. Entry index: %ld.\n", i);
                 mm_memory_unusable += length;
                 break;
         }
@@ -165,7 +165,7 @@ void mm_initialize()
         }
     }
 
-    kstd::printf("[MM] Largest address: %llx\n", largest_address);
+    kstd::printf("[MM] Largest address: %lx\n", largest_address);
 
     largest_address = mm_align_mem(largest_address, VM_PAGE_SIZE);
     size_t bitmap_required_size = largest_address / VM_PAGE_SIZE;
@@ -178,8 +178,8 @@ void mm_initialize()
         bitmap_bytes ++;
     }
 
-    kstd::printf("[MM] Bytes required for the bitmap: %llx\n", bitmap_required_size);
-    kstd::printf("[MM] Boundaries of memory 0 - %lld (MB)\n", largest_address / 1024 / 1024);
+    kstd::printf("[MM] Bytes required for the bitmap: %lx\n", bitmap_required_size);
+    kstd::printf("[MM] Boundaries of memory 0 - %ld (MB)\n", largest_address / 1024 / 1024);
 
     // Find space for the bitmap.
     for (size_t i = 0; mm_memmap_entry_count > i; i++)
@@ -191,7 +191,7 @@ void mm_initialize()
 
         if (length >= bitmap_bytes && type == LIMINE_MEMMAP_USABLE)
         {
-            kstd::printf("[MM] Found the suitable entry! Base: %llx Length: %llx Idx: %llx\n", base, length, i);
+            kstd::printf("[MM] Found the suitable entry! Base: %lx Length: %lx Idx: %lx\n", base, length, i);
 
             mm_pmm_bitmap = reinterpret_cast<uint8_t*>(base);
             base += bitmap_bytes;
@@ -227,8 +227,8 @@ void mm_initialize()
     // Convert physical address of mm_pmm_bitmap to virtual address
     uint64_t virtual_bitmap_addr = mm_physical_to_virtual_addr(reinterpret_cast<uint64_t>(mm_pmm_bitmap));
 
-    kstd::printf("bitmap addr: %llx\n", virtual_bitmap_addr);
-    kstd::printf("hhdm   addr: %llx\n", mm_hhdm->offset);
+    kstd::printf("bitmap addr: %lx\n", virtual_bitmap_addr);
+    kstd::printf("hhdm   addr: %lx\n", mm_hhdm->offset);
 
     // Initialize the control bitmap with the virtual address and size
     mm_pmm_bitmap_ctrl.Initialize(reinterpret_cast<uint8_t*>(virtual_bitmap_addr), mm_pmm_bitmap_size);
@@ -249,7 +249,7 @@ void mm_initialize()
         }
     }
 
-    kstd::printf("Free pages: %lld\n", mm_memory_usable / VM_PAGE_SIZE);
+    kstd::printf("Free pages: %ld\n", mm_memory_usable / VM_PAGE_SIZE);
 
     mm_ready = true;
 }
@@ -315,9 +315,9 @@ void mm_enumerate_memmap_entries(bool compact_write)
         auto type_name = mm_entry_type_to_string(type);
 
         if (!compact_write)
-            kstd::printf("Entry %lld:    Base: %llx    \nLength: %llx\n    Type: %s\n", i + 1, base, length, type_name);
+            kstd::printf("Entry %ld:    Base: %lx    \nLength: %lx\n    Type: %s\n", i + 1, base, length, type_name);
         else
-            kstd::printf("E%lld: Base: %llx Length: %llx Type: %s\n", i+1, base, length, type_name);
+            kstd::printf("E%ld: Base: %lx Length: %lx Type: %s\n", i+1, base, length, type_name);
     }
 }
 
@@ -338,7 +338,7 @@ void* mm_alloc_page()
     // Mark the address as used.
     mm_pmm_bitmap_controller->MarkAddressUsed(physical_address);
 
-    kstd::printf("Allocated a page. Address: %llx\n", physical_address);
+    kstd::printf("Allocated a page. Address: %lx\n", physical_address);
 
     // Return the address
     return reinterpret_cast<void*>(physical_address);
@@ -349,7 +349,7 @@ void mm_free_page(void* ptr)
     // Convert the pointer in to physical one
     uint64_t physical_address = reinterpret_cast<uint64_t>(ptr);
 
-    kstd::printf("Freed a page. Address: %llx\n", physical_address);
+    kstd::printf("Freed a page. Address: %lx\n", physical_address);
 
     mm_pmm_bitmap_controller->MarkAddressUnused(physical_address);
 }
@@ -437,7 +437,7 @@ bool mm_map_page(
     }
 
     // All OK!
-    kstd::printf("Mapping %llx -> %llx.\n", phys_address, virt_address);
+    kstd::printf("Mapping %lx -> %lx.\n", phys_address, virt_address);
 
     // Split a VA in to specific values.
     VirtAddress va_items = mm_get_va_components(virt_address);
@@ -464,7 +464,6 @@ bool mm_map_page(
     if (pdpe[pdpe_idx].pde_base_address == 0)
     {
         kstd::printf("PDPE entry isn't pointing anywhere. Not implemented.\n");
-        kstd::printf("Ptr: %llx\n", pdpe[pdpe_idx].pde_base_address);
 
         return MAP_FAILURE;
     }
@@ -562,28 +561,28 @@ bool mm_map_pages(
 
 void mm_test()
 {
-    kstd::printf("[MM] PDBR: %llx\n", get_logical_address_pml4());
+    kstd::printf("[MM] PDBR: %lx\n", get_logical_address_pml4());
 
     pml4e* _Pml4e = reinterpret_cast<pml4e*>(get_logical_address_pml4());
     VirtAddress va = mm_get_va_components(reinterpret_cast<void*>(&mm_test));
 
-    kstd::printf("PML4E: %llx\n", _Pml4e);
+    kstd::printf("PML4E: %p\n", static_cast<void*>(_Pml4e));
 
     pdpe* _Pdpe = reinterpret_cast<pdpe*>(_Pml4e[va.pml4e].pdpe_base_address << 12);
 
-    kstd::printf("PDPE: %llx\n", _Pdpe);
+    kstd::printf("PDPE: %p\n", static_cast<void*>(_Pdpe));
 
     pde* _Pde = reinterpret_cast<pde*>(_Pdpe[va.pdpe].pde_base_address << 12);
 
-    kstd::printf("PDE: %llx\n", _Pde);
+    kstd::printf("PDE: %p\n", static_cast<void*>(_Pde));
 
     pte* _Pte = reinterpret_cast<pte*>(_Pde[va.pde].pte_base_address << 12);
 
-    kstd::printf("PTE: %llx\n", _Pte);
+    kstd::printf("PTE: %p\n", static_cast<void*>(_Pte));
 
     pte* _PteVirt = reinterpret_cast<pte*>(reinterpret_cast<uint64_t>(_Pte) + mm_hhdm->offset);
 
-    kstd::printf("Phys address: %llx\n", _PteVirt[va.pte].pp_base_address << 12);
+    kstd::printf("Phys address: %lx\n", _PteVirt[va.pte].pp_base_address << 12);
 
     return;
 }

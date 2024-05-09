@@ -41,7 +41,7 @@ extern "C" void kernel_main()
     {
         if (_Pml4e[i + 256].pdpe_base_address == 0 )
         {
-            kstd::printf("E%lld of PML4E is free to take!\n", i + 256);
+            kstd::printf("E%ld of PML4E is free to take!\n", i + 256);
             free_pml4e = i + 256;
             break;
         }
@@ -50,8 +50,6 @@ extern "C" void kernel_main()
     // mm_map_pages(_Pml4e, 0xffffffff80000000, 0x6e000, 512, PROT_FORCE_MAP | PROT_RW | PROT_EXEC | PROT_SUPERVISOR, MAP_PRESENT, MISC_INVLPG, 0);
 
     //mm_map_page(_Pml4e, mm_create_va(false, free_pml4e, 0, 0, 0, 0), 0x6e000, PROT_RW | PROT_EXEC | PROT_SUPERVISOR, MAP_PRESENT, MISC_INVLPG, 0);
-
-    uint8_t pci_conf = read_pci_config_byte(0, 0, 0, 0);
 
     pci_init();
 

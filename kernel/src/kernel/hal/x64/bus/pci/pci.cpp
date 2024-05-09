@@ -50,6 +50,41 @@ void pci_copy_header(void* phc, int bus, int slot, int function)
     }
 }
 
+void print_pci_header_type_0(PCIHeaderType0& hdr, uint8_t bus, uint8_t slot, uint8_t func)
+{
+    kstd::printf("Location: \\\\PCI\\Devices\\%hhx\\%hhx\\%hhx\\pcidev\n", bus, slot, func);
+    kstd::printf("Device ID: %hx Vendor ID: %hx\n", hdr.common.device_id, hdr.common.vendor_id);
+    kstd::printf("Revision ID: %hhx Prog IF: %hhx\n", hdr.common.revision_id, hdr.common.prog_if);
+    kstd::printf("Subclass: %hhx Class Code: %hhx\n", hdr.common.subclass, hdr.common.class_code);
+
+    if (hdr.bar0) kstd::printf("    BAR0: %x\n", hdr.bar0);
+    if (hdr.bar1) kstd::printf("    BAR0: %x\n", hdr.bar1);
+    if (hdr.bar2) kstd::printf("    BAR0: %x\n", hdr.bar2);
+    if (hdr.bar3) kstd::printf("    BAR0: %x\n", hdr.bar3);
+    if (hdr.bar4) kstd::printf("    BAR0: %x\n", hdr.bar4);
+}
+
+void print_pci_header_type_1(PCIHeaderType1& hdr, uint8_t bus, uint8_t slot, uint8_t func)
+{
+    kstd::printf("Location: \\\\PCI\\Devices\\%hhx\\%hhx\\%hhx\\pcidev\n", bus, slot, func);
+    kstd::printf("Device ID: %hx Vendor ID: %hx\n", hdr.common.device_id, hdr.common.vendor_id);
+    kstd::printf("Revision ID: %hhx Prog IF: %hhx\n", hdr.common.revision_id, hdr.common.prog_if);
+    kstd::printf("Subclass: %hhx Class Code: %hhx\n", hdr.common.subclass, hdr.common.class_code);
+
+    if (hdr.bar0) kstd::printf("    BAR0: %x\n", hdr.bar0);
+    if (hdr.bar1) kstd::printf("    BAR0: %x\n", hdr.bar1);
+    // Todo: Add more entries because I fucking need it.
+}
+
+void print_pci_header_type_2(PCIHeaderType2& hdr, uint8_t bus, uint8_t slot, uint8_t func)
+{
+    kstd::printf("Location: \\\\SYSTEM\\PCI\\Devices\\%hhx\\%hhx\\%hhx\\pcidev\n", bus, slot, func);
+    kstd::printf("Device ID: %hx Vendor ID: %hx\n", hdr.common.device_id, hdr.common.vendor_id);
+    kstd::printf("Revision ID: %hhx Prog IF: %hhx\n", hdr.common.revision_id, hdr.common.prog_if);
+    kstd::printf("Subclass: %hhx Class Code: %hhx\n", hdr.common.subclass, hdr.common.class_code);
+    // todo:: Add more entries because I fucking need it.
+}
+
 void pci_init()
 {
     PCIHeaderCommon phc {};
@@ -68,41 +103,52 @@ void pci_init()
                 continue;
             }
 
-            /*
-            kstd::printf("Bus: %llx Slot: %llx\n", _bus, _slot);
-            kstd::printf("(Vendor : Device ID) %hx:%hx\n", phc.vendor_id, phc.device_id);
-            kstd::printf("Command: %hx Status: %hx\n", phc.command, phc.vendor_id);
-            kstd::printf("RevID: %hhx ProgIF: %hhx\n", phc.revision_id, phc.prog_if);
-            kstd::printf("Subclass: %hhx Class Code: %hhx\n", phc.subclass, phc.class_code);
-            kstd::printf("Cache line size: %hhx Latency Timer: %hhx\n", phc.cache_line_size, phc.latency_timer);
-            kstd::printf("Header type: %hhx Bist: %hhx\n", phc.header_type, phc.bist);
-            */
-
-            kstd::printf("BUS: %lld SLOT: %lld (%hx:%hx)\n", _bus, _slot, phc.vendor_id, phc.device_id);
-
             switch (phc.header_type)
             {
                 case 0x00:
                     pci_copy_header<PCIHeaderType0>(&phc_T0, _bus, _slot, 0);
-                    if (phc_T0.bar0 != 0)
-                        kstd::printf("BAR0: %llx", phc_T0.bar0);
-                    if (phc_T0.bar1 != 0)
-                        kstd::printf(" BAR1: %llx", phc_T0.bar1);
-                    if (phc_T0.bar2 != 0)
-                        kstd::printf(" BAR2: %llx", phc_T0.bar2);
-                    if (phc_T0.bar3 != 0)
-                        kstd::printf("BAR3: %llx", phc_T0.bar3);
-                    if (phc_T0.bar4 != 0)
-                        kstd::printf(" BAR4: %llx", phc_T0.bar4);
-                    if (phc_T0.bar5 != 0)
-                        kstd::printf(" BAR5: %llx\n", phc_T0.bar5);
-
+                    print_pci_header_type_0(phc_T0, _bus, _slot, 0);
                     break;
                 case 0x01:
-                    kstd::printf("Unsupported header type: %hhx\n", phc.header_type);
+                    pci_copy_header<PCIHeaderType1>(&phc_T1, _bus, _slot, 0);
+                    print_pci_header_type_1(phc_T1, _bus, _slot, 0);
                     break;
                 case 0x02:
-                    kstd::printf("Unsupported header type: %hhx\n", phc.header_type);
+                    pci_copy_header<PCIHeaderType2>(&phc_T2, _bus, _slot, 0);
+                    print_pci_header_type_2(phc_T2, _bus, _slot, 0);
+                    break;
+                case 0x80:
+                    // Multifunction device.
+
+                    for (size_t func = 1; 8 > func; func++)
+                    {
+                        pci_copy_common_header(&phc, _bus, _slot, func);
+
+                        if (phc.device_id == 0xFFFF && phc.vendor_id == 0xFFFF)
+                        {
+                            continue;
+                        }
+
+                        switch (phc.header_type)
+                        {
+                            case 0x00:
+                                pci_copy_header<PCIHeaderType0>(&phc_T0, _bus, _slot, func);
+                                print_pci_header_type_0(phc_T0, _bus, _slot, func);
+                                break;
+                            case 0x01:
+                                pci_copy_header<PCIHeaderType1>(&phc_T1, _bus, _slot, func);
+                                print_pci_header_type_1(phc_T1, _bus, _slot, func);
+                                break;
+                            case 0x02:
+                                pci_copy_header<PCIHeaderType2>(&phc_T2, _bus, _slot, func);
+                                print_pci_header_type_2(phc_T2, _bus, _slot, func);
+                                break;
+                            default:
+                                kstd::printf("Unknown header type inside of multi-function PCI device. Header type: %hhx\n", phc.header_type);
+                                break;
+                        }
+                    }
+
                     break;
                 default:
                     kstd::printf("Unsupported header type: %hhx\n", phc.header_type);

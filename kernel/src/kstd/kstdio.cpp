@@ -34,218 +34,126 @@ namespace kstd
         );
     }
 
-    void bochs_debug_putc(char c)
-    {
-        outb(0xe9, c);
-    }
-
-    void bochs_debug_puts(const char* s)
-    {
-        while(*s++ != 0)
-        {
-            bochs_debug_putc(*s);
-        }
-    }
-
     void puts(const char* s)
     {
-        bochs_debug_puts(s);
         flanterm_write(ft_ctx, s, kstd::strlen(s));
     }
 
     void putc(const char c)
     {
-        bochs_debug_putc(c);
         flanterm_write(ft_ctx, (const char*)&c, 1);
     }
 
-    void print_char(const char c)
+    void print_signed_integer(signed int si)
     {
-        putc(c);
-    }
-
-    void print_short(signed short s) {
-        // Print the sign of the number
-        if (s < 0) {
+        // Handle negative numbers
+        if (si < 0)
+        {
             putc('-');
-            s = -s; // Make it positive for printing
+            si = -si;
         }
 
-        // Convert each digit to character and print
-        if (s == 0) {
+        // Extract digits and print them
+        unsigned int place = 1;
+        while (si / place >= 10)
+            place *= 10;
+
+        while (place > 0)
+        {
+            putc('0' + si / place);
+            si %= place;
+            place /= 10;
+        }
+        putc('\n');
+    }
+
+    void print_unsigned_integer_octal(unsigned int si)
+    {
+        // Handle the base case of 0
+        if (si == 0) {
             putc('0');
             return;
         }
 
-        // Temporary buffer to hold digits
-        char buffer[10];
+        // Array to store octal digits
+        char octal_digits[32];
         int i = 0;
 
-        // Extract digits
-        while (s != 0) {
-            buffer[i++] = '0' + (s % 10);
-            s /= 10;
+        // Extract octal digits
+        while (si != 0)
+        {
+            octal_digits[i++] = '0' + (si % 8);
+            si /= 8;
         }
 
-        // Print digits in reverse order
-        for (int j = i - 1; j >= 0; j--) {
-            putc(buffer[j]);
-        }
-    }
-
-    void print_hex_short(unsigned short s) {
-        putc('0');
-        putc('x');
-
-        // Convert each nibble to hexadecimal digit and print
-        for (int i = sizeof(s) * 2 - 1; i >= 0; i--) {
-            int nibble = (s >> (i * 4)) & 0xF; // Extract each nibble
-            char hex_digit = nibble < 10 ? '0' + nibble : 'A' + (nibble - 10); // Convert to hexadecimal digit
-            putc(hex_digit);
+        // Print octal digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(octal_digits[j]);
         }
     }
 
-    void print_unsigned_short(unsigned short us) {
-        // Convert each nibble to hexadecimal digit and print
-        for (int i = sizeof(us) * 2 - 1; i >= 0; i--) {
-            int nibble = (us >> (i * 4)) & 0xF; // Extract each nibble
-            char hex_digit = nibble < 10 ? '0' + nibble : 'A' + (nibble - 10); // Convert to hexadecimal digit
-            putc(hex_digit);
-        }
-    }
 
-    void print_long(signed long l) {
-        // Print the sign of the number
-        if (l < 0) {
-            putc('-');
-            l = -l; // Make it positive for printing
-        }
-
-        // Convert each digit to character and print
-        if (l == 0) {
+    void print_unsigned_integer_hexadecimal(unsigned int si)
+    {
+        // Handle the base case of 0
+        if (si == 0)
+        {
             putc('0');
             return;
         }
 
-        // Temporary buffer to hold digits
-        char buffer[20]; // Assuming maximum number of digits in a long
+        // Array to store hexadecimal digits
+        char hex_digits[32];
         int i = 0;
 
-        // Extract digits
-        while (l != 0) {
-            buffer[i++] = '0' + (l % 10);
-            l /= 10;
+        // Extract hexadecimal digits
+        while (si != 0)
+        {
+            int remainder = si % 16;
+            if (remainder < 10)
+                hex_digits[i++] = '0' + remainder; // Convert to ASCII
+            else
+                hex_digits[i++] = 'A' + (remainder - 10); // Convert to ASCII
+            si /= 16;
         }
 
-        // Print digits in reverse order
-        for (int j = i - 1; j >= 0; j--) {
-            putc(buffer[j]);
+        // Print hexadecimal digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(hex_digits[j]);
         }
     }
 
-    void print_long_long(signed long long ll) {
-        // Print the sign of the number
-        if (ll < 0) {
-            putc('-');
-            ll = -ll; // Make it positive for printing
-        }
-
-        // Convert each digit to character and print
-        if (ll == 0) {
+    void print_unsigned_integer(unsigned int ui)
+    {
+        // Handle the base case of 0
+        if (ui == 0)
+        {
             putc('0');
             return;
         }
 
-        // Temporary buffer to hold digits
-        char buffer[20]; // Assuming maximum number of digits in a long long
+        // Array to store digits
+        char digits[32];
         int i = 0;
 
         // Extract digits
-        while (ll != 0) {
-            buffer[i++] = '0' + (ll % 10);
-            ll /= 10;
+        while (ui != 0)
+        {
+            digits[i++] = '0' + (ui % 10); // Convert to ASCII
+            ui /= 10;
         }
 
         // Print digits in reverse order
-        for (int j = i - 1; j >= 0; j--) {
-            putc(buffer[j]);
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(digits[j]);
         }
     }
 
-    void print_unsigned_long(unsigned long ul) {
-        // Convert each digit to character and print
-        if (ul == 0) {
-            putc('0');
-            return;
-        }
-
-        // Temporary buffer to hold digits
-        char buffer[20]; // Assuming maximum number of digits in an unsigned long
-        int i = 0;
-
-        // Extract digits
-        while (ul != 0) {
-            buffer[i++] = '0' + (ul % 10);
-            ul /= 10;
-        }
-
-        // Print digits in reverse order
-        for (int j = i - 1; j >= 0; j--) {
-            putc(buffer[j]);
-        }
-    }
-
-    void print_unsigned_long_long(unsigned long long ull) {
-        // Convert each digit to character and print
-        if (ull == 0) {
-            putc('0');
-            return;
-        }
-
-        // Temporary buffer to hold digits
-        char buffer[20]; // Assuming maximum number of digits in an unsigned long long
-        int i = 0;
-
-        // Extract digits
-        while (ull != 0) {
-            buffer[i++] = '0' + (ull % 10);
-            ull /= 10;
-        }
-
-        // Print digits in reverse order
-        for (int j = i - 1; j >= 0; j--) {
-            putc(buffer[j]);
-        }
-    }
-
-    void print_hex_char(unsigned char c) {
-        // Convert each nibble to hexadecimal digit and print
-        for (int i = sizeof(c) * 2 - 1; i >= 0; i--) {
-            int nibble = (c >> (i * 4)) & 0xF; // Extract each nibble
-            char hex_digit = nibble < 10 ? '0' + nibble : 'A' + (nibble - 10); // Convert to hexadecimal digit
-            putc(hex_digit);
-        }
-    }
-
-    void print_hex_long(unsigned long l) {
-        // Convert each nibble to hexadecimal digit and print
-        for (int i = sizeof(l) * 2 - 1; i >= 0; i--) {
-            int nibble = (l >> (i * 4)) & 0xF; // Extract each nibble
-            char hex_digit = nibble < 10 ? '0' + nibble : 'A' + (nibble - 10); // Convert to hexadecimal digit
-            putc(hex_digit);
-        }
-    }
-
-    void print_hex_long_long(unsigned long long ll) {
-        // Convert each nibble to hexadecimal digit and print
-        for (int i = sizeof(ll) * 2 - 1; i >= 0; i--) {
-            int nibble = (ll >> (i * 4)) & 0xF; // Extract each nibble
-            char hex_digit = nibble < 10 ? '0' + nibble : 'A' + (nibble - 10); // Convert to hexadecimal digit
-            putc(hex_digit);
-        }
-    }
-
-    void print_double(double d) {
+    void print_double(double d)
+    {
         // Handle negative numbers
         if (d < 0) {
             putc('-');
@@ -253,17 +161,414 @@ namespace kstd
         }
 
         // Print integer part
-        unsigned long long int_part = (unsigned long long)d;
-        print_unsigned_long_long(int_part);
+        unsigned int integerPart = (unsigned int)d;
+        print_unsigned_integer(integerPart);
+
+        // Print decimal point
         putc('.');
 
-        // Print decimal part
-        double decimal_part = d - int_part;
-        for (int i = 0; i < 6; ++i) { // Print up to 6 decimal places
-            decimal_part *= 10;
-            int digit = (int)decimal_part;
+        // Print fractional part
+        double fractionalPart = d - integerPart;
+        const int precision = 10; // Adjust precision as needed
+        for (int i = 0; i < precision; i++)
+        {
+            fractionalPart *= 10;
+            int digit = (int)fractionalPart;
             putc('0' + digit);
-            decimal_part -= digit;
+            fractionalPart -= digit;
+        }
+    }
+
+    void print_pointer(void* ptr)
+    {
+        unsigned long long int address = (unsigned long long int)ptr; // Convert pointer to unsigned integer
+
+        putc('0');
+        putc('x');
+
+        // Print pointer address in hexadecimal format
+        // Print higher 32 bits
+        unsigned int higher_bits = (unsigned int)(address >> 32);
+        for (int i = 28; i >= 0; i -= 4)
+        {
+            unsigned int hex_digit = (higher_bits >> i) & 0xF;
+            if (hex_digit < 10)
+                putc('0' + hex_digit);
+            else
+                putc('A' + (hex_digit - 10));
+        }
+
+        // Print lower 32 bits
+        unsigned int lower_bits = (unsigned int)(address & 0xFFFFFFFF);
+        for (int i = 28; i >= 0; i -= 4)
+        {
+            unsigned int hex_digit = (lower_bits >> i) & 0xF;
+            if (hex_digit < 10)
+                putc('0' + hex_digit);
+            else
+                putc('A' + (hex_digit - 10));
+        }
+    }
+
+    void print_long(long l)
+    {
+        // Handle negative numbers
+        if (l < 0)
+        {
+            putc('-');
+            l = -l;
+        }
+
+        // Handle the base case of 0
+        if (l == 0)
+        {
+            putc('0');
+            return;
+        }
+
+        // Array to store digits
+        char digits[32];
+        int i = 0;
+
+        // Extract digits
+        while (l != 0)
+        {
+            digits[i++] = '0' + (l % 10); // Convert to ASCII
+            l /= 10;
+        }
+
+        // Print digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(digits[j]);
+        }
+    }
+
+    void print_unsigned_long_octal(unsigned long ul)
+    {
+        // Handle the base case of 0
+        if (ul == 0)
+        {
+            putc('0');
+            return;
+        }
+
+        // Array to store octal digits
+        char octal_digits[32];
+        int i = 0;
+
+        // Extract octal digits
+        while (ul != 0)
+        {
+            octal_digits[i++] = '0' + (ul % 8); // Convert to ASCII
+            ul /= 8;
+        }
+
+        // Print octal digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(octal_digits[j]);
+        }
+    }
+
+    void print_unsigned_long_hexadecimal(unsigned long ul)
+    {
+        // Handle the base case of 0
+        if (ul == 0)
+        {
+            putc('0');
+            return;
+        }
+
+        // Array to store hexadecimal digits
+        char hex_digits[32];
+        int i = 0;
+
+        // Extract hexadecimal digits
+        while (ul != 0)
+        {
+            int remainder = ul % 16;
+            if (remainder < 10)
+                hex_digits[i++] = '0' + remainder; // Convert to ASCII
+            else
+                hex_digits[i++] = 'A' + (remainder - 10); // Convert to ASCII
+            ul /= 16;
+        }
+
+        // Print hexadecimal digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(hex_digits[j]);
+        }
+    }
+
+    void print_unsigned_long_integer(unsigned long ul)
+    {
+        // Handle the base case of 0
+        if (ul == 0)
+        {
+            putc('0');
+            return;
+        }
+
+        // Array to store digits
+        char digits[32];
+        int i = 0;
+
+        // Extract digits
+        while (ul != 0)
+        {
+            digits[i++] = '0' + (ul % 10); // Convert to ASCII
+            ul /= 10;
+        }
+
+        // Print digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(digits[j]);
+        }
+    }
+
+    void print_long_long_integer(long long ll)
+    {
+        // Handle negative numbers
+        if (ll < 0)
+        {
+            putc('-');
+            ll = -ll;
+        }
+
+        // Handle the base case of 0
+        if (ll == 0)
+        {
+            putc('0');
+            return;
+        }
+
+        // Array to store digits
+        char digits[32];
+        int i = 0;
+
+        // Extract digits
+        while (ll != 0)
+        {
+            digits[i++] = '0' + (ll % 10); // Convert to ASCII
+            ll /= 10;
+        }
+
+        // Print digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(digits[j]);
+        }
+    }
+
+
+    void print_unsigned_long_long_hexadecimal(unsigned long long ull)
+    {
+        // Handle the base case of 0
+        if (ull == 0)
+        {
+            putc('0');
+            return;
+        }
+
+        // Array to store hexadecimal digits
+        char hex_digits[32];
+        int i = 0;
+
+        // Extract hexadecimal digits
+        while (ull != 0)
+        {
+            int remainder = ull % 16;
+            if (remainder < 10)
+                hex_digits[i++] = '0' + remainder; // Convert to ASCII
+            else
+                hex_digits[i++] = 'A' + (remainder - 10); // Convert to ASCII
+            ull /= 16;
+        }
+
+        // Print hexadecimal digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(hex_digits[j]);
+        }
+    }
+
+    void print_unsigned_char_hexadecimal(unsigned char uc)
+    {
+        // Extract higher and lower nibbles
+        unsigned char higher_nibble = uc >> 4;
+        unsigned char lower_nibble = uc & 0x0F;
+
+        // Print higher nibble
+        if (higher_nibble < 10)
+            putc('0' + higher_nibble);
+        else
+            putc('A' + (higher_nibble - 10));
+
+        // Print lower nibble
+        if (lower_nibble < 10)
+            putc('0' + lower_nibble);
+        else
+            putc('A' + (lower_nibble - 10));
+    }
+
+    void print_unsigned_char_integer(unsigned char uc)
+    {
+        // Handle the base case of 0
+        if (uc == 0)
+        {
+            putc('0');
+            return;
+        }
+
+        // Array to store digits
+        char digits[3]; // Maximum 3 digits for an unsigned char
+
+        // Extract digits
+        int i = 0;
+        while (uc != 0)
+        {
+            digits[i++] = '0' + (uc % 10); // Convert to ASCII
+            uc /= 10;
+        }
+
+        // Print digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(digits[j]);
+        }
+    }
+
+    void print_unsigned_short_hexadecimal(unsigned short us) {
+        // Extract higher and lower bytes
+        unsigned char higher_byte = (us >> 8) & 0xFF;
+        unsigned char lower_byte = us & 0xFF;
+
+        // Print higher byte
+        unsigned char higher_nibble = higher_byte >> 4;
+        unsigned char lower_nibble = higher_byte & 0x0F;
+
+        // Print higher nibble
+        if (higher_nibble < 10)
+            putc('0' + higher_nibble);
+        else
+            putc('A' + (higher_nibble - 10));
+
+        // Print lower nibble
+        if (lower_nibble < 10)
+            putc('0' + lower_nibble);
+        else
+            putc('A' + (lower_nibble - 10));
+
+        // Print lower byte
+        higher_nibble = lower_byte >> 4;
+        lower_nibble = lower_byte & 0x0F;
+
+        // Print higher nibble
+        if (higher_nibble < 10)
+            putc('0' + higher_nibble);
+        else
+            putc('A' + (higher_nibble - 10));
+
+        // Print lower nibble
+        if (lower_nibble < 10)
+            putc('0' + lower_nibble);
+        else
+            putc('A' + (lower_nibble - 10));
+    }
+
+    void print_unsigned_short_integer(unsigned short usi)
+    {
+        // Handle the base case of 0
+        if (usi == 0)
+        {
+            putc('0');
+            return;
+        }
+
+        // Array to store digits
+        char digits[5]; // Maximum 5 digits for an unsigned short
+
+        // Extract digits
+        int i = 0;
+        while (usi != 0)
+        {
+            digits[i++] = '0' + (usi % 10); // Convert to ASCII
+            usi /= 10;
+        }
+
+        // Print digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(digits[j]);
+        }
+    }
+
+    void print_signed_char_integer(signed char sci) {
+        // Handle negative numbers
+        if (sci < 0)
+        {
+            putc('-');
+            sci = -sci;
+        }
+
+        // Handle the base case of 0
+        if (sci == 0)
+        {
+            putc('0');
+            return;
+        }
+
+        // Array to store digits
+        char digits[4]; // Maximum 4 digits for a signed char
+
+        // Extract digits
+        int i = 0;
+        while (sci != 0)
+        {
+            digits[i++] = '0' + (sci % 10); // Convert to ASCII
+            sci /= 10;
+        }
+
+        // Print digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(digits[j]);
+        }
+    }
+
+    void print_signed_short_integer(signed short ssi) {
+        // Handle negative numbers
+        if (ssi < 0)
+        {
+            putc('-');
+            ssi = -ssi;
+        }
+
+        // Handle the base case of 0
+        if (ssi == 0)
+        {
+            putc('0');
+            return;
+        }
+
+        // Array to store digits
+        char digits[6]; // Maximum 6 digits for a signed short
+
+        // Extract digits
+        int i = 0;
+        while (ssi != 0)
+        {
+            digits[i++] = '0' + (ssi % 10); // Convert to ASCII
+            ssi /= 10;
+        }
+
+        // Print digits in reverse order
+        for (int j = i - 1; j >= 0; j--)
+        {
+            putc(digits[j]);
         }
     }
 
@@ -272,16 +577,7 @@ namespace kstd
         va_list args;
         va_start(args, fmt);
 
-        char c;
-        uint8_t uc;
-        uint16_t us;
-        int16_t ss;
-        uint32_t ul;
-        int32_t sl;
-        uint64_t ull;
-        int64_t sll;
-        char* strptr;
-        double d;
+        unsigned int uint;
 
         while (*fmt)
         {
@@ -289,133 +585,157 @@ namespace kstd
             {
                 case '%':
                     fmt++;
-                    switch (*fmt) // %..
+                    switch (*fmt)
                     {
-                        case 'h':
+                        case '%':
+                            putc('%');
                             fmt++;
-                            switch(*fmt)
-                            {
-                                case 'h':
-                                    fmt++;
-                                    switch (*fmt)
-                                    {
-                                        case 'x': //hhx
-                                            fmt++;
-                                            uc = static_cast<unsigned char>(va_arg(args, int)); // promote char -> int
-                                            print_hex_char(uc);
-                                            break;
-                                        case 'd': // hhd
-                                            fmt++;
-                                            sl = va_arg(args, int); // char -> int
-                                            print_long(sl);
-                                            break;
-                                        case 'u': // hhu
-                                            fmt++;
-                                            ul = va_arg(args, unsigned int); // char -> uint
-                                            print_unsigned_long(ul);
-                                            break;
-                                        default:
-                                            putc(*fmt);
-                                            break;
-                                    }
-
-                                    break;
-                                case 'x':
-                                    fmt++;
-                                    us = static_cast<unsigned short>(va_arg(args, int)); // promote short -> int
-                                    print_hex_short(us);
-                                    break;
-                                case 'd':
-                                    fmt++;
-                                    ss = static_cast<signed short>(va_arg(args, int)); // promote short -> int
-                                    print_short(ss);
-                                    break;
-                                case 'u':
-                                    fmt++;
-                                    us = static_cast<unsigned short>(va_arg(args, int)); // promote short -> int
-                                    print_unsigned_short(us);
-                                    break;
-                                default:
-                                    putc(*fmt);
-                                    break;
-                            }
+                            break;
+                        case 's':
+                            puts(va_arg(args, char*));
+                            fmt++;
+                            break;
+                        case 'c':
+                            putc(static_cast<char>(va_arg(args, int)));
+                            fmt++;
+                            break;
+                        case 'i':
+                        case 'd':
+                            print_signed_integer(va_arg(args, int));
+                            fmt++;
+                            break;
+                        case 'o':
+                            print_unsigned_integer_octal(va_arg(args, unsigned int));
+                            fmt++;
+                            break;
+                        case 'x':
+                            print_unsigned_integer_hexadecimal(va_arg(args, unsigned int));
+                            fmt++;
+                            break;
+                        case 'u':
+                            print_unsigned_integer(va_arg(args, unsigned int));
+                            fmt++;
+                            break;
+                        case 'f':
+                            print_double(va_arg(args, double));
+                            fmt++;
+                            break;
+                        case 'p':
+                            print_pointer(va_arg(args, void*));
+                            fmt++;
                             break;
                         case 'l':
                             fmt++;
                             switch (*fmt)
                             {
+                                /* %l_ */
+                                case 'i':
+                                case 'd':
+                                    print_long(va_arg(args, long));
+                                    fmt++;
+                                    break;
+                                case 'o':
+                                    print_unsigned_long_octal(va_arg(args, unsigned long));
+                                    fmt++;
+                                    break;
+                                case 'x':
+                                    print_unsigned_long_hexadecimal(va_arg(args, unsigned long));
+                                    fmt++;
+                                    break;
+                                case 'u':
+                                    print_unsigned_long_integer(va_arg(args, unsigned long));
+                                    fmt++;
+                                    break;
+                                case 'f':
+                                    print_double(va_arg(args, double));
+                                    fmt++;
+                                    break;
                                 case 'l':
                                     fmt++;
-                                    switch(*fmt)
+                                    switch (*fmt)
                                     {
-                                        case 'x':
-                                            fmt++;
-                                            ull = va_arg(args, uint64_t);
-                                            print_hex_long_long(ull);
-                                            break;
+                                        case 'i':
                                         case 'd':
+                                            print_long_long_integer(va_arg(args, long long));
                                             fmt++;
-                                            sll = va_arg(args, int64_t);
-                                            print_long_long(sll);
                                             break;
-                                        case 'u':
+                                        case 'x':
+                                            print_unsigned_long_long_hexadecimal(va_arg(args, unsigned long long));
                                             fmt++;
-                                            ull = va_arg(args, uint64_t);
-                                            print_unsigned_long_long(ull);
                                             break;
                                         default:
                                             putc(*fmt);
+                                            fmt++;
+                                            break;
+                                    }
+
+                                    break;
+                                default:
+                                    putc(*fmt);
+                                    fmt++;
+                                    break;
+                            }
+                            break;
+                        case 'h':
+                            fmt++;
+                            switch (*fmt)
+                            {
+                                case 'h':
+                                    fmt++;
+                                    switch (*fmt)
+                                    {
+                                        case 'x':
+                                            print_unsigned_char_hexadecimal(static_cast<unsigned char>(va_arg(args, int)));
+                                            fmt++;
+                                            break;
+                                        case 'u':
+                                            print_unsigned_char_integer(static_cast<unsigned char>(va_arg(args, int)));
+                                            fmt++;
+                                            break;
+                                        case 'i':
+                                        case 'd':
+                                            print_signed_char_integer(static_cast<signed char>(va_arg(args, int)));
+                                            fmt++;
+                                            break;
+                                        default:
+                                            putc(*fmt);
+                                            fmt++;
                                             break;
                                     }
                                     break;
                                 case 'x':
+                                    print_unsigned_short_hexadecimal(static_cast<unsigned short>(va_arg(args, int)));
                                     fmt++;
-                                    ul = va_arg(args, uint32_t);
-                                    print_hex_long(ul);
-                                    break;
-                                case 'd':
-                                    fmt++;
-                                    sl = va_arg(args, int32_t);
-                                    print_long(sl);
                                     break;
                                 case 'u':
+                                    print_unsigned_short_integer(static_cast<unsigned short>(va_arg(args, int)));
                                     fmt++;
-                                    ul = va_arg(args, uint32_t);
-                                    print_unsigned_long(ul);
+                                    break;
+                                case 'i':
+                                case 'd':
+                                    print_signed_short_integer(static_cast<signed short>(va_arg(args, int)));
+                                    fmt++;
                                     break;
                                 default:
                                     putc(*fmt);
+                                    fmt++;
                                     break;
                             }
                             break;
-                        case 's':
-                            fmt++;
-                            strptr = va_arg(args, char *);
-                            puts(strptr);
-                            break;
-                        case 'c':
-                            fmt++;
-                            c = static_cast<char>(va_arg(args, int));
-                            putc(c);
-                            break;
-                        case 'f':
-                            fmt++;
-                            d = va_arg(args, double); // promotion float -> double. if double, no promotion.
-                            print_double(d);
-                            break;
                         default:
                             putc(*fmt);
+                            fmt++;
                             break;
                     }
                     break;
                 default:
+                    putc(*fmt);
+                    fmt++;
                     break;
             }
-            putc(*fmt);
-            fmt++;
         }
 
         va_end(args);
+        return;
     }
-
 }
