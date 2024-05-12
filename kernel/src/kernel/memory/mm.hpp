@@ -20,14 +20,14 @@ extern limine_memmap_entry** mm_memmap_entries;
 extern limine_memmap_request mm_memap_request;
 extern limine_memmap_response* mm_memmap_response;
 
-void mm_initialize();
+void pmsa_initialize();
 const char* mm_entry_type_to_string(uint64_t type);
 uint64_t mm_align_mem(uint64_t addr, uint64_t align);
-bool mm_is_ready();
+bool pmsa_is_ready();
 void mm_enumerate_memmap_entries(bool compact_write = true);
 uint64_t mm_physical_to_virtual_addr(uint64_t phys_addr);
-void* mm_alloc_page();
-void mm_free_page(void* ptr);
+void* pmsa_alloc_page();
+void pmsa_free_page(void* ptr);
 
 inline void mm_invlpg(void* ptr)
 {
@@ -66,7 +66,7 @@ public:
     void UnmarkMemoryInRange(uint64_t start_addr, uint64_t end_addr);
 };
 
-void mm_test();
+void pmsa_test();
 
 struct VirtAddress
 {
@@ -183,7 +183,7 @@ struct pte
 
 uint64_t get_logical_address_pml4();
 
-bool mm_map_page(
+bool vmsa_map_page(
         pml4e* pml4e,
         uint64_t virt_address,
         uint64_t phys_address,
@@ -193,7 +193,7 @@ bool mm_map_page(
         uint64_t pke
 );
 
-bool mm_map_pages(
+bool vmsa_map_pages(
         pml4e* pml4e,
         uint64_t virt_address,
         uint64_t phys_address,
@@ -225,5 +225,41 @@ constexpr uint64_t mm_create_va(
 
     return va;
 }
+
+bool vmsa_cmp_pml4(
+        pml4e* pml4e,
+        size_t index,
+        int prot_flags,
+        int map_flags
+);
+
+bool vmsa_cmp_pdpe(
+        pdpe* pdpe,
+        size_t index,
+        int prot_flags,
+        int map_flags
+);
+
+bool vmsa_cmp_pde(
+        pde* pde,
+        size_t index,
+        int prot_flags,
+        int map_flags
+);
+
+bool vmsa_cmp_pte(
+        pte* pte,
+        size_t index,
+        int prot_flags,
+        int map_flags
+);
+
+uint64_t vmsa_alloc(
+        pml4e* pml4e,
+        size_t pml4e_index,
+        int prot_flags,
+        int map_flags,
+        int misc_flags
+);
 
 #endif //KITTY_OS_CPP_MM_HPP

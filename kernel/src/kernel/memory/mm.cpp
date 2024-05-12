@@ -77,7 +77,7 @@ uint64_t mm_physical_to_virtual_addr(uint64_t phys_addr)
     return mm_hhdm->offset + phys_addr;
 }
 
-void mm_initialize()
+void pmsa_initialize()
 {
     if (mm_ready)
     {
@@ -268,7 +268,7 @@ uint64_t mm_align_mem(uint64_t addr, uint64_t align)
     return addr;
 }
 
-bool mm_is_ready()
+bool pmsa_is_ready()
 {
     return mm_ready;
 }
@@ -300,7 +300,7 @@ const char* mm_entry_type_to_string(uint64_t type)
 
 void mm_enumerate_memmap_entries(bool compact_write)
 {
-    if (!mm_is_ready())
+    if (!pmsa_is_ready())
         return;
 
     kstd::printf("The whole memory map on this machine:\n");
@@ -321,7 +321,7 @@ void mm_enumerate_memmap_entries(bool compact_write)
     }
 }
 
-void* mm_alloc_page()
+void* pmsa_alloc_page()
 {
     // ask memory controller for the page.
     size_t page_idx = mm_pmm_bitmap_controller->FindFirstCleared();
@@ -344,7 +344,7 @@ void* mm_alloc_page()
     return reinterpret_cast<void*>(physical_address);
 }
 
-void mm_free_page(void* ptr)
+void pmsa_free_page(void* ptr)
 {
     // Convert the pointer in to physical one
     uint64_t physical_address = reinterpret_cast<uint64_t>(ptr);
@@ -396,7 +396,7 @@ VirtAddress mm_get_va_components(uint64_t virtual_address)
      * int prot_flags can be invalid. We won't fix it, we won't tell you.
      * int map_flags can be invalid. We won't fix it, we won't tell you.
 */
-bool mm_map_page(
+bool vmsa_map_page(
         pml4e* pml4e,
         uint64_t virt_address,
         uint64_t phys_address,
@@ -540,7 +540,7 @@ bool mm_map_page(
     return MAP_SUCCESS;
 }
 
-bool mm_map_pages(
+bool vmsa_map_pages(
         pml4e* pml4e,
         uint64_t virt_address,
         uint64_t phys_address,
@@ -553,18 +553,18 @@ bool mm_map_pages(
 {
     for (uint64_t i = 0; page_count > i; i++)
     {
-        if (!mm_map_page(pml4e, virt_address + (VM_PAGE_SIZE * i), phys_address + (VM_PAGE_SIZE * i), prot_flags, map_flags, misc_flags, pke)) return MAP_FAILURE;
+        if (!vmsa_map_page(pml4e, virt_address + (VM_PAGE_SIZE * i), phys_address + (VM_PAGE_SIZE * i), prot_flags, map_flags, misc_flags, pke)) return MAP_FAILURE;
     }
 
     return MAP_SUCCESS;
 }
 
-void mm_test()
+void pmsa_test()
 {
     kstd::printf("[MM] PDBR: %lx\n", get_logical_address_pml4());
 
     pml4e* _Pml4e = reinterpret_cast<pml4e*>(get_logical_address_pml4());
-    VirtAddress va = mm_get_va_components(reinterpret_cast<void*>(&mm_test));
+    VirtAddress va = mm_get_va_components(reinterpret_cast<void*>(&pmsa_test));
 
     kstd::printf("PML4E: %p\n", static_cast<void*>(_Pml4e));
 
@@ -585,4 +585,71 @@ void mm_test()
     kstd::printf("Phys address: %lx\n", _PteVirt[va.pte].pp_base_address << 12);
 
     return;
+}
+
+bool vmsa_cmp_pml4(
+        pml4e* pml4e,
+        size_t index,
+        int prot_flags,
+        int map_flags
+)
+{
+    return (pml4e[index].rw == ((prot_flags & PROT_RW) > 0)) &&
+    (pml4e[index].p == ((map_flags & MAP_PRESENT) > 0)) &&
+    (pml4e[index].us == ((prot_flags & PROT_SUPERVISOR) > 0)) &&
+    (pml4e[index].pwt == ((map_flags & MAP_PWT) > 0)) &&
+    (pml4e[index].pcd == ((map_flags & MAP_PCD) > 0)) &&
+    (pml4e[index].nx == ((prot_flags & PROT_EXEC) > 0));
+}
+
+bool vmsa_cmp_pdpe(
+        pdpe* pdpe,
+        size_t index,
+        int prot_flags,
+        int map_flags
+)
+{
+    return (pdpe[index].p == ((map_flags & MAP_PRESENT) > 0)) &&
+    (pdpe[index].rw == ((prot_flags & PROT_RW) > 0)) &&
+    (pdpe[index].us == ((prot_flags & PROT_SUPERVISOR) > 0)) &&
+    (pdpe[index].pwt == ((map_flags & MAP_PWT) > 0)) &&
+    (pdpe[index].pcd == ((map_flags & MAP_PCD) > 0)) &&
+    (pdpe[index].nx == ((prot_flags & PROT_EXEC) > 0));
+}
+
+bool vmsa_cmp_pde(
+        pde* pde,
+        size_t index,
+        int prot_flags,
+        int map_flags
+)
+{
+    return (pde[index].p == ((map_flags & MAP_PRESENT) > 0)) &&
+    (pde[index].rw == ((prot_flags & PROT_RW) > 0)) &&
+    (pde[index].us == ((prot_flags & PROT_SUPERVISOR) > 0)) &&
+    (pde[index].pwt == ((map_flags & MAP_PWT) > 0)) &&
+    (pde[index].pcd == ((map_flags & MAP_PCD) > 0)) &&
+    (pde[index].nx == ((prot_flags & PROT_EXEC) > 0)) &&
+    (pde[index].g == ((map_flags & MAP_GLOBAL) > 0));
+}
+
+bool vmsa_cmp_pte(
+        pte* pte,
+        size_t index,
+        int prot_flags,
+        int map_flags
+)
+{
+    return (pte[index].p == ((map_flags & MAP_PRESENT) > 0)) &&
+    (pte[index].rw == ((prot_flags & PROT_RW) > 0)) &&
+    (pte[index].us == ((prot_flags & PROT_SUPERVISOR) > 0)) &&
+    (pte[index].pwt == ((map_flags & MAP_PWT) > 0)) &&
+    (pte[index].pcd == ((map_flags & MAP_PCD) > 0)) &&
+    (pte[index].nx == ((prot_flags & PROT_EXEC) > 0)) &&
+    (pte[index].g == ((map_flags & MAP_GLOBAL) > 0));
+}
+
+uint64_t vmsa_alloc(pml4e* pml4e, int prot_flags, int map_flags, int misc_flags, bool use_kernel)
+{
+    return 0;
 }

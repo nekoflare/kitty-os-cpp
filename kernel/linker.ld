@@ -55,9 +55,9 @@ SECTIONS
     } :data :dynamic
 
     .drivers : {
-        _driver_array = .;
-        *(.drivers)
-        _driver_array_end = .;
+        __driver_array = .;
+        *(.drivers .drivers.*)
+        __driver_array_end = .;
     } :data
 
     /* NOTE: .bss needs to be the last thing mapped to :data, otherwise lots of */
