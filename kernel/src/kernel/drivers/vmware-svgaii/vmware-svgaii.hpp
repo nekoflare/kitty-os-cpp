@@ -1,0 +1,8 @@
+//
+// Created by Piotr on 13.05.2024.
+//
+
+#ifndef KITTY_OS_CPP_VMWARE_SVGAII_HPP
+#define KITTY_OS_CPP_VMWARE_SVGAII_HPP
+
+#endif //KITTY_OS_CPP_VMWARE_SVGAII_HPP

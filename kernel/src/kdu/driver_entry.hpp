@@ -5,24 +5,67 @@
 #include <stddef.h>
 #include <sys/types.h>
 
-#define driver_type __attribute__((section(".drivers")))
+#define driver_type __attribute__((section(".drivers"))) __attribute__((aligned(0x10)))
 
-typedef enum driver_statuses : uint32_t {
+typedef enum __attribute__((aligned(0x10))) driver_statuses : uint32_t {
     DS_SUCCESS,
     DS_FAILURE
 } driver_status_t;
 
-typedef enum driver_load : uint32_t {
+typedef enum __attribute__((aligned(0x10))) driver_load : uint32_t {
     DL_LOAD_LAST,
     DL_LOAD_ON_PCI_MATCH,
     DL_ALWAYS_LOAD
 } driver_load_t;
 
-typedef enum driver_types : uint32_t {
-    DT_SERIAL
+typedef enum __attribute__((aligned(0x10))) driver_types : uint32_t {
+    DT_SERIAL,
+    DT_USB_1_0_SERIAL,
+    DT_GPU,
+    DT_AUDIO,
+    DT_AUDIO_GPU // audio + gpu
 } driver_type_t;
 
-struct driver_entry_t {
+typedef enum __attribute__((aligned(0x10))) driver_questions : uint64_t {
+    // For Serial:
+    UART_CREATE_CONNECTION,
+    UART_DESTROY_CONNECTION,
+
+    // For Audio:
+
+} driver_question_t;
+
+struct __attribute__((aligned(0x10))) driver_handle_t
+{
+    uint64_t _Handle;
+};
+
+typedef enum __attribute__((aligned(0x10))) pci_requirements
+{
+    PCI_REQ_VD, // vendor and device is required.
+    PCI_REQ_CSP, // class, subclass and prog if is required
+} pci_match_requirement_t;
+
+struct __attribute__((aligned(0x10))) pci_requirements_t
+{
+    uint16_t vendor_id;
+    uint16_t device_id;
+    uint8_t _class;
+    uint8_t subclass;
+    uint8_t prog_if;
+    pci_match_requirement_t match_requirement;
+};
+
+struct __attribute__((aligned(0x10))) pci_handle_t
+{
+    uint8_t bus, slot, function;
+    uint8_t _class, subclass, prog_if;
+    uint16_t vendor_id, device_id;
+    uint8_t header_type;
+    void* full_header;
+};
+
+struct __attribute__((aligned(0x10))) driver_entry_t {
     const char* driver_name;
     const char* driver_author;
     const char* driver_description;
@@ -30,33 +73,14 @@ struct driver_entry_t {
 
     driver_type_t driver_designation;
     driver_load_t driver_load;
-    driver_status_t (*driver_entry)();
+    driver_status_t (*driver_entry)(pci_handle_t*);
     driver_status_t (*driver_cleanup)();
+    driver_status_t (*driver_ioctl)(driver_handle_t*, driver_question_t, const char*, char*); // question, question_buffer, answer_buffer
+
+    pci_requirements_t* requirements;
+    size_t requirements_count;
 
     bool is_loaded;
-
-    __attribute__((aligned(0x10))) void* driver_descriptor;
-};
-
-constexpr uint64_t serial_driver_create_baud_rate(uint64_t divisor) {
-    return 115200 / divisor;
-}
-
-struct uart_object_t {
-    uint64_t port_index;
-    uint64_t divisor;
-    uint64_t speed;
-    uint64_t flags;
-    bool irqs_enabled;
-    uint64_t bytes_sent;
-    uint64_t bytes_received;
-};
-
-struct serial_driver_t {
-    driver_status_t (*uart_start_connection)(uart_object_t*, uint64_t, bool, uint64_t, size_t); // divisor, irq_enable, flags, port_index
-    driver_status_t (*uart_destroy_object)(uart_object_t*); // uart object
-    driver_status_t (*uart_write)(uart_object_t*, const char*, size_t); // object, payload, length
-    driver_status_t (*uart_read)(uart_object_t*, char*, size_t); // object, buffer, length
 };
 
 #endif //KITTY_OS_CPP_DRIVER_MAIN_HPP

@@ -11,6 +11,8 @@
 #include <kernel/hal/x64/io.hpp>
 #include <kstd/kstdio.hpp>
 #include <type_traits>
+#include <kdu/driver_entry.hpp>
+#include <kdu/driver_ctrl.hpp>
 
 struct PCIHeaderCommon
 {

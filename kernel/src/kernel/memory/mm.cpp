@@ -340,6 +340,9 @@ void* pmsa_alloc_page()
 
     kstd::printf("Allocated a page. Address: %lx\n", physical_address);
 
+    mm_memory_unusable += 4096;
+    mm_memory_usable -= 4096;
+
     // Return the address
     return reinterpret_cast<void*>(physical_address);
 }
@@ -350,6 +353,9 @@ void pmsa_free_page(void* ptr)
     uint64_t physical_address = reinterpret_cast<uint64_t>(ptr);
 
     kstd::printf("Freed a page. Address: %lx\n", physical_address);
+
+    mm_memory_unusable -= 4096;
+    mm_memory_usable += 4096;
 
     mm_pmm_bitmap_controller->MarkAddressUnused(physical_address);
 }
