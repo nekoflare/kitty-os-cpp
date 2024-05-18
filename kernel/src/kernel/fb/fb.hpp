@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#include <ccmath/basic.hpp>
+
 namespace Framebuffer
 {
     extern limine_framebuffer** _Framebuffers;

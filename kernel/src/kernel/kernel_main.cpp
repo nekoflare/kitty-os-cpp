@@ -7,14 +7,14 @@
 #include "control/control.hpp"
 #include "kstd/kstdio.hpp"
 #include <kernel/hal/x64/idt/idt.hpp>
-#include <kernel/memory/mm.hpp>
 #include <stdint.h>
 #include <stddef.h>
 #include <sys/types.h>
 #include <kernel/hal/x64/bus/pci/pci.hpp>
 #include <kdu/driver_entry.hpp>
 #include <kdu/driver_ctrl.hpp>
-#include <kernel/memory/heap/heap.hpp>
+#include <kernel/memory/pmm.hpp>
+#include <kernel/memory/vmm.hpp>
 
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
@@ -32,19 +32,16 @@ extern "C" void kernel_main()
     flush_idt();
     enable_interrupts();
 
-    pmsa_initialize();
-    //mm_enumerate_memmap_entries(true);
+    vmm_init();
+    pmm_init();
+    pmm_print_memory_information();
 
-    // mm_test();
+    //pmsa_initialize();
+    //mm_enumerate_memmap_entries(true);
 
     //driver_ctrl_enumerate_drivers();
 
     //pci_init();
-
-    heap_init();
-
-    while (true)
-        commit_page();
 
     [[nodiscard]] while (true)
     {

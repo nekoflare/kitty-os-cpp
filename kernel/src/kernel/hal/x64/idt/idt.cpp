@@ -49,6 +49,64 @@ bool hook_interrupt(size_t index, void (*new_interrupt_handler)(Registers_x86_64
     return false;
 }
 
+static inline uint64_t read_cr2()
+{
+    uint64_t cr2;
+    asm volatile ("mov %%cr2, %0" : "=r" (cr2));
+    return cr2;
+}
+
+static void print_page_fault_info(Registers_x86_64& regs) {
+    // Print the faulting address from CR2
+    uint64_t faulting_address = read_cr2();
+    kstd::printf("Linear address where the issue happened: %lx\n", faulting_address);
+
+    // Decode the error code
+    uint32_t error_code = regs.error_code;
+
+    kstd::printf("The error has been caused by: ");
+
+    if (error_code & (1 << 0)) {
+        kstd::printf("page-protection violation. ");
+    } else {
+        kstd::printf("non-present page. ");
+    }
+
+    if (error_code & (1 << 1)) {
+        kstd::printf("Write access. ");
+    } else {
+        kstd::printf("Read access. ");
+    }
+
+    if (error_code & (1 << 2)) {
+        kstd::printf("User mode. ");
+    } else {
+        kstd::printf("Kernel mode. ");
+    }
+
+    if (error_code & (1 << 3)) {
+        kstd::printf("Reserved bit violation. ");
+    }
+
+    if (error_code & (1 << 4)) {
+        kstd::printf("Instruction fetch. ");
+    }
+
+    if (error_code & (1 << 5)) {
+        kstd::printf("Protection key violation. ");
+    }
+
+    if (error_code & (1 << 6)) {
+        kstd::printf("Shadow stack access violation. ");
+    }
+
+    if (error_code & (1 << 15)) {
+        kstd::printf("SGX violation. ");
+    }
+
+    kstd::printf("\n");
+}
+
 extern "C" void interrupt_handler(Registers_x86_64* regs)
 {
     kstd::printf("We've received an interrupt!\n");
@@ -70,6 +128,14 @@ extern "C" void interrupt_handler(Registers_x86_64* regs)
     if (regs->interrupt_number < 32)
     {
         kstd::printf("%s\n", exception_strings[regs->interrupt_number]);
+
+        switch (regs->interrupt_number)
+        {
+            case 14:
+                print_page_fault_info(*regs);
+
+                break;
+        }
 
         unreachable();
     }

@@ -1,0 +1,7 @@
+section .text
+
+global invalid
+invalid:
+    mov rax, cr3
+    mov cr3, rax
+    ret

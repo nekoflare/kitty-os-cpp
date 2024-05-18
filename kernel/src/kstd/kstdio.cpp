@@ -168,14 +168,18 @@ namespace kstd
         putc('.');
 
         // Print fractional part
-        double fractionalPart = d - integerPart;
-        const int precision = 10; // Adjust precision as needed
-        for (int i = 0; i < precision; i++)
+        const int maxPrecision = 15; // Maximum precision supported by double
+        int precision = 0;
+        while (precision < maxPrecision)
         {
-            fractionalPart *= 10;
-            int digit = (int)fractionalPart;
-            putc('0' + digit);
-            fractionalPart -= digit;
+            d -= integerPart; // Subtract integer part
+            d *= 10; // Move next decimal place
+            integerPart = (unsigned int)d; // Get next integer part
+            putc('0' + integerPart); // Print next digit
+            precision++;
+            // Check if fractional part is zero
+            if (ccm::fabs(d - integerPart) < 1e-10) // Tolerance for floating point comparison
+                break;
         }
     }
 

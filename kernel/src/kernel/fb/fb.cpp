@@ -2,7 +2,6 @@
 // Created by Piotr on 02.05.2024.
 //
 
-#include "libmath/math.hpp"
 #include "fb.hpp"
 
 namespace Framebuffer
@@ -91,8 +90,8 @@ namespace Framebuffer
         }
 
         // Ensure the rectangle dimensions are within bounds
-        rectw = Math::min(rectw, fbwidth - xpos);
-        recth = Math::min(recth, fbheight - ypos);
+        rectw = ccm::min(rectw, fbwidth - xpos);
+        recth = ccm::min(recth, fbheight - ypos);
 
         // Draw top edge
         for (size_t x = xpos; x < xpos + rectw; ++x)
@@ -136,8 +135,8 @@ namespace Framebuffer
         }
 
         // Ensure the rectangle dimensions are within bounds
-        rectw = Math::min(rectw, fbwidth - xpos);
-        recth = Math::min(recth, fbheight - ypos);
+        rectw = ccm::min(rectw, fbwidth - xpos);
+        recth = ccm::min(recth, fbheight - ypos);
 
         // Draw each pixel within the rectangle with the specified color
         for (size_t y = ypos; y < ypos + recth; ++y)
@@ -240,8 +239,8 @@ namespace Framebuffer
 
     void DrawLine(size_t _FbIdx, size_t x0, size_t y0, size_t x1, size_t y1, uint8_t r, uint8_t g, uint8_t b)
     {
-        ssize_t dx = static_cast<ssize_t>(Math::abs(static_cast<ssize_t>(x1) - static_cast<ssize_t>(x0)));
-        ssize_t dy = static_cast<ssize_t>(Math::abs(static_cast<ssize_t>(y1) - static_cast<ssize_t>(y0)));
+        ssize_t dx = static_cast<ssize_t>(ccm::abs(static_cast<ssize_t>(x1) - static_cast<ssize_t>(x0)));
+        ssize_t dy = static_cast<ssize_t>(ccm::abs(static_cast<ssize_t>(y1) - static_cast<ssize_t>(y0)));
         ssize_t sx = x0 < x1 ? 1 : -1;
         ssize_t sy = y0 < y1 ? 1 : -1;
         ssize_t err = dx - dy;

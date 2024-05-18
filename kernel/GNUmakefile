@@ -73,6 +73,7 @@ override CXXFLAGS += \
     -std=c++20 \
     -fno-rtti \
     -fno-exceptions \
+    -fno-threadsafe-statics \
     $(SHARED_FLAGS)
 
 # Internal C flags that should not be changed by the user.

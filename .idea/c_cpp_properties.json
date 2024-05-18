@@ -1,0 +1,33 @@
+{
+    "configurations": [
+        {
+            "name": "CLion",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "compilerArgs": [
+                "-Wall",
+                "-Wextra",
+                "-ffreestanding",
+                "-fno-stack-protector",
+                "-fno-stack-check",
+                "-fno-lto",
+                "-fPIE",
+                "-m64",
+                "-march=x86-64",
+                "-mno-mmx",
+                "-msse",
+                "-msse2",
+                "-mno-red-zone",
+                "-static",
+                "-Isrc/kkd",
+                "-pedantic"
+            ],
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
