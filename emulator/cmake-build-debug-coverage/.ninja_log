@@ -1,0 +1,25 @@
+# ninja log v5
+23	4084	7379285741110515	CMakeFiles/emulator.dir/main.cpp.obj	247388bac6ec345c
+30	242	7379256893229242	CMakeFiles/emulator.dir/instructions/base/misc/misc.cpp.obj	d89fb9cd79fca66c
+4085	4462	7379285744880516	emulator.exe	f254d6135d0c53bd
+42	252	7379256893309243	CMakeFiles/emulator.dir/emulator/debugger/debugger.cpp.obj	8c6ddcc28699b6d7
+2	303	7379287490720784	build.ninja	1e6c24bee9c15ca4
+31	1283	7379285713070644	CMakeFiles/emulator.dir/emulator/emulator.cpp.obj	f5ac5667466790ba
+35	1623	7379256907009225	CMakeFiles/emulator.dir/memory/memory.cpp.obj	760ad833739286ac
+22	1317	7379258741754258	CMakeFiles/emulator.dir/utils/cmd_line_parser.cpp.obj	48bae90fd6bc080b
+38	1284	7379285713030618	CMakeFiles/emulator.dir/emulator/processor.cpp.obj	fcd7f554805c9435
+45	979	7379285710070653	CMakeFiles/emulator.dir/instructions/instruction_set.cpp.obj	b173222f290d35a8
+29	721	7379291465777264	CMakeFiles/emulator.dir/instructions/instruction_set.cpp.obj	b173222f290d35a8
+25	797	7379291466537232	CMakeFiles/emulator.dir/emulator/processor.cpp.obj	fcd7f554805c9435
+21	800	7379291466557245	CMakeFiles/emulator.dir/emulator/emulator.cpp.obj	f5ac5667466790ba
+16	3439	7379291492917230	CMakeFiles/emulator.dir/main.cpp.obj	247388bac6ec345c
+33	915	7379291560559394	CMakeFiles/emulator.dir/instructions/instruction_set.cpp.obj	b173222f290d35a8
+28	1050	7379291561889393	CMakeFiles/emulator.dir/emulator/processor.cpp.obj	fcd7f554805c9435
+23	1128	7379291562679354	CMakeFiles/emulator.dir/emulator/emulator.cpp.obj	f5ac5667466790ba
+17	3706	7379291588467984	CMakeFiles/emulator.dir/main.cpp.obj	247388bac6ec345c
+35	1033	7379292701174544	CMakeFiles/emulator.dir/instructions/instruction_set.cpp.obj	b173222f290d35a8
+30	1224	7379292703104550	CMakeFiles/emulator.dir/emulator/processor.cpp.obj	fcd7f554805c9435
+25	1274	7379292703604551	CMakeFiles/emulator.dir/emulator/emulator.cpp.obj	f5ac5667466790ba
+41	1478	7379292705644503	CMakeFiles/emulator.dir/instructions/base/branching/branching.cpp.obj	b3f74d8bac04bb70
+19	4236	7379292733220192	CMakeFiles/emulator.dir/main.cpp.obj	247388bac6ec345c
+4237	4668	7379292737520207	emulator.exe	160447d1facb0716

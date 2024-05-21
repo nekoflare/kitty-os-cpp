@@ -1,0 +1,3 @@
+C:/Users/Piotr/Desktop/Projects/emulator/cmake-build-debug-coverage/CMakeFiles/emulator.dir
+C:/Users/Piotr/Desktop/Projects/emulator/cmake-build-debug-coverage/CMakeFiles/edit_cache.dir
+C:/Users/Piotr/Desktop/Projects/emulator/cmake-build-debug-coverage/CMakeFiles/rebuild_cache.dir
