@@ -36,10 +36,9 @@ extern "C" void kernel_main()
     pmm_init();
     pmm_print_memory_information();
 
-    //pmsa_initialize();
-    //mm_enumerate_memmap_entries(true);
-
     //driver_ctrl_enumerate_drivers();
+
+    vmm_map<pml4e*, uint64_t, uint64_t>(vmm_make_virtual<pml4e*, uint64_t>(vmm_get_pml4()), reinterpret_cast<uint64_t>(&kernel_main), 0x0, PROT_NONE, MAP_NONE, MISC_NONE);
 
     //pci_init();
 

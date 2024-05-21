@@ -152,6 +152,7 @@ namespace kstd
         }
     }
 
+    // https://en.wikipedia.org/wiki/Double-precision_floating-point_format
     void print_double(double d)
     {
         // Handle negative numbers
@@ -168,7 +169,7 @@ namespace kstd
         putc('.');
 
         // Print fractional part
-        const int maxPrecision = 15; // Maximum precision supported by double
+        const int maxPrecision = 100;
         int precision = 0;
         while (precision < maxPrecision)
         {
@@ -178,7 +179,7 @@ namespace kstd
             putc('0' + integerPart); // Print next digit
             precision++;
             // Check if fractional part is zero
-            if (ccm::fabs(d - integerPart) < 1e-10) // Tolerance for floating point comparison
+            if (ccm::fabs(d - integerPart) < 1e-100) // Tolerance for floating point comparison
                 break;
         }
     }

@@ -11,8 +11,6 @@ limine_hhdm_request vmm_hhdm_request = {
         .response = nullptr
 };
 
-static constexpr bool vmm_verbose = true;
-
 void vmm_init()
 {
     static bool run_once = [](){
@@ -26,7 +24,7 @@ void vmm_init()
 
         vmm_hhdm = vmm_hhdm_request.response;
 
-        pml4e* this_pml4e = vmm_get_pml4();
+        uint64_t this_pml4e = vmm_get_pml4();
         kstd::printf("PML4e address: %lx\n", this_pml4e);
 
         return true;
