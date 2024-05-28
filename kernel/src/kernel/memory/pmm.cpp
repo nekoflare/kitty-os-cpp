@@ -122,7 +122,7 @@ void pmm_print_limine_memmap_entries()
     }
 }
 
-static mem_size pmm_calculate_effective_size(uint64_t size)
+mem_size pmm_calculate_effective_size(uint64_t size)
 {
     double new_size = static_cast<double>(size);
     if (size < 1024)
@@ -329,7 +329,11 @@ void pmm_init()
             unreachable();
         }
 
+        kstd::printf("BITMAP ADDRESS: %llx\n", pmm_memory_bitmap_raw);
+
         pmm_bitmap_controller.Initialize(pmm_memory_bitmap_raw, pmm_memory_bitmap_size);
+
+        kstd::memset(pmm_memory_bitmap_raw, 0xff, pmm_memory_bitmap_size);
 
         // fill the bitmap with goodies.
         for (size_t i = 0; i < pmm_limine_memmap_entry_count; i++)
@@ -339,6 +343,7 @@ void pmm_init()
             switch (entry->type)
             {
                 case LIMINE_MEMMAP_USABLE:
+                    pmm_bitmap_controller.unmark_addrs_in_range(entry->base, entry->length);
                     break;
                 default:
                     pmm_bitmap_controller.mark_addrs_used_in_range(entry->base, entry->length);
@@ -412,4 +417,17 @@ void PMMBitmap::unmark_addrs_in_range(uint64_t address, size_t len)
         this->unmark_addr(address);
         address += PAGE_SIZE;
     }
+}
+
+uint64_t pmm_alloc_page()
+{
+    uint64_t addr = pmm_bitmap_controller.FindFirstCleared() * 4096;
+    pmm_bitmap_controller.Set(addr / 4096);
+    return addr;
+}
+
+void pmm_free_page(uint64_t addr)
+{
+    uint64_t idx = addr / 4096;
+    pmm_bitmap_controller.Clear(idx);
 }

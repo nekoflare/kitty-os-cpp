@@ -9,7 +9,8 @@
 
 typedef enum __attribute__((aligned(0x10))) driver_statuses : uint32_t {
     DS_SUCCESS,
-    DS_FAILURE
+    DS_FAILURE,
+    DS_NO_GPU_MODE
 } driver_status_t;
 
 typedef enum __attribute__((aligned(0x10))) driver_load : uint32_t {
@@ -25,15 +26,6 @@ typedef enum __attribute__((aligned(0x10))) driver_types : uint32_t {
     DT_AUDIO,
     DT_AUDIO_GPU // audio + gpu
 } driver_type_t;
-
-typedef enum __attribute__((aligned(0x10))) driver_questions : uint64_t {
-    // For Serial:
-    UART_CREATE_CONNECTION,
-    UART_DESTROY_CONNECTION,
-
-    // For Audio:
-
-} driver_question_t;
 
 struct __attribute__((aligned(0x10))) driver_handle_t
 {
@@ -75,7 +67,7 @@ struct __attribute__((aligned(0x10))) driver_entry_t {
     driver_load_t driver_load;
     driver_status_t (*driver_entry)(pci_handle_t*);
     driver_status_t (*driver_cleanup)();
-    driver_status_t (*driver_ioctl)(driver_handle_t*, driver_question_t, const char*, char*); // question, question_buffer, answer_buffer
+    driver_status_t (*driver_ioctl)(driver_handle_t*, uint64_t, const char*, char*); // question, question_buffer, answer_buffer
 
     pci_requirements_t* requirements;
     size_t requirements_count;

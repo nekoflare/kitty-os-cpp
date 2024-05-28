@@ -14,15 +14,15 @@
 #include <kdu/driver_entry.hpp>
 #include <kdu/driver_ctrl.hpp>
 
-struct PCIHeaderCommon
+struct pci_header_common
 {
     uint16_t vendor_id, device_id, command, status;
     uint8_t revision_id, prog_if, subclass, class_code, cache_line_size, latency_timer, header_type, bist;
 } __attribute__((packed));
 
-struct PCIHeaderType0
+struct pci_device_header
 {
-    PCIHeaderCommon common;
+    pci_header_common common;
     uint32_t bar0, bar1, bar2, bar3, bar4, bar5, cardbus_cis_pointer;
     uint16_t subsystem_vendor_id, subsystem_id;
     uint32_t expansion_rom_base_address;
@@ -33,9 +33,9 @@ struct PCIHeaderType0
     uint8_t interrupt_line, interrupt_pin, min_grant, max_latency;
 } __attribute__((packed));
 
-struct PCIHeaderType1
+struct pci_pci_to_pci_header
 {
-    PCIHeaderCommon common;
+    pci_header_common common;
     uint32_t bar0, bar1;
     uint8_t primary_bus_number, secondary_bus_number, subordinate_bus_number, secondary_latency_timer;
     uint8_t io_base, io_limit;
@@ -55,9 +55,9 @@ struct PCIHeaderType1
     uint16_t bridge_control;
 };
 
-struct PCIHeaderType2
+struct pci_pci_to_cardbus_header
 {
-    PCIHeaderCommon common;
+    pci_header_common common;
     uint32_t cardbus_socket_base_address;
     uint8_t offset_of_capabilities_list;
     uint8_t reserved;
@@ -81,6 +81,7 @@ struct PCIHeaderType2
 
 uint8_t read_pci_config_byte(int bus, int slot, int function, int offset);
 uint16_t read_pci_config_word(int bus, int slot, int function, int offset);
+void write_pci_config_byte(int bus, int slot, int function, int offset);
 
 void pci_init();
 

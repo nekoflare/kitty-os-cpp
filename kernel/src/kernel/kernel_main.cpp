@@ -15,6 +15,12 @@
 #include <kdu/driver_ctrl.hpp>
 #include <kernel/memory/pmm.hpp>
 #include <kernel/memory/vmm.hpp>
+#include <firmware/smbios/smbios.hpp>
+#include <kernel/memory/pmm.hpp>
+#include <firmware/acpi/acpi.hpp>
+#include <kernel/hal/x64/bus/pci-e/pci-e.hpp>
+
+#include <kdu/apis/graphics.hpp>
 
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
@@ -36,12 +42,37 @@ extern "C" void kernel_main()
     pmm_init();
     pmm_print_memory_information();
 
-    //driver_ctrl_enumerate_drivers();
+    smbios_init();
+    acpi_init();
 
-    vmm_map<pml4e*, uint64_t, uint64_t>(vmm_make_virtual<pml4e*, uint64_t>(vmm_get_pml4()), reinterpret_cast<uint64_t>(&kernel_main), 0x0, PROT_NONE, MAP_NONE, MISC_NONE);
+    driver_ctrl_enumerate_drivers();
 
-    //pci_init();
+    pci_init();
+    pcie_init();
+    driver_ctrl_call_ald();
 
+    auto* lfb = Framebuffer::GetFramebuffer(0);
+    auto* vm = lfb->modes;
+    auto vmc = lfb->mode_count;
+
+    for (size_t i = 0; vmc > i; i++)
+    {
+        kstd::printf("%lldx%lld@%lld\n", vm[i]->width, vm[i]->height, vm[i]->bpp);
+    }
+
+    GpuResolution res = {
+            .width = 1920,
+            .height = 1080,
+            .bpp = 32
+    };
+    driver_status_t st = ioctl_auto(DT_GPU, nullptr, GPU_SET_RESOLUTION, reinterpret_cast<const char*>(&res), nullptr);
+
+    kstd::printf("ST = %llx\n", st);
+    /*
+    driver_ctrl_enumerate_drivers();
+    smbios_dump_info();
+    pmm_print_memory_information();
+*/
     [[nodiscard]] while (true)
     {
         asm volatile ("nop");

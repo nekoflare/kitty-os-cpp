@@ -14,7 +14,16 @@
 extern struct driver_entry_t __driver_array[];
 extern struct driver_entry_t __driver_array_end[];
 
+void driver_ctrl_call_ald(); // Call always loadable drivers
 bool driver_ctrl_find_and_call(pci_handle_t pci_handle);
 void driver_ctrl_enumerate_drivers();
+
+driver_status_t ioctl_auto(
+        driver_type_t type,
+        driver_handle_t* ioctl_handle,
+        uint64_t ioctl_question,
+        const char* ioctl_msg,
+        char* ioctl_resp
+);
 
 #endif //KITTY_OS_CPP_DRIVER_CTRL_HPP

@@ -10,14 +10,22 @@
 #include <stdint.h>
 #include <sys/types.h>
 #include <ccmath/basic.hpp>
+#include <kernel/hal/x64/io.hpp>
 
 namespace kstd
 {
     extern flanterm_context* ft_ctx;
 
+    void reinit_term();
+
     void InitializeTerminal();
     void puts(const char* s);
     void putc(const char c);
+
+    void move_cursor_x(int off);
+    void move_cursor_y(int off);
+    void clear_x_cursor();
+    void clear_y_cursor();
 
     void print_signed_integer(signed int si);
     void print_unsigned_integer_octal(unsigned int si);

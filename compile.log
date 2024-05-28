@@ -1,0 +1,79 @@
+make -C kernel
+make[1]: Entering directory '/mnt/c/Users/Piotr/Desktop/Projects/kitty-os-cpp/kernel'
+mkdir -p "$(dirname obj/firmware/acpi/acpi.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/firmware/acpi/acpi.cpp -o obj/firmware/acpi/acpi.cpp.o
+mkdir -p "$(dirname obj/firmware/smbios/smbios.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/firmware/smbios/smbios.cpp -o obj/firmware/smbios/smbios.cpp.o
+mkdir -p "$(dirname obj/kdu/driver_ctrl.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kdu/driver_ctrl.cpp -o obj/kdu/driver_ctrl.cpp.o
+mkdir -p "$(dirname obj/kernel/drivers/ihda/ihda.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/drivers/ihda/ihda.cpp -o obj/kernel/drivers/ihda/ihda.cpp.o
+mkdir -p "$(dirname obj/kernel/drivers/uart/pc-uart.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/drivers/uart/pc-uart.cpp -o obj/kernel/drivers/uart/pc-uart.cpp.o
+mkdir -p "$(dirname obj/kernel/drivers/vmware-svgaii/vmware-svgaii.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/drivers/vmware-svgaii/vmware-svgaii.cpp -o obj/kernel/drivers/vmware-svgaii/vmware-svgaii.cpp.o
+mkdir -p "$(dirname obj/kernel/fb/fb.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/fb/fb.cpp -o obj/kernel/fb/fb.cpp.o
+mkdir -p "$(dirname obj/kernel/hal/x64/bus/pci/pci.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/hal/x64/bus/pci/pci.cpp -o obj/kernel/hal/x64/bus/pci/pci.cpp.o
+mkdir -p "$(dirname obj/kernel/hal/x64/bus/pci-e/pci-e.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/hal/x64/bus/pci-e/pci-e.cpp -o obj/kernel/hal/x64/bus/pci-e/pci-e.cpp.o
+mkdir -p "$(dirname obj/kernel/hal/x64/gdt/gdt.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/hal/x64/gdt/gdt.cpp -o obj/kernel/hal/x64/gdt/gdt.cpp.o
+mkdir -p "$(dirname obj/kernel/hal/x64/idt/idt.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/hal/x64/idt/idt.cpp -o obj/kernel/hal/x64/idt/idt.cpp.o
+mkdir -p "$(dirname obj/kernel/hal/x64/idt/isrs.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/hal/x64/idt/isrs.cpp -o obj/kernel/hal/x64/idt/isrs.cpp.o
+mkdir -p "$(dirname obj/kernel/kernel_main.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/kernel_main.cpp -o obj/kernel/kernel_main.cpp.o
+mkdir -p "$(dirname obj/kernel/memory/internal/memory_bitmap.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/memory/internal/memory_bitmap.cpp -o obj/kernel/memory/internal/memory_bitmap.cpp.o
+mkdir -p "$(dirname obj/kernel/memory/pmm.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/memory/pmm.cpp -o obj/kernel/memory/pmm.cpp.o
+mkdir -p "$(dirname obj/kernel/memory/vmm.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kernel/memory/vmm.cpp -o obj/kernel/memory/vmm.cpp.o
+mkdir -p "$(dirname obj/kstd/kstdio.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kstd/kstdio.cpp -o obj/kstd/kstdio.cpp.o
+mkdir -p "$(dirname obj/kstd/kstring.cpp.o)"
+c++ -g -O2 -pipe -std=c++20 -fno-rtti -fno-exceptions -fno-threadsafe-statics -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/kstd/kstring.cpp -o obj/kstd/kstring.cpp.o
+mkdir -p "$(dirname obj/flanterm/backends/fb.c.o)"
+cc -g -O2 -pipe -std=gnu11 -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/flanterm/backends/fb.c -o obj/flanterm/backends/fb.c.o
+mkdir -p "$(dirname obj/flanterm/flanterm.c.o)"
+cc -g -O2 -pipe -std=gnu11 -Wall -Wextra -ffreestanding -fno-stack-protector -fno-stack-check -fno-lto -fPIE -m64 -march=x86-64 -mno-mmx -msse -msse2 -mno-red-zone -static -Isrc/kkd -pedantic  -I src  -MMD -MP -c src/flanterm/flanterm.c -o obj/flanterm/flanterm.c.o
+mkdir -p "$(dirname obj/control/bochs.asm.o)"
+nasm -F dwarf -g -Wall -f elf64 src/control/bochs.asm -o obj/control/bochs.asm.o
+mkdir -p "$(dirname obj/control/unreachable.asm.o)"
+nasm -F dwarf -g -Wall -f elf64 src/control/unreachable.asm -o obj/control/unreachable.asm.o
+mkdir -p "$(dirname obj/init/x64/init.asm.o)"
+nasm -F dwarf -g -Wall -f elf64 src/init/x64/init.asm -o obj/init/x64/init.asm.o
+mkdir -p "$(dirname obj/kernel/hal/x64/gdt/gdt.asm.o)"
+nasm -F dwarf -g -Wall -f elf64 src/kernel/hal/x64/gdt/gdt.asm -o obj/kernel/hal/x64/gdt/gdt.asm.o
+mkdir -p "$(dirname obj/kernel/hal/x64/idt/idt.asm.o)"
+nasm -F dwarf -g -Wall -f elf64 src/kernel/hal/x64/idt/idt.asm -o obj/kernel/hal/x64/idt/idt.asm.o
+mkdir -p "$(dirname obj/kernel/memory/vmm.asm.o)"
+nasm -F dwarf -g -Wall -f elf64 src/kernel/memory/vmm.asm -o obj/kernel/memory/vmm.asm.o
+mkdir -p "$(dirname bin/kernel)"
+ld obj/firmware/acpi/acpi.cpp.o obj/firmware/smbios/smbios.cpp.o obj/kdu/driver_ctrl.cpp.o obj/kernel/drivers/ihda/ihda.cpp.o obj/kernel/drivers/uart/pc-uart.cpp.o obj/kernel/drivers/vmware-svgaii/vmware-svgaii.cpp.o obj/kernel/fb/fb.cpp.o obj/kernel/hal/x64/bus/pci/pci.cpp.o obj/kernel/hal/x64/bus/pci-e/pci-e.cpp.o obj/kernel/hal/x64/gdt/gdt.cpp.o obj/kernel/hal/x64/idt/idt.cpp.o obj/kernel/hal/x64/idt/isrs.cpp.o obj/kernel/kernel_main.cpp.o obj/kernel/memory/internal/memory_bitmap.cpp.o obj/kernel/memory/pmm.cpp.o obj/kernel/memory/vmm.cpp.o obj/kstd/kstdio.cpp.o obj/kstd/kstring.cpp.o obj/flanterm/backends/fb.c.o obj/flanterm/flanterm.c.o obj/control/bochs.asm.o obj/control/unreachable.asm.o obj/init/x64/init.asm.o obj/kernel/hal/x64/gdt/gdt.asm.o obj/kernel/hal/x64/idt/idt.asm.o obj/kernel/memory/vmm.asm.o  -m elf_x86_64 -nostdlib -static -pie --no-dynamic-linker -z text -z max-page-size=0x1000 -T linker.ld -o bin/kernel
+make[1]: Leaving directory '/mnt/c/Users/Piotr/Desktop/Projects/kitty-os-cpp/kernel'
+rm -rf iso_root
+mkdir -p iso_root
+cp -v kernel/bin/kernel \
+	limine.cfg limine/limine-bios.sys limine/limine-bios-cd.bin limine/limine-uefi-cd.bin iso_root/
+'kernel/bin/kernel' -> 'iso_root/kernel'
+'limine.cfg' -> 'iso_root/limine.cfg'
+'limine/limine-bios.sys' -> 'iso_root/limine-bios.sys'
+'limine/limine-bios-cd.bin' -> 'iso_root/limine-bios-cd.bin'
+'limine/limine-uefi-cd.bin' -> 'iso_root/limine-uefi-cd.bin'
+mkdir -p iso_root/EFI/BOOT
+cp -v limine/BOOTX64.EFI iso_root/EFI/BOOT/
+'limine/BOOTX64.EFI' -> 'iso_root/EFI/BOOT/BOOTX64.EFI'
+cp -v limine/BOOTIA32.EFI iso_root/EFI/BOOT/
+'limine/BOOTIA32.EFI' -> 'iso_root/EFI/BOOT/BOOTIA32.EFI'
+cp -r files/* iso_root/
+xorriso -as mkisofs -b limine-bios-cd.bin \
+	-no-emul-boot -boot-load-size 4 -boot-info-table \
+	--efi-boot limine-uefi-cd.bin \
+	-efi-boot-part --efi-boot-image --protective-msdos-label \
+	iso_root -o template.iso
+./limine/limine bios-install template.iso
+rm -rf iso_root

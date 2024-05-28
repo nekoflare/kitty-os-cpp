@@ -3,7 +3,7 @@ plugin_ctrl: voodoo=false, unmapped=true, biosdev=true, speaker=true, extfpuirq=
 config_interface: win32config
 display_library: win32, options="gui_debug"
 memory: guest=1024, host=32, block_size=128
-romimage: file="C:\Program Files\Bochs-2.8/BIOS-bochs-latest", address=0x00000000, options=none, flash_data=none
+romimage: file="C:\Program Files\Bochs-2.8\BIOS-bochs-latest", address=0x00000000, options=none, flash_data=none
 vgaromimage: file="C:\Program Files\Bochs-2.8/VGABIOS-lgpl-latest"
 magic_break: enabled=1
 boot: cdrom, disk, network
@@ -36,7 +36,7 @@ cpuid: movbe=true, adx=true, aes=true, sha=true, xsave=true, xsaveopt=true, avx_
 cpuid: avx_fma=true, bmi=0, xop=true, fma4=true, tbm=true, x86_64=true, 1g_pages=true
 cpuid: pcid=true, fsgsbase=true, smep=true, smap=true, mwait=true, vmx=1, svm=false
 print_timestamps: enabled=0
-port_e9_hack: enabled=false, all_rings=false
+port_e9_hack: enabled=true
 private_colormap: enabled=0
 clock: sync=realtime, time0=local, rtc_sync=0
 # no cmosimage

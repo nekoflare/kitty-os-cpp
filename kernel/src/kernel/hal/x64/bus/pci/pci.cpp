@@ -33,7 +33,7 @@ void pci_copy_common_header(void* phc, int bus, int slot, int function)
 {
     uint8_t* phc_u8 = reinterpret_cast<uint8_t*>(phc);
 
-    for (size_t i = 0; sizeof(PCIHeaderCommon) > i; i++)
+    for (size_t i = 0; sizeof(pci_header_common) > i; i++)
     {
         phc_u8[i] = read_pci_config_byte(bus, slot, function, i);
     }
@@ -107,6 +107,10 @@ const char* pci_device_to_string(uint16_t vendor_id, uint16_t device_id)
                     return "82371AB/EB/MB PIIX4 ACPI";
                 case 0x100e:
                     return "82540EM Gigabit Ethernet Controller";
+                case 0x10d3:
+                    return "82574L Gigabit Network Connection";
+                case 0x29c0:
+                    return "82G33/G31/P35/P31 Express DRAM Controller";
             }
             break;
         case VMWARE_VENDOR:
@@ -171,7 +175,7 @@ const char* pci_device_to_string(uint16_t vendor_id, uint16_t device_id)
     return "Unknown";
 }
 
-void print_pci_header_type_0(PCIHeaderType0& hdr, uint8_t bus, uint8_t slot, uint8_t func)
+void print_pci_header_type_0(pci_device_header& hdr, uint8_t bus, uint8_t slot, uint8_t func)
 {
     if (pci_extended_debug_mode)
     {
@@ -190,7 +194,7 @@ void print_pci_header_type_0(PCIHeaderType0& hdr, uint8_t bus, uint8_t slot, uin
     }
 }
 
-void print_pci_header_type_1(PCIHeaderType1& hdr, uint8_t bus, uint8_t slot, uint8_t func)
+void print_pci_header_type_1(pci_pci_to_pci_header& hdr, uint8_t bus, uint8_t slot, uint8_t func)
 {
     if (pci_extended_debug_mode)
     {
@@ -207,7 +211,7 @@ void print_pci_header_type_1(PCIHeaderType1& hdr, uint8_t bus, uint8_t slot, uin
     // Todo: Add more entries because I fucking need it.
 }
 
-void print_pci_header_type_2(PCIHeaderType2& hdr, uint8_t bus, uint8_t slot, uint8_t func)
+void print_pci_header_type_2(pci_pci_to_cardbus_header& hdr, uint8_t bus, uint8_t slot, uint8_t func)
 {
     if (pci_extended_debug_mode)
     {
@@ -223,10 +227,10 @@ void print_pci_header_type_2(PCIHeaderType2& hdr, uint8_t bus, uint8_t slot, uin
 
 void pci_init()
 {
-    PCIHeaderCommon phc {};
-    PCIHeaderType0 phc_T0 {};
-    PCIHeaderType1 phc_T1 {};
-    PCIHeaderType2 phc_T2 {};
+    pci_header_common phc {};
+    pci_device_header phc_T0 {};
+    pci_pci_to_pci_header phc_T1 {};
+    pci_pci_to_cardbus_header phc_T2 {};
     pci_handle_t pci_handle;
 
     for (size_t _bus = 0; 256 > _bus; _bus++)
@@ -243,7 +247,7 @@ void pci_init()
             switch (phc.header_type)
             {
                 case 0x00:
-                    pci_copy_header<PCIHeaderType0>(&phc_T0, _bus, _slot, 0);
+                    pci_copy_header<pci_device_header>(&phc_T0, _bus, _slot, 0);
                     print_pci_header_type_0(phc_T0, _bus, _slot, 0);
 
                     pci_handle.vendor_id = phc_T0.common.vendor_id;
@@ -261,7 +265,7 @@ void pci_init()
 
                     break;
                 case 0x01:
-                    pci_copy_header<PCIHeaderType1>(&phc_T1, _bus, _slot, 0);
+                    pci_copy_header<pci_pci_to_pci_header>(&phc_T1, _bus, _slot, 0);
                     print_pci_header_type_1(phc_T1, _bus, _slot, 0);
 
                     pci_handle.vendor_id = phc_T1.common.vendor_id;
@@ -279,7 +283,7 @@ void pci_init()
 
                     break;
                 case 0x02:
-                    pci_copy_header<PCIHeaderType2>(&phc_T2, _bus, _slot, 0);
+                    pci_copy_header<pci_pci_to_cardbus_header>(&phc_T2, _bus, _slot, 0);
                     print_pci_header_type_2(phc_T2, _bus, _slot, 0);
 
                     pci_handle.vendor_id = phc_T2.common.vendor_id;
@@ -311,7 +315,7 @@ void pci_init()
                         switch (phc.header_type)
                         {
                             case 0x00:
-                                pci_copy_header<PCIHeaderType0>(&phc_T0, _bus, _slot, func);
+                                pci_copy_header<pci_device_header>(&phc_T0, _bus, _slot, func);
                                 print_pci_header_type_0(phc_T0, _bus, _slot, func);
 
                                 pci_handle.vendor_id = phc_T0.common.vendor_id;
@@ -329,7 +333,7 @@ void pci_init()
 
                                 break;
                             case 0x01:
-                                pci_copy_header<PCIHeaderType1>(&phc_T1, _bus, _slot, func);
+                                pci_copy_header<pci_pci_to_pci_header>(&phc_T1, _bus, _slot, func);
                                 print_pci_header_type_1(phc_T1, _bus, _slot, func);
 
                                 pci_handle.vendor_id = phc_T1.common.vendor_id;
@@ -347,7 +351,7 @@ void pci_init()
 
                                 break;
                             case 0x02:
-                                pci_copy_header<PCIHeaderType2>(&phc_T2, _bus, _slot, func);
+                                pci_copy_header<pci_pci_to_cardbus_header>(&phc_T2, _bus, _slot, func);
                                 print_pci_header_type_2(phc_T2, _bus, _slot, func);
 
                                 pci_handle.vendor_id = phc_T2.common.vendor_id;
@@ -379,4 +383,11 @@ void pci_init()
             }
         }
     }
+}
+
+void write_pci_config_byte(int bus, int slot, int function, int offset)
+{
+    uint32_t address = (1 << 31) | (offset & 0xfc) | (function << 8) | (slot << 11) | (bus << 16);
+
+
 }

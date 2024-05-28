@@ -15,6 +15,7 @@
 #include <kernel/memory/vmm.hpp>
 #include <control/control.hpp>
 #include <kstd/kbitmap.hpp>
+#include <kstd/kstring.hpp>
 
 /*
  * Structs
@@ -77,7 +78,7 @@ constexpr const char* pmm_limine_memmap_type_to_string(uint64_t memmap_type)
 /*
  * static functions
  */
-static mem_size pmm_calculate_effective_size(uint64_t size);
+mem_size pmm_calculate_effective_size(uint64_t size);
 
 /*
  * Global function definitions
@@ -88,6 +89,9 @@ void pmm_print_limine_memmap_entries();
 void pmm_print_memory_usage();
 void pmm_print_memory_information();
 void pmm_print_unaligned_memory_map_entries();
+
+uint64_t pmm_alloc_page();
+void pmm_free_page(uint64_t addr);
 
 /*
  * Classes

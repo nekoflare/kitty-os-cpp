@@ -29,19 +29,97 @@ namespace kstd
                 NULL, NULL,
                 NULL, NULL,
                 NULL, 0, 0, 1,
-                0, 0,
+                1, 1,
                 0
         );
+    }
+
+    void reinit_term()
+    {
+        limine_framebuffer* main_framebuffer = Framebuffer::GetFramebuffer(0);
+        if (main_framebuffer == nullptr) return;
+
+        ft_ctx->deinit(ft_ctx, NULL);
+
+        ft_ctx = flanterm_fb_init(
+                NULL,
+                NULL,
+                (unsigned int*)main_framebuffer->address, main_framebuffer->width, main_framebuffer->height, main_framebuffer->pitch,
+                main_framebuffer->red_mask_size, main_framebuffer->red_mask_shift,
+                main_framebuffer->green_mask_size, main_framebuffer->green_mask_shift,
+                main_framebuffer->blue_mask_size, main_framebuffer->blue_mask_shift,
+                NULL,
+                NULL, NULL,
+                NULL, NULL,
+                NULL, NULL,
+                NULL, 0, 0, 1,
+                1, 1,
+                0
+        );
+
+    }
+
+    void move_cursor_x(int off)
+    {
+        size_t x, y;
+        ft_ctx->get_cursor_pos(ft_ctx, &x, &y);
+
+        x += off;
+
+        ft_ctx->set_cursor_pos(ft_ctx, x, y);
+    }
+
+    void move_cursor_y(int off)
+    {
+        size_t x, y;
+        ft_ctx->get_cursor_pos(ft_ctx, &x, &y);
+
+        y += off;
+
+        ft_ctx->set_cursor_pos(ft_ctx, x, y);
+    }
+
+    void clear_x_cursor()
+    {
+        size_t x, y;
+        ft_ctx->get_cursor_pos(ft_ctx, &x, &y);
+
+        x = 0;
+
+        ft_ctx->set_cursor_pos(ft_ctx, x, y);
+    }
+
+    void clear_y_cursor()
+    {
+        size_t x, y;
+        ft_ctx->get_cursor_pos(ft_ctx, &x, &y);
+
+        y = 0;
+
+        ft_ctx->set_cursor_pos(ft_ctx, x, y);
+    }
+
+    void e9_putc(const char c) {
+        outb(0xe9, c);
+    }
+
+    void e9_puts(const char *s) {
+        while (*s != 0) {
+            e9_putc(*s);
+            ++s;
+        }
     }
 
     void puts(const char* s)
     {
         flanterm_write(ft_ctx, s, kstd::strlen(s));
+        e9_puts(s);
     }
 
     void putc(const char c)
     {
         flanterm_write(ft_ctx, (const char*)&c, 1);
+        e9_putc(c);
     }
 
     void print_signed_integer(signed int si)

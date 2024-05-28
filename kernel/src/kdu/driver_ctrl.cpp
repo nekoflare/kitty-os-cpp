@@ -54,6 +54,28 @@ bool driver_ctrl_find_and_call(pci_handle_t pci_handle)
     return false;
 }
 
+void driver_ctrl_call_ald()
+{
+    size_t driver_array_size = (__driver_array_end - __driver_array);
+
+    for (size_t i = 0; driver_array_size > i; i++)
+    {
+        __attribute__((aligned(0x10))) struct driver_entry_t driver_entry = __driver_array[i];
+
+        if (driver_entry.is_loaded)
+        {
+            // kstd::printf("The driver is already loaded!\n");
+            continue;
+        }
+
+        if (!driver_entry.is_loaded && driver_entry.driver_load == DL_ALWAYS_LOAD)
+        {
+            driver_entry.driver_entry(nullptr);
+            driver_entry.is_loaded = true;
+        }
+    }
+}
+
 void driver_ctrl_enumerate_drivers()
 {
     size_t driver_array_size = (__driver_array_end - __driver_array);
@@ -65,4 +87,28 @@ void driver_ctrl_enumerate_drivers()
 
         kstd::printf("Driver name: %s\nAuthor: %s\nVersion:%s\nDescription:%s\n\n", driver_entry.driver_name, driver_entry.driver_author, driver_entry.driver_version, driver_entry.driver_description);
     }
+}
+
+driver_status_t ioctl_auto(
+        driver_type_t type,
+        driver_handle_t* ioctl_handle,
+        uint64_t ioctl_question,
+        const char* ioctl_msg,
+        char* ioctl_resp
+)
+{
+    size_t driver_array_size = (__driver_array_end - __driver_array);
+    for (size_t i = 0; i < driver_array_size; ++i)
+    {
+        struct driver_entry_t driver_entry = __driver_array[i];
+
+        if (!driver_entry.is_loaded) continue;
+        if (driver_entry.driver_designation != type) continue;
+        driver_status_t st = driver_entry.driver_ioctl(ioctl_handle, ioctl_question, ioctl_msg, ioctl_resp);
+        if (st != DS_SUCCESS) {
+            return st;
+        }
+    }
+
+    return DS_SUCCESS;
 }

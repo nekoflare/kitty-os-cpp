@@ -1,0 +1,1 @@
+qemu-system-x86_64 -serial mon:stdio -debugcon file:debug.log -device isa-debug-exit,iobase=0x501,iosize=2 -cpu qemu64,+fsgsbase,+syscall,+rdseed -d int -no-shutdown -no-reboot -M smm=off -smp 6 -M q35 -m 64M -serial file:serial.txt -cdrom template.iso -boot d

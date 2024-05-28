@@ -112,7 +112,7 @@ typedef enum : int {
 } MISC_FLAGS;
 
 /*
- * const expr things
+ * constexpr things
  */
 
 static constexpr bool vmm_verbose = true;
@@ -133,32 +133,27 @@ inline uint64_t vmm_get_pml4()
 }
 
 template <typename T>
-inline vmm_address vmm_split_va(T vaddr)
-{
-    uint64_t va = reinterpret_cast<uint64_t>(vaddr);
-    return {
-            .padding = (va >> 48) & 0xffff,
-            .pml4e = (va >> 38) & 0x1ff,
-            .pdpe = (va >> 29) & 0x1ff,
-            .pde = (va >> 21) & 0x1ff,
-            .pte = (va >> 12) & 0x1ff,
-            .offset = va & 0xfff,
-    };
+constexpr vmm_address vmm_split_va(T vaddr) {
+    // Assuming vaddr is a virtual memory address represented as an integer type
+    vmm_address result;
+
+    // Extract different components of the virtual address
+    result.padding = (vaddr >> 48) & 0xFFFF;
+    result.pml4e = (vaddr >> 39) & 0x1FF;
+    result.pdpe = (vaddr >> 30) & 0x1FF;
+    result.pde = (vaddr >> 21) & 0x1FF;
+    result.pte = (vaddr >> 12) & 0x1FF;
+    result.offset = vaddr & 0xFFF;
+
+    // Return the result
+    return result;
 }
+
 
 /*
  * externs.
  */
 extern limine_hhdm_response* vmm_hhdm;
-
-/*
- * Templates
- */
-template <typename T1, typename T2>
-T1 vmm_make_virtual(T2 pma)
-{
-    return reinterpret_cast<T1>(reinterpret_cast<uint64_t>(pma) + vmm_hhdm->offset);
-}
 
 /*
  * Global function definitions
@@ -170,82 +165,19 @@ void vmm_init();
  * templates
  */
 
-// paging types: pml5e and pml4e. (pml5e unsupported for now)
-template <typename PagingType, typename VirtualType, typename PhysicalType>
-bool vmm_map(PagingType pmle, VirtualType virt_address, PhysicalType phys_address, PROTECTION_FLAGS prot_flags, MAP_FLAGS map_flags, MISC_FLAGS misc_flags)
+template <typename T1, typename T2>
+T1 vmm_make_virtual(T2 pma)
 {
-    if constexpr (std::is_same_v<decltype(pmle), pml4e*>)
-    {
-        pml4e* pml4e_ptr = pmle;
+    uint64_t pa = static_cast<uint64_t>(pma);
+    uint64_t va = pa + vmm_hhdm->offset;
+    return (T1)(va);
+}
 
-        // Convert virt_address to uint64_t if it's not already
-        uint64_t vaddr;
-        if constexpr (std::is_convertible_v<VirtualType, uint64_t>)
-        {
-            vaddr = static_cast<uint64_t>(virt_address);
-        }
-        else
-        {
-            vaddr = reinterpret_cast<uint64_t>(virt_address);
-        }
+// paging types: pml5e and pml4e. (pml5e unsupported for now)
+bool vmm_map(pml4e* pml4e, uint64_t virt_address, uint64_t phys_address, int prot_flags, int map_flags, int misc_flags);
 
-        // Convert phys_address to uint64_t if it's not already
-        uint64_t paddr;
-        if constexpr (std::is_convertible_v<PhysicalType, uint64_t>)
-        {
-            paddr = static_cast<uint64_t>(phys_address);
-        }
-        else
-        {
-            paddr = reinterpret_cast<uint64_t>(phys_address);
-        }
-
-        if ((vaddr & 0xffff000000000000) >> 48 != 0x0 && (vaddr & 0xffff000000000000) >> 48 != 0xffff)
-        {
-            if constexpr (vmm_verbose)
-            {
-                kstd::printf("[VMM] Couldn't map it. It's not in kernel or in user mode. Bits aren't matching.\n");
-            }
-            return false;
-        }
-
-        // Split vaddr in to pieces
-        vmm_address addr = vmm_split_va(vaddr);
-
-        uint64_t pml4e_idx = addr.pml4e;
-        uint64_t pdpe_idx = addr.pdpe;
-        uint64_t pde_idx = addr.pde;
-        uint64_t pte_idx = addr.pte;
-
-        // Check if pml4e entry is present.
-        if (pml4e_ptr[pml4e_idx].present == 0)
-        {
-            if constexpr (vmm_verbose)
-                kstd::printf("[VMM] PML4e entry isn't present. %lx\n", pml4e_ptr[pml4e_idx].pdpe_ptr << 12);
-
-            return false;
-        }
-
-        pdpe* pdpe_ptr = vmm_make_virtual<pdpe*>(pml4e_ptr[pml4e_idx].pdpe_ptr << 12);
-
-        // check if pdpe entry is present.
-        if (pdpe_ptr[pdpe_idx].present == 0)
-        {
-            if constexpr (vmm_verbose)
-                kstd::printf("[VMM] PDPe entry isn't present. %lx\n", pdpe_ptr[pdpe_idx].pde_ptr);
-
-            return false;
-        }
-
-        return true; // Assuming the mapping is successful
-
-    }
-    else
-    {
-        if constexpr (vmm_verbose)
-            kstd::printf("Unsupported.\n");
-        return false;
-    }
+static inline void flush_tlb(unsigned long addr) {
+    asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
 }
 
 #endif //KITTY_OS_CPP_VMM_HPP
