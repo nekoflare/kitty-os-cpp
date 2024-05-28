@@ -1,6 +1,5 @@
 /limine
 /ovmf
-*.iso
 *.hdd
 /.vscode
 kernel/bin/kernel
