@@ -15,7 +15,6 @@ namespace kstd
         }
         return len;
     }
-
     void* memset(void* ptr, int v, size_t num)
     {
         char* _Ptr = static_cast<char*>(ptr);
@@ -28,7 +27,6 @@ namespace kstd
 
         return _Ptr; // Return the end pointer
     }
-
     void* memcpy(void* dest, const void* src, size_t num)
     {
         char* _Dest = static_cast<char*>(dest);
@@ -41,7 +39,6 @@ namespace kstd
 
         return dest;
     }
-
     void* memmove(void* dest, const void* src, size_t num)
     {
         char* _Dest = static_cast<char*>(dest);
@@ -64,8 +61,6 @@ namespace kstd
 
         return dest;
     }
-
-
     int memcmp(const void* ptr1, const void* ptr2, size_t num)
     {
         const unsigned char* p1 = static_cast<const unsigned char*>(ptr1);
@@ -80,7 +75,6 @@ namespace kstd
         }
         return 0;
     }
-
     void* memchr(const void* ptr, int value, size_t num)
     {
         const unsigned char* p = static_cast<const unsigned char*>(ptr);
@@ -93,7 +87,6 @@ namespace kstd
         }
         return nullptr;
     }
-
     void* memrchr(const void* ptr, int value, size_t num)
     {
         const unsigned char* p = static_cast<const unsigned char*>(ptr);
@@ -106,7 +99,6 @@ namespace kstd
         }
         return nullptr;
     }
-
     void* memccpy(void* dest, const void* src, int c, size_t num)
     {
         unsigned char* d = static_cast<unsigned char*>(dest);
@@ -122,7 +114,6 @@ namespace kstd
         }
         return nullptr;
     }
-
     void memswap(void* ptr1, void* ptr2, size_t num)
     {
         unsigned char* p1 = static_cast<unsigned char*>(ptr1);
@@ -135,4 +126,91 @@ namespace kstd
             p2[i] = temp;
         }
     }
+
+    char* strcpy(char* destination, const char* source) {
+        char* originalDestination = destination;
+
+        // Copy characters until null terminator is encountered
+        while (*source != '\0') {
+            *destination = *source;
+            ++destination;
+            ++source;
+        }
+
+        // Null-terminate the destination string
+        *destination = '\0';
+
+        return originalDestination;
+    }
+
+    char* strcat(char* destination, const char* source) {
+        char* originalDestination = destination;
+
+        // Move the destination pointer to the end of the string
+        while (*destination != '\0') {
+            ++destination;
+        }
+
+        // Copy characters from source to the end of destination
+        while (*source != '\0') {
+            *destination = *source;
+            ++destination;
+            ++source;
+        }
+
+        // Null-terminate the concatenated string
+        *destination = '\0';
+
+        return originalDestination;
+    }
+
+}
+
+kstd::string::string(const char* str)
+{
+    length = kstd::strlen(str);
+    data = new char[length + 1]; // +1 for termination
+    kstd::strcpy(data, str);
+}
+
+kstd::string::~string()
+{
+    delete[] data;
+}
+
+kstd::string::string(const kstd::string& other)
+{
+    length = other.length;
+    data = new char[length + 1]; // +1 for termination
+    kstd::strcpy(data, other.data);
+}
+
+kstd::string& kstd::string::operator=(const kstd::string &other)
+{
+    if (this != &other) {
+        delete[] data;
+        length = other.length;
+        data = new char[length + 1]; // +1 for null terminator
+        kstd::strcpy(data, other.data);
+    }
+    return *this;
+}
+
+size_t kstd::string::size() const {
+    return length;
+}
+
+const char* kstd::string::c_str() const {
+    return data;
+}
+
+kstd::string& kstd::string::operator+=(const kstd::string &other) {
+    size_t newLength = length + other.length;
+    char* newData = new char[newLength + 1]; // +1 for null terminator
+    kstd::strcpy(newData, data);
+    kstd::strcat(newData, other.data);
+    delete[] data;
+    data = newData;
+    length = newLength;
+    return *this;
 }

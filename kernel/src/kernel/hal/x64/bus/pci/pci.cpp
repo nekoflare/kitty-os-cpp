@@ -385,9 +385,47 @@ void pci_init()
     }
 }
 
-void write_pci_config_byte(int bus, int slot, int function, int offset)
+void write_pci_config_byte(int bus, int slot, int function, size_t offset, uint8_t value) {
+    // Create the configuration address
+    uint32_t address = (uint32_t)((bus << 16) | (slot << 11) | (function << 8) | (offset & 0xFC) | ((uint32_t)0x80000000));
+
+    // Write the address to the PCI configuration address port
+    outl(address, 0xCF8);
+
+    // Calculate the byte offset within the 32-bit register
+    size_t byte_offset = offset & 0x03;
+
+    // Write the byte to the PCI configuration data port
+    outb(value, 0xCFC + byte_offset);
+}
+
+void write_pci_config_word(int bus, int slot, int function, size_t offset, uint16_t v)
 {
-    uint32_t address = (1 << 31) | (offset & 0xfc) | (function << 8) | (slot << 11) | (bus << 16);
+    write_pci_config_byte(bus, slot, function, offset, v & 0xff);
+    write_pci_config_byte(bus, slot, function, offset + 1, (v >> 8) & 0xff);
+}
 
+void pci_iomemcpy(int bus, int slot, int function, const void* s, size_t l)
+{
+    auto* ccs =  (const char*) s;
 
+    for (size_t i = 0; l > i; i++)
+    {
+        write_pci_config_byte(bus, slot, function, i, ccs[i]);
+    }
+}
+
+void pci_write_header_back(int bus, int slot, int function, pci_header_common* pci_hdr)
+{
+    const void* v = (const void*)pci_hdr;
+    pci_iomemcpy(bus, slot, function, v, sizeof(pci_hdr));
+}
+
+void pci_set_command(int bus, int slot, int function, uint16_t new_cmd)
+{
+    kstd::printf("Setting command to %hx.", new_cmd);
+    write_pci_config_word(bus, slot, function, 0x4, new_cmd);
+
+    auto v = read_pci_config_word(bus, slot, function, 0x4);
+    kstd::printf("%hx", v);
 }

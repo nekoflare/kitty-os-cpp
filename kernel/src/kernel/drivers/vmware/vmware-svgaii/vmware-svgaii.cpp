@@ -5,7 +5,7 @@
 #include "vmware-svgaii.hpp"
 
 extern driver_type driver_entry_t vmware_svgaii_driver_descriptor;
-static uint32_t vmw_io_port = 0;
+static uint64_t vmw_io_port = 0;
 
 static driver_status_t vmware_svgaii_entry(pci_handle_t* pci_handle)
 {
@@ -24,15 +24,31 @@ static driver_status_t vmware_svgaii_entry(pci_handle_t* pci_handle)
     kstd::printf("[VMW] VMW IO Port: %lx\n", vmw_io_port);
 
     // Enable memory, io and bus mastering for it.
+    pci_set_command(
+            pci_handle->bus,
+            pci_handle->slot,
+            pci_handle->function,
+            reinterpret_cast<pci_header_common*>(pci_handle->full_header)->command | 1 << 0 | 1 << 1 | 1 << 2
+            );
+
+    outl(vmw_io_port + SVGA_REG_ID, 0x90000002); // use latest
+
+    uint32_t v = inl(vmw_io_port + SVGA_REG_ID);
+
+    if (v != 0x90000002)
+    {
+        kstd::printf("[VMW] VMWare doesn't support the newest spec.\n");
+        unreachable();
+
+        return DS_FAILURE;
+    }
+
+    uint32_t fb_address = inl(vmw_io_port + SVGA_REG_FB_START);
+    kstd::printf("[VMW] Framebuffer address: %llx\n", fb_address);
+
+    unreachable();
 
     vmware_svgaii_driver_descriptor.is_loaded = true;
-
-    return DS_SUCCESS;
-}
-
-static driver_status_t vmware_svgaii_cleanup()
-{
-    kstd::printf("[VMW] Poof!\n");
 
     return DS_SUCCESS;
 }
@@ -48,6 +64,7 @@ static driver_status_t vmw_set_res(
     auto vmw_bpp = vmw_res->bpp;
 
     kstd::printf("[VMW] Changing screen resolution to %lldx%lld @ %lld...\n", vmw_w, vmw_h, vmw_bpp);
+
 
 
 
@@ -70,6 +87,11 @@ static driver_status_t vmware_svgaii_ioctl(
     }
 
 
+    return DS_SUCCESS;
+}
+
+static driver_status_t vmware_svgaii_cleanup()
+{
     return DS_SUCCESS;
 }
 

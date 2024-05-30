@@ -53,7 +53,7 @@ struct pci_pci_to_pci_header
     uint8_t interrupt_line;
     uint8_t interrupt_pin;
     uint16_t bridge_control;
-};
+} __attribute__((packed));
 
 struct pci_pci_to_cardbus_header
 {
@@ -77,12 +77,15 @@ struct pci_pci_to_cardbus_header
     uint16_t subsystem_device_id;
     uint16_t subsystem_vendor_id;
     uint32_t pc_card_legacy_mode_base_address;
-};
+} __attribute__((packed));
 
 uint8_t read_pci_config_byte(int bus, int slot, int function, int offset);
 uint16_t read_pci_config_word(int bus, int slot, int function, int offset);
-void write_pci_config_byte(int bus, int slot, int function, int offset);
-
+void write_pci_config_byte(int bus, int slot, int function, size_t offset, uint8_t value);
+void pci_iomemcpy(int bus, int slot, int function, const void* s, size_t l);
+void pci_write_header_back(int bus, int slot, int function, pci_header_common* pci_hdr);
 void pci_init();
+void pci_set_command(int bus, int slot, int function, uint16_t new_cmd);
+void write_pci_config_word(int bus, int slot, int function, size_t offset, uint16_t value);
 
 #endif //KITTY_OS_CPP_PCI_HPP

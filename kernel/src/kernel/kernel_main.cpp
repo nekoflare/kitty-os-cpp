@@ -19,8 +19,8 @@
 #include <kernel/memory/pmm.hpp>
 #include <firmware/acpi/acpi.hpp>
 #include <kernel/hal/x64/bus/pci-e/pci-e.hpp>
-
 #include <kdu/apis/graphics.hpp>
+#include <kernel/memory/heap.hpp>
 
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
@@ -40,6 +40,7 @@ extern "C" void kernel_main()
 
     vmm_init();
     pmm_init();
+    heap_init();
     pmm_print_memory_information();
 
     smbios_init();
@@ -59,7 +60,6 @@ extern "C" void kernel_main()
     {
         kstd::printf("%lldx%lld@%lld\n", vm[i]->width, vm[i]->height, vm[i]->bpp);
     }
-
     GpuResolution res = {
             .width = 1920,
             .height = 1080,
@@ -68,11 +68,18 @@ extern "C" void kernel_main()
     driver_status_t st = ioctl_auto(DT_GPU, nullptr, GPU_SET_RESOLUTION, reinterpret_cast<const char*>(&res), nullptr);
 
     kstd::printf("ST = %llx\n", st);
-    /*
+
     driver_ctrl_enumerate_drivers();
     smbios_dump_info();
     pmm_print_memory_information();
-*/
+
+    kstd::string str("Hello, ");
+    kstd::string str2("World!\n");
+
+    str += str2;
+
+    kstd::printf("%s", str.c_str());
+
     [[nodiscard]] while (true)
     {
         asm volatile ("nop");

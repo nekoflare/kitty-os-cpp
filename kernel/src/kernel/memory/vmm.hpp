@@ -133,9 +133,11 @@ inline uint64_t vmm_get_pml4()
 }
 
 template <typename T>
-constexpr vmm_address vmm_split_va(T vaddr) {
+constexpr vmm_address vmm_split_va(T va) {
     // Assuming vaddr is a virtual memory address represented as an integer type
     vmm_address result;
+
+    uint64_t vaddr = reinterpret_cast<uint64_t>(va);
 
     // Extract different components of the virtual address
     result.padding = (vaddr >> 48) & 0xFFFF;
@@ -173,11 +175,39 @@ T1 vmm_make_virtual(T2 pma)
     return (T1)(va);
 }
 
+template <typename T>
+T vmm_make_virtual_singular(T v)
+{
+    uint64_t pv = reinterpret_cast<uint64_t>(v);
+    uint64_t va = pv + vmm_hhdm->offset;
+    return reinterpret_cast<T>(va);
+}
+
 // paging types: pml5e and pml4e. (pml5e unsupported for now)
 bool vmm_map(pml4e* pml4e, uint64_t virt_address, uint64_t phys_address, int prot_flags, int map_flags, int misc_flags);
 
-static inline void flush_tlb(unsigned long addr) {
+static inline  void flush_tlb(unsigned long addr) {
     asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
 }
+
+void vmm_test(void* addr);
+
+constexpr uint64_t vmm_create_virtual_address(bool is_user, uint64_t pml4e_index, uint64_t pdpe_index, uint64_t pde_index, uint64_t pte_index, uint64_t offset)
+{
+    uint64_t virtual_address = 0;
+
+    if (!is_user) {
+        virtual_address |= 0xFFFFULL << 48;
+    }
+
+    virtual_address |= (pml4e_index & 0x1FFULL) << 39;
+    virtual_address |= (pdpe_index & 0x1FFULL) << 30;
+    virtual_address |= (pde_index & 0x1FFULL) << 21;
+    virtual_address |= (pte_index & 0x1FFULL) << 12;
+    virtual_address |= (offset & 0xFFFULL);
+
+    return virtual_address;
+}
+
 
 #endif //KITTY_OS_CPP_VMM_HPP

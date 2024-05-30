@@ -12,6 +12,8 @@
 #include <kdu/apis/graphics.hpp>
 #include <kernel/hal/x64/io.hpp>
 #include <kernel/hal/x64/bus/pci/pci.hpp>
+#include <kernel/memory/vmm.hpp>
+#include <control/control.hpp>
 
 constexpr uint32_t SVGA_REG_ID = 0;
 constexpr uint32_t SVGA_REG_ENABLE = 1;

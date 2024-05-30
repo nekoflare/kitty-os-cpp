@@ -2,6 +2,9 @@
 #define CONTROL_H
 
 extern "C" void unreachable();
-extern "C" void bochs_breakpoint();
+inline void bochs_breakpoint()
+{
+    __asm__ volatile ("xchg %%bx, %%bx" ::: "bx");
+}
 
 #endif

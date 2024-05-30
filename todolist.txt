@@ -1,4 +1,0 @@
-Todo:
- - Rewrite bus/pci
- - Rewrite memory/vmm and pmm
- - Check idt, gdt and follow coding rules

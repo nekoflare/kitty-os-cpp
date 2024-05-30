@@ -6,20 +6,31 @@ PML4e address: 3F52000
 [PMM] New rounded boundaries of memory: 0 - 1.0 (TB).
 [PMM] Space required for the bitmap: 32.0 (MB)
 [PMM] Found perfect entry for the bitmap.
-4. 100000 -> 39C8000 (Usable memory) (56.78125 MB)
+4. 100000 -> 39BA000 (Usable memory) (56.7265625 MB)
 [PMM] Recalculating memory.
 [PMM] The bitmap address is: FFFF800000100000.
 BITMAP ADDRESS: FFFF800000100000
 [PMM] Finished!
+Initializing heap.
+PML4e entry: 1FE
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+[HEAP] Entry: 1FE 0 0 0
+PDPE ptr: 4F000
+PDE ptr: 50000
+PTE ptr: 51000
+Invalidated.
+Tag address: FFFFFF0000000000
 [PMM] Printing memory map entries: 
     0. 1000 -> 4E000 (Bootloader reclaimable memory) (308.0 KB)
     1. 4E000 -> 9F000 (Usable memory) (324.0 KB)
     2. 9FC00 -> A0000 (Reserved memory) (1.0 KB)
     3. F0000 -> 100000 (Reserved memory) (64.0 KB)
-    4. 2100000 -> 39C8000 (Usable memory) (24.78125 MB)
-    5. 39C8000 -> 39CD000 (Bootloader reclaimable memory) (20.0 KB)
-    6. 39CD000 -> 3ABB000 (Kernel and modules (Reserved)) (952.0 KB)
-    7. 3ABB000 -> 3B37000 (Bootloader reclaimable memory) (496.0 KB)
+    4. 2100000 -> 39BA000 (Usable memory) (24.7265625 MB)
+    5. 39BA000 -> 39BF000 (Bootloader reclaimable memory) (20.0 KB)
+    6. 39BF000 -> 3AAE000 (Kernel and modules (Reserved)) (956.0 KB)
+    7. 3AAE000 -> 3B37000 (Bootloader reclaimable memory) (548.0 KB)
     8. 3B37000 -> 3F21000 (Usable memory) (3.9140625 MB)
     9. 3F21000 -> 3FDF000 (Bootloader reclaimable memory) (760.0 KB)
     10. 3FDF000 -> 4000000 (Reserved memory) (132.0 KB)
@@ -29,11 +40,11 @@ BITMAP ADDRESS: FFFF800000100000
     14. FFFC0000 -> 100000000 (Reserved memory) (256.0 KB)
     15. FD00000000 -> 10000000000 (Reserved memory) (12.0 GB)
 [PMM] Overall memory: 12.28501224517822265625 (GB)
-[PMM] Free memory: 29.01171875 (MB)
-[PMM] Reserved memory: 12.25668048858642578125 (GB)
+[PMM] Free memory: 28.95703125 (MB)
+[PMM] Reserved memory: 12.25673389434814453125 (GB)
 [PMM] Bad memory: 0.0 (B)
 [PMM] Unusable memory: 12.25044727325439453125 (GB)
-[PMM] Free pages: 7.2529296875 [KP]
+[PMM] Free pages: 7.2392578125 [KP]
 [PMM] Unaligned memory entries  (to the page): 
     2. 9FC00 -> A0000 (Reserved memory) (1.0 KB)
 [[ END ]]
@@ -189,10 +200,10 @@ Dumping SMBIOS information...
     1. 4E000 -> 9F000 (Usable memory) (324.0 KB)
     2. 9FC00 -> A0000 (Reserved memory) (1.0 KB)
     3. F0000 -> 100000 (Reserved memory) (64.0 KB)
-    4. 2100000 -> 39C8000 (Usable memory) (24.78125 MB)
-    5. 39C8000 -> 39CD000 (Bootloader reclaimable memory) (20.0 KB)
-    6. 39CD000 -> 3ABB000 (Kernel and modules (Reserved)) (952.0 KB)
-    7. 3ABB000 -> 3B37000 (Bootloader reclaimable memory) (496.0 KB)
+    4. 2100000 -> 39BA000 (Usable memory) (24.7265625 MB)
+    5. 39BA000 -> 39BF000 (Bootloader reclaimable memory) (20.0 KB)
+    6. 39BF000 -> 3AAE000 (Kernel and modules (Reserved)) (956.0 KB)
+    7. 3AAE000 -> 3B37000 (Bootloader reclaimable memory) (548.0 KB)
     8. 3B37000 -> 3F21000 (Usable memory) (3.9140625 MB)
     9. 3F21000 -> 3FDF000 (Bootloader reclaimable memory) (760.0 KB)
     10. 3FDF000 -> 4000000 (Reserved memory) (132.0 KB)
@@ -202,11 +213,22 @@ Dumping SMBIOS information...
     14. FFFC0000 -> 100000000 (Reserved memory) (256.0 KB)
     15. FD00000000 -> 10000000000 (Reserved memory) (12.0 GB)
 [PMM] Overall memory: 12.28501224517822265625 (GB)
-[PMM] Free memory: 29.01171875 (MB)
-[PMM] Reserved memory: 12.25668048858642578125 (GB)
+[PMM] Free memory: 28.95703125 (MB)
+[PMM] Reserved memory: 12.25673389434814453125 (GB)
 [PMM] Bad memory: 0.0 (B)
 [PMM] Unusable memory: 12.25044727325439453125 (GB)
-[PMM] Free pages: 7.2529296875 [KP]
+[PMM] Free pages: 7.2392578125 [KP]
 [PMM] Unaligned memory entries  (to the page): 
     2. 9FC00 -> A0000 (Reserved memory) (1.0 KB)
 [[ END ]]
+FFFFFF0000000000
+Auto aligning the length.
+New size: 10.
+FFFFFF0000000000
+Auto aligning the length.
+New size: 10.
+FFFFFF0000000000
+Auto aligning the length.
+New size: 10.
+Freed memory: FFFFFF0000000010.
+Hello, World!

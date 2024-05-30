@@ -55,6 +55,7 @@ struct __attribute__((aligned(0x10))) pci_handle_t
     uint16_t vendor_id, device_id;
     uint8_t header_type;
     void* full_header;
+    uint64_t mmio_base;
 };
 
 struct __attribute__((aligned(0x10))) driver_entry_t {
