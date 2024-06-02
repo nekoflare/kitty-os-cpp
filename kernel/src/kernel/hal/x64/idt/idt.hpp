@@ -9,6 +9,7 @@
 
 #include <stdint.h>
 #include <sys/types.h>
+#include <kernel/memory/vmm.hpp>
 
 struct IDTR
 {

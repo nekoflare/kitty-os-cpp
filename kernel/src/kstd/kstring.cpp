@@ -214,3 +214,38 @@ kstd::string& kstd::string::operator+=(const kstd::string &other) {
     length = newLength;
     return *this;
 }
+
+
+kstd::string& kstd::string::operator+=(const char other) {
+    char* new_data = new char[length + 2];
+    strcpy(new_data, data);
+    new_data[length] = other;
+    new_data[length + 1] = '\0'; // Null terminator
+    delete[] data;
+    data = new_data;
+    ++length;
+    return *this;
+}
+
+bool kstd::string::empty() const {
+    return length == 0;
+}
+
+void kstd::string::clear() {
+    delete[] data;
+    data = nullptr;
+    length = 0;
+}
+
+void kstd::string::reserve(size_t newCapacity)
+{
+    if (newCapacity <= length) return; // No need to reallocate
+
+    char* newData = new char[newCapacity];
+    if (data) {
+        kstd::memcpy(newData, data, length); // Copy existing data
+        delete[] data; // Delete old data
+    }
+    data = newData;
+    length = newCapacity;
+}

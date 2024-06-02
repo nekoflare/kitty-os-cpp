@@ -99,6 +99,22 @@ namespace kstd
         ft_ctx->set_cursor_pos(ft_ctx, x, y);
     }
 
+    int get_cursor_x()
+    {
+        size_t x, y;
+        ft_ctx->get_cursor_pos(ft_ctx, &x, &y);
+
+        return x;
+    }
+
+    int get_cursor_y()
+    {
+        size_t x, y;
+        ft_ctx->get_cursor_pos(ft_ctx, &x, &y);
+
+        return y;
+    }
+
     void e9_putc(const char c) {
         outb(0xe9, c);
     }
@@ -142,7 +158,6 @@ namespace kstd
             si %= place;
             place /= 10;
         }
-        putc('\n');
     }
 
     void print_unsigned_integer_octal(unsigned int si)
@@ -706,6 +721,16 @@ namespace kstd
                         case 'p':
                             print_pointer(va_arg(args, void*));
                             fmt++;
+                            break;
+                        case 'z':
+                            fmt++;
+                            switch (*fmt)
+                            {
+                                case 'u':
+                                    fmt++;
+                                    print_unsigned_long_integer(va_arg(args, size_t));
+                                    break;
+                            }
                             break;
                         case 'l':
                             fmt++;

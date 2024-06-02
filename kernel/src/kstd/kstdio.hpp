@@ -26,6 +26,8 @@ namespace kstd
     void move_cursor_y(int off);
     void clear_x_cursor();
     void clear_y_cursor();
+    int get_cursor_x();
+    int get_cursor_y();
 
     void print_signed_integer(signed int si);
     void print_unsigned_integer_octal(unsigned int si);

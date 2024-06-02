@@ -10,7 +10,6 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <sys/types.h>
-#include <kernel/hal/x64/bus/pci/pci.hpp>
 #include <kdu/driver_entry.hpp>
 #include <kdu/driver_ctrl.hpp>
 #include <kernel/memory/pmm.hpp>
@@ -18,12 +17,38 @@
 #include <firmware/smbios/smbios.hpp>
 #include <kernel/memory/pmm.hpp>
 #include <firmware/acpi/acpi.hpp>
-#include <kernel/hal/x64/bus/pci-e/pci-e.hpp>
+#include <kernel/hal/bus/pci.hpp>
 #include <kdu/apis/graphics.hpp>
 #include <kernel/memory/heap.hpp>
+#include <kstd/kvector.hpp>
+#include <exec/elf/loader.hpp>
+#include <libs/cpuinfo/cpuinfo.hpp>
 
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
+
+limine_module_response* module_response = nullptr;
+
+volatile limine_module_request module_request = {
+        .id = LIMINE_MODULE_REQUEST,
+        .response = nullptr,
+        .internal_module_count = 0,
+        .internal_modules = nullptr
+};
+
+void aio_pci_init()
+{
+    if (acpi_get_mcfg() == nullptr)
+    {
+        kstd::printf("[Kernel] Using legacy PCI local bus.\n");
+        pci_init();
+    }
+    else
+    {
+        kstd::printf("[Kernel] Using PCI express.\n");
+        pcie_init();
+    }
+}
 
 extern "C" void kernel_main()
 {
@@ -41,25 +66,20 @@ extern "C" void kernel_main()
     vmm_init();
     pmm_init();
     heap_init();
-    pmm_print_memory_information();
-
     smbios_init();
     acpi_init();
-
-    driver_ctrl_enumerate_drivers();
-
-    pci_init();
-    pcie_init();
+    //irqs_init();
+    //unreachable();
+    //aio_pci_init();
     driver_ctrl_call_ald();
+    driver_ctrl_enumerate_drivers();
+    smbios_dump_info();
+    pmm_print_memory_information();
 
-    auto* lfb = Framebuffer::GetFramebuffer(0);
-    auto* vm = lfb->modes;
-    auto vmc = lfb->mode_count;
 
-    for (size_t i = 0; vmc > i; i++)
-    {
-        kstd::printf("%lldx%lld@%lld\n", vm[i]->width, vm[i]->height, vm[i]->bpp);
-    }
+    //pci_dev_hdr_common* hdr = pci_get_hdr(0, 0, 0);
+    //pci_dev_enumerate(pci_dev_head);
+
     GpuResolution res = {
             .width = 1920,
             .height = 1080,
@@ -69,16 +89,38 @@ extern "C" void kernel_main()
 
     kstd::printf("ST = %llx\n", st);
 
-    driver_ctrl_enumerate_drivers();
-    smbios_dump_info();
-    pmm_print_memory_information();
+    aio_pci_init();
 
-    kstd::string str("Hello, ");
-    kstd::string str2("World!\n");
+    if (CPUInfo::IsAMD())
+    {
+        kstd::printf("This CPU is AMD.\n");
+    }
+    else
+    {
+        kstd::printf("This CPU is Intel.\n");
+    }
 
-    str += str2;
+    kstd::printf("Virtual bus width: %zu\n", CPUInfo::GetVirtualBusWidth());
+    kstd::printf("Physical bus width: %zu\n", CPUInfo::GetPhysicalBusWidth());
 
-    kstd::printf("%s", str.c_str());
+    auto model_name = CPUInfo::GetCPUModelName();
+    kstd::printf("Model name: %s\n", model_name);
+
+    auto vendor_id = CPUInfo::GetCPUVendorID();
+    kstd::printf("Vendor ID: %s\n", CPUInfo::GetCPUVendorID());
+
+    if (CPUInfo::HasSSE())
+        kstd::printf("SSE, ");
+    if (CPUInfo::HasSSE2())
+        kstd::printf("SSE2, ");
+    if (CPUInfo::HasSSE3())
+        kstd::printf("SSE3, ");
+    if (CPUInfo::HasSupplementalSSE3())
+        kstd::printf("SSSE3, ");
+    if (CPUInfo::HasSSE4_1())
+        kstd::printf("SSE4.1, ");
+    if (CPUInfo::HasSSE4_2())
+        kstd::printf("SSE4.2, ");
 
     [[nodiscard]] while (true)
     {

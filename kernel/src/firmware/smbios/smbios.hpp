@@ -26,7 +26,7 @@ typedef struct {
     uint32_t structure_table_address;
     uint16_t number_of_structures;
     uint8_t bcd_revision;
-} SMBIOS_32bit __attribute((packed));
+} SMBIOS_32bit;
 
 typedef uint16_t SMBIOS_HANDLE;
 
@@ -34,7 +34,7 @@ typedef struct {
     uint8_t type;
     uint8_t length;
     SMBIOS_HANDLE handle;
-} SMBIOS_Tag __attribute((packed));
+} SMBIOS_Tag;
 
 typedef struct {
     SMBIOS_Tag tag;

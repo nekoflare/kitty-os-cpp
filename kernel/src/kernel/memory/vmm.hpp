@@ -21,6 +21,16 @@ struct vmm_address
     uint64_t offset : 12;
 } __attribute__((packed));
 
+inline uint64_t vmm_sva_to_va(vmm_address va)
+{
+    return ((va.padding & 0xFFFFULL) << 48ULL) |
+           ((va.pml4e & 0x1FFULL) << 39ULL) |
+           ((va.pdpe & 0x1FFULL) << 30ULL) |
+           ((va.pde & 0x1FFULL) << 21ULL) |
+           ((va.pte & 0x1FFULL) << 12ULL) |
+           (va.offset & 0xFFFULL);
+}
+
 struct pml4e
 {
     uint64_t present : 1;

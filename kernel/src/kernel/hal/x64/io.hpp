@@ -41,17 +41,6 @@ inline void outl(uint16_t port, uint32_t data) {
     asm volatile("outl %0, %w1" : : "a"(data), "Nd"(port));
 }
 
-// Input/Output operations for 64-bit data
-inline uint64_t inq(uint16_t port) {
-    uint64_t data;
-    asm volatile("inq %w1, %0" : "=a"(data) : "Nd"(port));
-    return data;
-}
-
-inline void outq(uint16_t port, uint64_t data) {
-    asm volatile("outq %0, %w1" : : "a"(data), "Nd"(port));
-}
-
 inline void iowait(size_t t)
 {
     for (size_t n = 0; t > n; n++)

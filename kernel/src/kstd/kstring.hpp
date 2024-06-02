@@ -29,6 +29,37 @@ namespace kstd
         size_t length;
 
     public:
+        class iterator {
+        private:
+            char* ptr;
+
+        public:
+            iterator(char* p) : ptr(p) {}
+
+            char& operator*() const {
+                return *ptr;
+            }
+
+            iterator& operator++() {
+                ++ptr;
+                return *this;
+            }
+
+            iterator operator++(int) {
+                iterator temp = *this;
+                ++ptr;
+                return temp;
+            }
+
+            bool operator==(const iterator& other) const {
+                return ptr == other.ptr;
+            }
+
+            bool operator!=(const iterator& other) const {
+                return !(*this == other);
+            }
+        };
+
         string() : data(nullptr), length(0) {}
         string(const char* str);
         ~string();
@@ -38,9 +69,32 @@ namespace kstd
         string& operator=(const string& other);
 
         size_t size() const;
+        bool empty() const;
         const char* c_str() const;
 
         string& operator+=(const string& other);
+        string& operator+=(const char other);
+
+        void reserve(size_t newCapacity);
+
+        void clear();
+
+        iterator begin() {
+            return iterator(data);
+        }
+
+        iterator end() {
+            return iterator(data + length);
+        }
+
+        // Alias for begin() and end()
+        iterator begin() const {
+            return iterator(data);
+        }
+
+        iterator end() const {
+            return iterator(data + length);
+        }
     };
 }
 

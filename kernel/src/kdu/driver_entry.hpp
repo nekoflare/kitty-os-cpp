@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <sys/types.h>
+#include <kernel/hal/bus/pci.hpp>
 
 #define driver_type __attribute__((section(".drivers"))) __attribute__((aligned(0x10)))
 
@@ -48,16 +49,6 @@ struct __attribute__((aligned(0x10))) pci_requirements_t
     pci_match_requirement_t match_requirement;
 };
 
-struct __attribute__((aligned(0x10))) pci_handle_t
-{
-    uint8_t bus, slot, function;
-    uint8_t _class, subclass, prog_if;
-    uint16_t vendor_id, device_id;
-    uint8_t header_type;
-    void* full_header;
-    uint64_t mmio_base;
-};
-
 struct __attribute__((aligned(0x10))) driver_entry_t {
     const char* driver_name;
     const char* driver_author;
@@ -66,7 +57,7 @@ struct __attribute__((aligned(0x10))) driver_entry_t {
 
     driver_type_t driver_designation;
     driver_load_t driver_load;
-    driver_status_t (*driver_entry)(pci_handle_t*);
+    driver_status_t (*driver_entry)(pci_dev*);
     driver_status_t (*driver_cleanup)();
     driver_status_t (*driver_ioctl)(driver_handle_t*, uint64_t, const char*, char*); // question, question_buffer, answer_buffer
 

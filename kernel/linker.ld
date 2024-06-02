@@ -69,9 +69,51 @@ SECTIONS
         *(COMMON)
     } :data
 
-    /* Discard .note.* and .eh_frame since they may cause issues on some hosts. */
-    /DISCARD/ : {
-        *(.eh_frame)
-        *(.note .note.*)
-    }
+    /* Include debug sections in the output */
+        .debug_aranges    0 : { *(.debug_aranges) }
+        .debug_pubnames   0 : { *(.debug_pubnames) }
+        .debug_info       0 : { *(.debug_info) }
+        .debug_abbrev     0 : { *(.debug_abbrev) }
+        .debug_line       0 : { *(.debug_line) }
+        .debug_frame      0 : { *(.debug_frame) }
+        .debug_str        0 : { *(.debug_str) }
+        .debug_loc        0 : { *(.debug_loc) }
+        .debug_macinfo    0 : { *(.debug_macinfo) }
+
+        /* Define the section for exception handling (EH) frames */
+        .eh_frame_hdr :
+        {
+            *(.eh_frame_hdr)
+        }
+
+        .eh_frame :
+        {
+            *(.eh_frame)
+        }
+
+        /* Define sections for C++ runtime support */
+        .gcc_except_table :
+        {
+            *(.gcc_except_table)
+        }
+
+        /* Sections for the C++ global constructors and destructors */
+        .init_array :
+        {
+            PROVIDE_HIDDEN (__init_array_start = .);
+            KEEP (*(.init_array))
+            KEEP (*(.init_array.*))
+            PROVIDE_HIDDEN (__init_array_end = .);
+        }
+
+        .fini_array :
+        {
+            PROVIDE_HIDDEN (__fini_array_start = .);
+            KEEP (*(.fini_array))
+            KEEP (*(.fini_array.*))
+            PROVIDE_HIDDEN (__fini_array_end = .);
+        }
+
+        /* Ensure the end of the output file is aligned */
+        /DISCARD/ : { *(.note.GNU-stack) }
 }

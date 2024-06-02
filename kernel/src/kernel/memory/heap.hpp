@@ -15,7 +15,6 @@
 
 enum malloc_state
 {
-    MALLOC_STATE_END_OF_MEMORY, // its usable tho
     MALLOC_STATE_FREE,
     MALLOC_STATE_USED
 };
@@ -37,24 +36,32 @@ private:
     size_t last_pde_entry = 0;
     size_t last_pte_entry = 0;
 
+    // Base address
+public:
     // Free memory
     size_t available_memory = 0;
     size_t used_memory = 0;
-    size_t commited_memory_pages = 0;
 
-    // Base address
+    size_t committed_memory_pages = 0;
     uint64_t base_address = 0;
-public:
+    size_t entry_count = 0;
+
     void init();
     void commit_page(); // Add page and map it.
     void* alloc(size_t len);
     void free(void* ptr);
+    void merge_block();
+    void print_memory_entries();
 };
 
 void heap_init();
 void* kmalloc(size_t len);
 void kfree(void* ptr);
 void commit_page();
-
+void merge_blocks();
+void heap_print_entries();
+uint64_t heap_get_available_memory();
+uint64_t heap_get_used_memory();
+uint64_t heap_get_used_virtual_memory();
 
 #endif //KITTY_OS_CPP_HEAP_HPP

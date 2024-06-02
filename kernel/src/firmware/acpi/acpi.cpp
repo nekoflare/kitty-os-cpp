@@ -47,6 +47,21 @@ void acpi_parse_mcfg(acpi_mcfg* _mcfg_table)
     kstd::printf("[ACPI] [MCFG] Done!\n");
 }
 
+acpi_madt* madt_table = nullptr;
+
+void acpi_parse_madt(acpi_madt* _madt_table)
+{
+    kstd::printf("[ACPI] [MADT] Parsing MADT table...\n");
+
+    madt_table = _madt_table;
+
+    kstd::printf("[ACPI] [MADT] Done!\n");
+}
+
+acpi_madt* acpi_get_madt()
+{
+    return madt_table;
+}
 
 void acpi_init()
 {
@@ -93,6 +108,11 @@ void acpi_init()
         if (sdt->signature == 'GFCM') // MCFG but in reverse order
         {
             acpi_parse_mcfg(reinterpret_cast<acpi_mcfg*>(table));
+        }
+
+        if (sdt->signature == 'CIPA') // APIC but in reverse order
+        {
+            acpi_parse_madt(reinterpret_cast<acpi_madt*>(table));
         }
 
         i++;

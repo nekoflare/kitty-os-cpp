@@ -1,4 +1,4 @@
-PML4e address: 3F52000
+PML4e address: 7FF52000
 [PMM] Recalculating memory.
 [PMM] The largest address: 10000000000.
 [PMM] Boundaries of memory: 0 - 1.0 (TB).
@@ -6,229 +6,78 @@ PML4e address: 3F52000
 [PMM] New rounded boundaries of memory: 0 - 1.0 (TB).
 [PMM] Space required for the bitmap: 32.0 (MB)
 [PMM] Found perfect entry for the bitmap.
-4. 100000 -> 39BA000 (Usable memory) (56.7265625 MB)
+4. 100000 -> 7F2D1000 (Usable memory) (1.986148834228515625 GB)
 [PMM] Recalculating memory.
 [PMM] The bitmap address is: FFFF800000100000.
 BITMAP ADDRESS: FFFF800000100000
 [PMM] Finished!
 Initializing heap.
-PML4e entry: 1FE
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
 PDPe entry: 0
 PDe entry: 0
 PTe entry: 0
-[HEAP] Entry: 1FE 0 0 0
 PDPE ptr: 4F000
 PDE ptr: 50000
 PTE ptr: 51000
-Invalidated.
-Tag address: FFFFFF0000000000
-[PMM] Printing memory map entries: 
-    0. 1000 -> 4E000 (Bootloader reclaimable memory) (308.0 KB)
-    1. 4E000 -> 9F000 (Usable memory) (324.0 KB)
-    2. 9FC00 -> A0000 (Reserved memory) (1.0 KB)
-    3. F0000 -> 100000 (Reserved memory) (64.0 KB)
-    4. 2100000 -> 39BA000 (Usable memory) (24.7265625 MB)
-    5. 39BA000 -> 39BF000 (Bootloader reclaimable memory) (20.0 KB)
-    6. 39BF000 -> 3AAE000 (Kernel and modules (Reserved)) (956.0 KB)
-    7. 3AAE000 -> 3B37000 (Bootloader reclaimable memory) (548.0 KB)
-    8. 3B37000 -> 3F21000 (Usable memory) (3.9140625 MB)
-    9. 3F21000 -> 3FDF000 (Bootloader reclaimable memory) (760.0 KB)
-    10. 3FDF000 -> 4000000 (Reserved memory) (132.0 KB)
-    11. B0000000 -> C0000000 (Reserved memory) (256.0 MB)
-    12. FD000000 -> FD3E8000 (Framebuffer memory) (3.90625 MB)
-    13. FED1C000 -> FED20000 (Reserved memory) (16.0 KB)
-    14. FFFC0000 -> 100000000 (Reserved memory) (256.0 KB)
-    15. FD00000000 -> 10000000000 (Reserved memory) (12.0 GB)
-[PMM] Overall memory: 12.28501224517822265625 (GB)
-[PMM] Free memory: 28.95703125 (MB)
-[PMM] Reserved memory: 12.25673389434814453125 (GB)
-[PMM] Bad memory: 0.0 (B)
-[PMM] Unusable memory: 12.25044727325439453125 (GB)
-[PMM] Free pages: 7.2392578125 [KP]
-[PMM] Unaligned memory entries  (to the page): 
-    2. 9FC00 -> A0000 (Reserved memory) (1.0 KB)
-[[ END ]]
 We have 32-bit SMBIOS.
-SMBIOS pointer: FFFF8000000F52D0
-Number of structures: 9
+SMBIOS pointer: FFFF8000000F52B0
+Number of structures: 10
 [ACPI] Initializing...
-RSDP address: FFFF8000000F52B0
-RSDT address: FFFF800003FE2505
+RSDP address: FFFF8000000F5290
+RSDT address: FFFF80007FFE271E
 XSDT address: 0
 [ACPI] [RSDT] Entry count: 5
-[ACPI] [RSDT] Entry 0: 3FE22D5
-[ACPI] [RSDT] Entry 1: 3FE23C9
-[ACPI] [RSDT] Entry 2: 3FE2469
-[ACPI] [RSDT] Entry 3: 3FE24A1
-[ACPI] [RSDT] Entry 4: 3FE24DD
+[ACPI] [RSDT] Entry 0: 7FFE24BE
+[ACPI] [RSDT] Entry 1: 7FFE25B2
+[ACPI] [RSDT] Entry 2: 7FFE2682
+[ACPI] [RSDT] Entry 3: 7FFE26BA
+[ACPI] [RSDT] Entry 4: 7FFE26F6
 FACP
 APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
 HPET
 MCFG
 [ACPI] [MCFG] Parsing MCFG table...
 [ACPI] [MCFG] Done!
 WAET
 [ACPI] Done!
-Drivers: Driver name: Bochs video adapter driver.
-Author: Piotr
-Version:Pre-release 1.00
-Description:Simple driver to do simple things.
-
-Driver name: Intel HD Audio driver
-Author: Piotr 12.05.2024
-Version:Pre-release 1.0.0
-Description:Basic audio driver for IHDA.
-
-Driver name: PC UART COM port controller.
-Author: Piotr
-Version:Pre-release 1.00
-Description:Basic UART controller.
-
-Driver name: VMWare SVGA II driver.
-Author: Piotr
-Version:Pre-release 1.00
-Description:Basic graphics driver.
-
-Vendor: Intel Device ID: 82G33/G31/P35/P31 Express DRAM Controller
-Vendor: QEMU / Bochs Device ID: VGA display
-[BV] Starting...
-[BV] Done!
-Vendor: Intel Device ID: 82574L Gigabit Network Connection
-The driver is already loaded!
-[PCI-e] Initializing PCI express...
-[PCI-e] Entry count: 1
-Base address: B0000000
-PCI Segment group: 0000
-Start bus number: 00
-End bus number: FF
-
-[PCI-e] Done!
-[PC-UART] Starting...
-[PC-UART] Finished.
-320x200@15
-320x200@16
-320x200@24
-640x480@15
-640x480@16
-640x480@24
-800x600@15
-800x600@16
-800x600@24
-1024x768@15
-1024x768@16
-1024x768@24
-1280x1024@15
-1280x1024@16
-1280x1024@24
-1600x1200@15
-1600x1200@16
-1600x1200@24
-320x200@32
-640x400@32
-640x480@32
-800x600@32
-1024x768@32
-1280x1024@32
-1600x1200@32
-1152x864@15
-1152x864@16
-1152x864@24
-1152x864@32
-1280x768@16
-1280x768@24
-1280x768@32
-1280x800@16
-1280x800@24
-1280x800@32
-1280x960@16
-1280x960@24
-1280x960@32
-1440x900@16
-1440x900@24
-1440x900@32
-1400x1050@16
-1400x1050@24
-1400x1050@32
-1680x1050@16
-1680x1050@24
-1680x1050@32
-1920x1200@16
-1920x1200@24
-1920x1200@32
-2560x1600@16
-2560x1600@24
-2560x1600@32
-1280x720@16
-1280x720@24
-1280x720@32
-1920x1080@16
-1920x1080@24
-1920x1080@32
-1600x900@16
-1600x900@24
-1600x900@32
-2560x1440@16
-2560x1440@24
-2560x1440@32
-3840x2160@16
-[BV] IOCTL message: 0
-[BV] Changing screen resolution to 1920x1080 @ 32...
-ST = 0
-Drivers: Driver name: Bochs video adapter driver.
-Author: Piotr
-Version:Pre-release 1.00
-Description:Simple driver to do simple things.
-
-Driver name: Intel HD Audio driver
-Author: Piotr 12.05.2024
-Version:Pre-release 1.0.0
-Description:Basic audio driver for IHDA.
-
-Driver name: PC UART COM port controller.
-Author: Piotr
-Version:Pre-release 1.00
-Description:Basic UART controller.
-
-Driver name: VMWare SVGA II driver.
-Author: Piotr
-Version:Pre-release 1.00
-Description:Basic graphics driver.
-
-Dumping SMBIOS information...
-(0). Unknown entry type(1). System Information(2). System Enclosure or Chassis(3). Processor Information(4). Physical Memory Array(5). Memory Device(6). Memory Array Mapped Address(7). System Boot Information(8). End-Of-Table[PMM] Printing memory map entries: 
+Drivers: Dumping SMBIOS information...
+(0). Unknown entry type(1). System Information(2). System Enclosure or Chassis(3). Processor Information(4). Physical Memory Array(5). Memory Device(6). Memory Array Mapped Address(7). Memory Array Mapped Address(8). System Boot Information(9). End-Of-Table[PMM] Printing memory map entries: 
     0. 1000 -> 4E000 (Bootloader reclaimable memory) (308.0 KB)
     1. 4E000 -> 9F000 (Usable memory) (324.0 KB)
     2. 9FC00 -> A0000 (Reserved memory) (1.0 KB)
     3. F0000 -> 100000 (Reserved memory) (64.0 KB)
-    4. 2100000 -> 39BA000 (Usable memory) (24.7265625 MB)
-    5. 39BA000 -> 39BF000 (Bootloader reclaimable memory) (20.0 KB)
-    6. 39BF000 -> 3AAE000 (Kernel and modules (Reserved)) (956.0 KB)
-    7. 3AAE000 -> 3B37000 (Bootloader reclaimable memory) (548.0 KB)
-    8. 3B37000 -> 3F21000 (Usable memory) (3.9140625 MB)
-    9. 3F21000 -> 3FDF000 (Bootloader reclaimable memory) (760.0 KB)
-    10. 3FDF000 -> 4000000 (Reserved memory) (132.0 KB)
-    11. B0000000 -> C0000000 (Reserved memory) (256.0 MB)
-    12. FD000000 -> FD3E8000 (Framebuffer memory) (3.90625 MB)
-    13. FED1C000 -> FED20000 (Reserved memory) (16.0 KB)
-    14. FFFC0000 -> 100000000 (Reserved memory) (256.0 KB)
-    15. FD00000000 -> 10000000000 (Reserved memory) (12.0 GB)
-[PMM] Overall memory: 12.28501224517822265625 (GB)
-[PMM] Free memory: 28.95703125 (MB)
-[PMM] Reserved memory: 12.25673389434814453125 (GB)
+    4. 2100000 -> 7F2D1000 (Usable memory) (1.954898834228515625 GB)
+    5. 7F2D1000 -> 7F3BB000 (Bootloader reclaimable memory) (936.0 KB)
+    6. 7F3BB000 -> 7F3BD000 (Kernel and modules (Reserved)) (8.0 KB)
+    7. 7F3BD000 -> 7F3C1000 (Bootloader reclaimable memory) (16.0 KB)
+    8. 7F3C1000 -> 7F3D2000 (Kernel and modules (Reserved)) (68.0 KB)
+    9. 7F3D2000 -> 7F3E3000 (Bootloader reclaimable memory) (68.0 KB)
+    10. 7F3E3000 -> 7F7D0000 (Kernel and modules (Reserved)) (3.92578125 MB)
+    11. 7F7D0000 -> 7FFDF000 (Bootloader reclaimable memory) (8.05859375 MB)
+    12. 7FFDF000 -> 80000000 (Reserved memory) (132.0 KB)
+    13. B0000000 -> C0000000 (Reserved memory) (256.0 MB)
+    14. FD000000 -> FD300000 (Framebuffer memory) (3.0 MB)
+    15. FED1C000 -> FED20000 (Reserved memory) (16.0 KB)
+    16. FFFC0000 -> 100000000 (Reserved memory) (256.0 KB)
+    17. 100000000 -> 280000000 (Usable memory) (6.0 GB)
+    18. FD00000000 -> 10000000000 (Reserved memory) (12.0 GB)
+[PMM] Overall memory: 20.22162723541259765625 (GB)
+[PMM] Free memory: 7.95519256591796875 (GB)
+[PMM] Reserved memory: 12.26641941070556640625 (GB)
 [PMM] Bad memory: 0.0 (B)
 [PMM] Unusable memory: 12.25044727325439453125 (GB)
-[PMM] Free pages: 7.2392578125 [KP]
+[PMM] Free pages: 1.9887981414794921875 [MP]
 [PMM] Unaligned memory entries  (to the page): 
     2. 9FC00 -> A0000 (Reserved memory) (1.0 KB)
 [[ END ]]
-FFFFFF0000000000
-Auto aligning the length.
-New size: 10.
-FFFFFF0000000000
-Auto aligning the length.
-New size: 10.
-FFFFFF0000000000
-Auto aligning the length.
-New size: 10.
-Freed memory: FFFFFF0000000010.
-Hello, World!
+ST = 0
+[Kernel] Using PCI express.
+This CPU is AMD.
+Virtual bus width: 57
+Physical bus width: 40
+Model name: QEMU TCG CPU version 2.5+
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2, 

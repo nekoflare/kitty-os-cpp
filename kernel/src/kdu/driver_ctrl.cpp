@@ -4,7 +4,7 @@
 
 #include "driver_ctrl.hpp"
 
-bool driver_ctrl_find_and_call(pci_handle_t pci_handle)
+bool driver_ctrl_find_and_call(pci_dev* pci_handle)
 {
     size_t driver_array_size = (__driver_array_end - __driver_array);
 
@@ -23,26 +23,24 @@ bool driver_ctrl_find_and_call(pci_handle_t pci_handle)
             auto* pci_requirement = &driver_entry.requirements[i];
 
             if (pci_requirement->match_requirement == PCI_REQ_VD &&
-                pci_requirement->device_id == pci_handle.device_id &&
-                pci_requirement->vendor_id == pci_handle.vendor_id
+                pci_requirement->device_id == pci_handle->device_id &&
+                pci_requirement->vendor_id == pci_handle->vendor_id
             )
             {
                 // call it.
-                driver_entry.driver_entry(&pci_handle);
-                driver_entry.is_loaded = true;
+                driver_entry.driver_entry(pci_handle);
 
                 return true;
             }
 
             if (pci_requirement->match_requirement == PCI_REQ_CSP &&
-                pci_requirement->_class == pci_handle._class &&
-                pci_requirement->subclass == pci_handle.subclass &&
-                pci_requirement->prog_if == pci_handle.prog_if
+                pci_requirement->_class == pci_handle->class_code &&
+                pci_requirement->subclass == pci_handle->subclass_code &&
+                pci_requirement->prog_if == pci_handle->prog_if_code
             )
             {
                 // call it.
-                driver_entry.driver_entry(&pci_handle);
-                driver_entry.is_loaded = true;
+                driver_entry.driver_entry(pci_handle);
 
                 return true;
             }

@@ -15,6 +15,7 @@ class Bitmap
 protected:
     T* gBitmap;
     size_t gSize;
+    size_t last_free_block = 0;
 public:
     // Set the bit in the bitmap
     void Set(size_t idx)
@@ -83,14 +84,32 @@ public:
     // Returns index of first unset bit.
     size_t FindFirstCleared()
     {
-        for (size_t i = 0; i < this->gSize * sizeof(T); ++i)
+        if (last_free_block != 0)
         {
-            if (!this->Check(i))
+            for (size_t i = last_free_block; i < this->gSize * sizeof(T); ++i)
             {
-                return i;
+                if (!this->Check(i))
+                {
+                    last_free_block = i;
+                    return i;
+                }
             }
         }
-        return SIZE_MAX; // Indicate no unset bit found
+        else
+        {
+            for (size_t i = 0; i < this->gSize * sizeof(T); ++i)
+            {
+                if (!this->Check(i))
+                {
+                    last_free_block = i;
+                    return i;
+                }
+            }
+        }
+
+        kstd::printf("NO BLOCK FOUND!!");
+        unreachable();
+        return 0; // Indicate no unset bit found
     }
 
     // Returns the index of the continuous block of set bits.

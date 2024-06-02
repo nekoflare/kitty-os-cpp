@@ -422,7 +422,14 @@ void PMMBitmap::unmark_addrs_in_range(uint64_t address, size_t len)
 uint64_t pmm_alloc_page()
 {
     uint64_t addr = pmm_bitmap_controller.FindFirstCleared() * 4096;
+    if (addr == 0)
+    {
+        kstd::printf("pmm_alloc_page(): OOM\n");
+        unreachable();
+    }
     pmm_bitmap_controller.Set(addr / 4096);
+    pmm_usable_memory -= 4096;
+    // kstd::printf("Usable memory: %f [%%]\n", ((double)pmm_usable_memory / (double)pmm_overall_memory) * 100);
     return addr;
 }
 
@@ -430,4 +437,5 @@ void pmm_free_page(uint64_t addr)
 {
     uint64_t idx = addr / 4096;
     pmm_bitmap_controller.Clear(idx);
+    pmm_usable_memory += 4096;
 }

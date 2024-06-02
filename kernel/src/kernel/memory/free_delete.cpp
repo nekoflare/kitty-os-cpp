@@ -6,6 +6,7 @@
 
 // Overload new operator
 void* operator new(size_t size) {
+    // kstd::printf("[ALLOC] Size: %llx\n", size);
     return kmalloc(size);
 }
 

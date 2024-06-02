@@ -5,6 +5,7 @@
 #include "idt.hpp"
 #include <kstd/kstdio.hpp>
 #include <control/control.hpp>
+#include "../../kernel_calls/kcalls.hpp"
 
 const char* exception_strings[32] = {
         "(#DE) Division Error",
@@ -104,11 +105,21 @@ static void print_page_fault_info(Registers_x86_64& regs) {
         kstd::printf("SGX violation. ");
     }
 
+    kstd::putc('\n');
+    vmm_test(reinterpret_cast<void*>(faulting_address));
+
     kstd::printf("\n");
 }
 
 extern "C" void interrupt_handler(Registers_x86_64* regs)
 {
+    if (regs->interrupt_number == 0x81)
+    {
+        kcall_handler(regs);
+
+        return;
+    }
+
     kstd::printf("We've received an interrupt!\n");
 
     kstd::printf("RAX: %lx RBX: %lx RCX: %lx RDX: %lx\nR8: %lx R9: %lx R10: %lx R11: %lx\nR12: %lx R13: %lx R14: %lx R15: %lx\nRSI: %lx RDI: %lx RBP: %lx\nRSP: %lx CS@RIP: %lx@%lx\n",
