@@ -2,6 +2,7 @@
 // Created by Piotr on 13.05.2024.
 //
 
+#include <functional>
 #include "heap.hpp"
 
 void Heap::init()
@@ -159,23 +160,22 @@ void Heap::merge_block() {
     }
 }
 
-void* Heap::alloc(size_t len)
+void* Heap::alloc_normal(size_t len)
 {
-try_again:
+    // Calculate size of tag structure once
+    size_t tag_size = sizeof(struct malloc_tag);
+
+    try_again:
     // Get the first entry.
     struct malloc_tag* this_tag = reinterpret_cast<struct malloc_tag*>(this->base_address);
 
-    if (len % 32 != 0)
-    {
-        //kstd::printf("Auto aligning the length.\n");
-        len += (32 - (len % 32)) % 32;
-        //kstd::printf("New size: %llx.\n", len);
-    }
+    // Align length to a multiple of 32
+    len += (32 - (len % 32)) % 32;
 
     // Iterate through the tags to find a suitable free block.
     for (size_t i = 0; i < this->entry_count; i++)
     {
-        if (this_tag->state == MALLOC_STATE_FREE && this_tag->length + sizeof(struct malloc_tag)> (len + sizeof(struct malloc_tag)))
+        if (this_tag->state == MALLOC_STATE_FREE && this_tag->length >= (len + tag_size))
         {
             // Found a suitable free block.
             // Record the original length.
@@ -186,32 +186,248 @@ try_again:
             this_tag->state = MALLOC_STATE_USED;
 
             // Calculate the address for the new tag.
-            uint64_t new_tag_address = reinterpret_cast<uint64_t>(this_tag) + len + sizeof(struct malloc_tag);
-            struct malloc_tag* new_tag = reinterpret_cast<struct malloc_tag*>(new_tag_address);
+            struct malloc_tag* new_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uintptr_t>(this_tag) + len + tag_size);
 
             // Set up the new tag with the remaining length.
-            new_tag->length = original_length - len - sizeof(struct malloc_tag);
+            new_tag->length = original_length - len - tag_size;
             new_tag->state = MALLOC_STATE_FREE;
 
             // Update entry count to reflect the new free block.
             this->entry_count++;
 
             // Update available and used memory.
-            this->available_memory -= (len + sizeof(struct malloc_tag));
-            this->used_memory += (len + sizeof(struct malloc_tag));
+            this->available_memory -= (len + tag_size);
+            this->used_memory += (len + tag_size);
 
             // Return the address after the current tag's metadata.
-            return reinterpret_cast<void*>(reinterpret_cast<uint64_t>(this_tag) + sizeof(struct malloc_tag));
+            return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(this_tag) + tag_size);
         }
 
         // Move to the next tag.
-        this_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uint64_t>(this_tag) + this_tag->length + sizeof(struct malloc_tag));
+        this_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uintptr_t>(this_tag) + this_tag->length + tag_size);
     }
 
     commit_page();
     goto try_again;
 }
 
+#pragma GCC push_options
+#pragma GCC target("avx")
+void* Heap::alloc_avx(size_t len)
+{
+    // Calculate size of tag structure once
+    size_t tag_size = sizeof(struct malloc_tag);
+
+    try_again:
+    // Get the first entry.
+    struct malloc_tag* this_tag = reinterpret_cast<struct malloc_tag*>(this->base_address);
+
+    // Align length to a multiple of 32
+    len += (32 - (len % 32)) % 32;
+
+    // Iterate through the tags to find a suitable free block.
+    for (size_t i = 0; i < this->entry_count; i++)
+    {
+        if (this_tag->state == MALLOC_STATE_FREE && this_tag->length >= (len + tag_size))
+        {
+            // Found a suitable free block.
+            // Record the original length.
+            uint64_t original_length = this_tag->length;
+
+            // Adjust the length of the current tag to reflect the allocated block.
+            this_tag->length = len;
+            this_tag->state = MALLOC_STATE_USED;
+
+            // Calculate the address for the new tag.
+            struct malloc_tag* new_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uintptr_t>(this_tag) + len + tag_size);
+
+            // Set up the new tag with the remaining length.
+            new_tag->length = original_length - len - tag_size;
+            new_tag->state = MALLOC_STATE_FREE;
+
+            // Update entry count to reflect the new free block.
+            this->entry_count++;
+
+            // Update available and used memory.
+            this->available_memory -= (len + tag_size);
+            this->used_memory += (len + tag_size);
+
+            // Return the address after the current tag's metadata.
+            return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(this_tag) + tag_size);
+        }
+
+        // Move to the next tag.
+        this_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uintptr_t>(this_tag) + this_tag->length + tag_size);
+    }
+
+    commit_page();
+    goto try_again;
+}
+#pragma GCC pop_options
+
+#pragma GCC push_options
+#pragma GCC target("avx2")
+void* Heap::alloc_avx2(size_t len)
+{
+    // Calculate size of tag structure once
+    size_t tag_size = sizeof(struct malloc_tag);
+
+    try_again:
+    // Get the first entry.
+    struct malloc_tag* this_tag = reinterpret_cast<struct malloc_tag*>(this->base_address);
+
+    // Align length to a multiple of 32
+    len += (32 - (len % 32)) % 32;
+
+    // Iterate through the tags to find a suitable free block.
+    for (size_t i = 0; i < this->entry_count; i++)
+    {
+        if (this_tag->state == MALLOC_STATE_FREE && this_tag->length >= (len + tag_size))
+        {
+            // Found a suitable free block.
+            // Record the original length.
+            uint64_t original_length = this_tag->length;
+
+            // Adjust the length of the current tag to reflect the allocated block.
+            this_tag->length = len;
+            this_tag->state = MALLOC_STATE_USED;
+
+            // Calculate the address for the new tag.
+            struct malloc_tag* new_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uintptr_t>(this_tag) + len + tag_size);
+
+            // Set up the new tag with the remaining length.
+            new_tag->length = original_length - len - tag_size;
+            new_tag->state = MALLOC_STATE_FREE;
+
+            // Update entry count to reflect the new free block.
+            this->entry_count++;
+
+            // Update available and used memory.
+            this->available_memory -= (len + tag_size);
+            this->used_memory += (len + tag_size);
+
+            // Return the address after the current tag's metadata.
+            return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(this_tag) + tag_size);
+        }
+
+        // Move to the next tag.
+        this_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uintptr_t>(this_tag) + this_tag->length + tag_size);
+    }
+
+    commit_page();
+    goto try_again;
+}
+#pragma GCC pop_options
+
+#pragma GCC push_options
+#pragma GCC target("sse4.1")
+void* Heap::alloc_sse4_1(size_t len)
+{
+    // Calculate size of tag structure once
+    size_t tag_size = sizeof(struct malloc_tag);
+
+    try_again:
+    // Get the first entry.
+    struct malloc_tag* this_tag = reinterpret_cast<struct malloc_tag*>(this->base_address);
+
+    // Align length to a multiple of 32
+    len += (32 - (len % 32)) % 32;
+
+    // Iterate through the tags to find a suitable free block.
+    for (size_t i = 0; i < this->entry_count; i++)
+    {
+        if (this_tag->state == MALLOC_STATE_FREE && this_tag->length >= (len + tag_size))
+        {
+            // Found a suitable free block.
+            // Record the original length.
+            uint64_t original_length = this_tag->length;
+
+            // Adjust the length of the current tag to reflect the allocated block.
+            this_tag->length = len;
+            this_tag->state = MALLOC_STATE_USED;
+
+            // Calculate the address for the new tag.
+            struct malloc_tag* new_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uintptr_t>(this_tag) + len + tag_size);
+
+            // Set up the new tag with the remaining length.
+            new_tag->length = original_length - len - tag_size;
+            new_tag->state = MALLOC_STATE_FREE;
+
+            // Update entry count to reflect the new free block.
+            this->entry_count++;
+
+            // Update available and used memory.
+            this->available_memory -= (len + tag_size);
+            this->used_memory += (len + tag_size);
+
+            // Return the address after the current tag's metadata.
+            return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(this_tag) + tag_size);
+        }
+
+        // Move to the next tag.
+        this_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uintptr_t>(this_tag) + this_tag->length + tag_size);
+    }
+
+    commit_page();
+    goto try_again;
+}
+#pragma GCC pop_options
+
+#pragma GCC push_options
+#pragma GCC target("ssse3")
+#pragma GCC target("sse4.1")
+#pragma GCC target("sse4.2")
+void* Heap::alloc_sse4_2(size_t len)
+{
+    // Calculate size of tag structure once
+    size_t tag_size = sizeof(struct malloc_tag);
+
+    try_again:
+    // Get the first entry.
+    struct malloc_tag* this_tag = reinterpret_cast<struct malloc_tag*>(this->base_address);
+
+    // Align length to a multiple of 32
+    len += (32 - (len % 32)) % 32;
+
+    // Iterate through the tags to find a suitable free block.
+    for (size_t i = 0; i < this->entry_count; i++)
+    {
+        if (this_tag->state == MALLOC_STATE_FREE && this_tag->length >= (len + tag_size))
+        {
+            // Found a suitable free block.
+            // Record the original length.
+            uint64_t original_length = this_tag->length;
+
+            // Adjust the length of the current tag to reflect the allocated block.
+            this_tag->length = len;
+            this_tag->state = MALLOC_STATE_USED;
+
+            // Calculate the address for the new tag.
+            struct malloc_tag* new_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uintptr_t>(this_tag) + len + tag_size);
+
+            // Set up the new tag with the remaining length.
+            new_tag->length = original_length - len - tag_size;
+            new_tag->state = MALLOC_STATE_FREE;
+
+            // Update entry count to reflect the new free block.
+            this->entry_count++;
+
+            // Update available and used memory.
+            this->available_memory -= (len + tag_size);
+            this->used_memory += (len + tag_size);
+
+            // Return the address after the current tag's metadata.
+            return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(this_tag) + tag_size);
+        }
+
+        // Move to the next tag.
+        this_tag = reinterpret_cast<struct malloc_tag*>(reinterpret_cast<uintptr_t>(this_tag) + this_tag->length + tag_size);
+    }
+
+    commit_page();
+    goto try_again;
+}
+#pragma GCC pop_options
 
 void Heap::free(void* ptr)
 {
@@ -252,7 +468,7 @@ void heap_print_entries()
 
 void* kmalloc(size_t len)
 {
-    return heap.alloc(len);
+    return (heap.*heap.alloc_fn)(len);
 }
 
 void kfree(void* ptr)
@@ -268,7 +484,30 @@ void commit_page()
 void heap_init()
 {
     heap.init();
+
+    if (CPUInfo::HasAVX2()) {
+        heap.alloc_fn = &Heap::alloc_avx2;
+        kstd::printf("Using AVX2 malloc function.\n");
+    }
+    else if (CPUInfo::HasAVX()) {
+        heap.alloc_fn = &Heap::alloc_avx;
+        kstd::printf("Using AVX malloc function.\n");
+    }
+    else if (CPUInfo::HasSSE4_2()) {
+        heap.alloc_fn = &Heap::alloc_sse4_2;
+        kstd::printf("Using SSE4.2 malloc function.\n");
+    }
+    else if (CPUInfo::HasSSE4_1()) {
+        heap.alloc_fn = &Heap::alloc_sse4_1;
+        kstd::printf("Using SSE4.1 malloc function.\n");
+    }
+    else {
+        heap.alloc_fn = &Heap::alloc_normal;
+        kstd::printf("Using default malloc function.\n");
+    }
 }
+
+
 uint64_t heap_get_available_memory()
 {
 

@@ -47,6 +47,43 @@ namespace CPUInfo
         cpuid(1, eax, ebx, ecx, edx);
         return (ecx >> 20) & 1;
     }
+
+    bool HasFPU()
+    {
+        uint32_t eax, ebx, ecx, edx;
+        cpuid(1, eax, ebx, ecx, edx);
+        return (edx) & 1;
+    }
+
+    bool HasSSE4a()
+    {
+        uint32_t eax, ebx, ecx, edx;
+        cpuid(0x80000001, eax, ebx, ecx, edx);
+        return (ecx >> 6) & 1;
+    }
+
+    bool HasAVX()
+    {
+        uint32_t eax, ebx, ecx, edx;
+        cpuid(1, eax, ebx, ecx, edx);
+        return (ecx >> 28) & 1;
+    }
+
+    bool HasAVX2()
+    {
+        uint32_t eax, ebx, ecx, edx;
+        ecx = 0;
+        cpuid(7, eax, ebx, ecx, edx);
+        return (ebx >> 5) & 1;
+    }
+
+    bool HasAVX512_F()
+    {
+        uint32_t eax, ebx, ecx, edx;
+        ecx = 0;
+        cpuid(7, eax, ebx, ecx, edx);
+        return (ecx >> 28) & 1;
+    }
 }
 
 bool CPUInfo::IsAMD()

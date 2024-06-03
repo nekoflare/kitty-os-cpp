@@ -23,6 +23,7 @@
 #include <kstd/kvector.hpp>
 #include <exec/elf/loader.hpp>
 #include <libs/cpuinfo/cpuinfo.hpp>
+#include <kernel/irqs/uniirq.hpp>
 
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
@@ -50,6 +51,18 @@ void aio_pci_init()
     }
 }
 
+void memset_qw(void *ptr, uint64_t value, size_t count) {
+    uint64_t *p = (uint64_t *)ptr;
+    for (size_t i = 0; i < count; ++i) {
+        p[i] = value;
+    }
+}
+
+void irq0_clock(Registers_x86_64* regs)
+{
+    kstd::printf(".");
+}
+
 extern "C" void kernel_main()
 {
     for (size_t i = 0; &__init_array[i] != __init_array_end; i++)
@@ -61,6 +74,7 @@ extern "C" void kernel_main()
     kstd::InitializeTerminal();
     flush_gdt();
     flush_idt();
+    uniirq_init();
     enable_interrupts();
 
     vmm_init();
@@ -68,9 +82,12 @@ extern "C" void kernel_main()
     heap_init();
     smbios_init();
     acpi_init();
-    //irqs_init();
     //unreachable();
     //aio_pci_init();
+
+    uirq_register_irq(0, &irq0_clock);
+    uirq_unmask_irq(0);
+
     driver_ctrl_call_ald();
     driver_ctrl_enumerate_drivers();
     smbios_dump_info();
@@ -117,10 +134,18 @@ extern "C" void kernel_main()
         kstd::printf("SSE3, ");
     if (CPUInfo::HasSupplementalSSE3())
         kstd::printf("SSSE3, ");
+    if (CPUInfo::HasSSE4a())
+        kstd::printf("SSE4a, ");
     if (CPUInfo::HasSSE4_1())
         kstd::printf("SSE4.1, ");
     if (CPUInfo::HasSSE4_2())
         kstd::printf("SSE4.2, ");
+    if (CPUInfo::HasAVX())
+        kstd::printf("AVX, ");
+    if (CPUInfo::HasAVX2())
+        kstd::printf("AVX2, ");
+    if (CPUInfo::HasAVX512_F())
+        kstd::printf("AVX512-F");
 
     [[nodiscard]] while (true)
     {

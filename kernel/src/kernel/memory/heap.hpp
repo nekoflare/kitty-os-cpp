@@ -12,6 +12,7 @@
 #include <kernel/memory/pmm.hpp>
 #include <kernel/memory/vmm.hpp>
 #include <control/control.hpp>
+#include <libs/cpuinfo/cpuinfo.hpp>
 
 enum malloc_state
 {
@@ -38,6 +39,9 @@ private:
 
     // Base address
 public:
+    using AllocFnPtr = void* (Heap::*)(size_t);
+    AllocFnPtr alloc_fn = nullptr;
+
     // Free memory
     size_t available_memory = 0;
     size_t used_memory = 0;
@@ -48,10 +52,15 @@ public:
 
     void init();
     void commit_page(); // Add page and map it.
-    void* alloc(size_t len);
     void free(void* ptr);
     void merge_block();
     void print_memory_entries();
+
+    void* alloc_normal(size_t len);
+    void* alloc_avx(size_t len);
+    void* alloc_avx2(size_t len);
+    void* alloc_sse4_1(size_t len);
+    void* alloc_sse4_2(size_t len);
 };
 
 void heap_init();

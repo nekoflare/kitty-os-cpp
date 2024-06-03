@@ -76,6 +76,18 @@ void flush_idt();
 extern "C" void enable_interrupts();
 extern "C" void disable_interrupts();
 extern "C" void flush_idt_asm(IDTR* idtr);
-bool hook_interrupt(size_t index, void (*new_interrupt_handler)(Registers_x86_64*));
+
+typedef void (*idt_function_pointer)(Registers_x86_64*);
+
+struct intr
+{
+    int int_idx;
+    idt_function_pointer fn;
+    intr* next;
+};
+
+void idt_attach_interrupt(int int_idx, idt_function_pointer fn);
+void hook_interrupt(int int_idx, idt_function_pointer fn);
+void idt_internal_call(int int_idx, Registers_x86_64* regs);
 
 #endif //KITTY_OS_CPP_IDT_HPP

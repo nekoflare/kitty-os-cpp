@@ -5,6 +5,7 @@
 #include "idt.hpp"
 #include <kstd/kstdio.hpp>
 #include <control/control.hpp>
+#include <kernel/irqs/pic/pic.hpp>
 #include "../../kernel_calls/kcalls.hpp"
 
 const char* exception_strings[32] = {
@@ -36,19 +37,6 @@ const char* exception_strings[32] = {
         "(#SX) Security Exception",
         "(#--) Reserved"
 };
-
-void (*custom_interrupt_handlers[256])(Registers_x86_64*) = { nullptr };
-
-bool hook_interrupt(size_t index, void (*new_interrupt_handler)(Registers_x86_64*))
-{
-    if (custom_interrupt_handlers[index] != nullptr)
-    {
-        custom_interrupt_handlers[index] = new_interrupt_handler;
-        return true;
-    }
-
-    return false;
-}
 
 static inline uint64_t read_cr2()
 {
@@ -120,6 +108,18 @@ extern "C" void interrupt_handler(Registers_x86_64* regs)
         return;
     }
 
+    if (regs->interrupt_number >= 0x90 && regs->interrupt_number <= 0xa0)
+    {
+        uint64_t irq = regs->interrupt_number - 0x90;
+        // kstd::printf("We got data from PIC: IRQ%d\n", static_cast<unsigned int>(irq));
+
+        idt_internal_call(regs->interrupt_number, regs);
+
+        pic_send_eoi(irq);
+
+        return;
+    }
+
     kstd::printf("We've received an interrupt!\n");
 
     kstd::printf("RAX: %lx RBX: %lx RCX: %lx RDX: %lx\nR8: %lx R9: %lx R10: %lx R11: %lx\nR12: %lx R13: %lx R14: %lx R15: %lx\nRSI: %lx RDI: %lx RBP: %lx\nRSP: %lx CS@RIP: %lx@%lx\n",
@@ -128,13 +128,6 @@ extern "C" void interrupt_handler(Registers_x86_64* regs)
                  regs->r12, regs->r13, regs->r13, regs->r15,
                  regs->rsi, regs->rdi, regs->rbp, regs->rsp,
                  regs->cs, regs->rip);
-
-    if (custom_interrupt_handlers[regs->interrupt_number] != nullptr)
-    {
-        custom_interrupt_handlers[regs->interrupt_number](regs);
-
-        return;
-    }
 
     if (regs->interrupt_number < 32)
     {
@@ -154,7 +147,6 @@ extern "C" void interrupt_handler(Registers_x86_64* regs)
     return;
 }
 
-
 void flush_idt()
 {
     IDTR idtr = {
@@ -163,4 +155,41 @@ void flush_idt()
     };
 
     flush_idt_asm(&idtr);
+}
+
+intr* head = nullptr;
+void idt_attach_interrupt(int int_idx, idt_function_pointer fn) {
+    intr* new_intr = new intr;
+    new_intr->int_idx = int_idx;
+    new_intr->fn = fn;
+    new_intr->next = nullptr;
+
+    if (head == nullptr) {
+        head = new_intr;
+        return;
+    }
+
+    intr* current = head;
+    while (current->next != nullptr) {
+        current = current->next;
+    }
+    current->next = new_intr;
+}
+
+void hook_interrupt(int int_idx, idt_function_pointer fn)
+{
+    idt_attach_interrupt(int_idx, fn);
+}
+void idt_internal_call(int int_idx, Registers_x86_64* regs)
+{
+    auto thead = head;
+    while (thead != nullptr)
+    {
+        if (thead->int_idx == int_idx)
+        {
+            thead->fn(regs);
+        }
+
+        thead = thead->next;
+    }
 }
