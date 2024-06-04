@@ -72,7 +72,7 @@ override SHARED_FLAGS := \
     -static \
     -Isrc/kkd \
     -pedantic \
-    -Ofast \
+    -O3 \
 
 # Internal C++ flags that should not be changed by the user.
 override CXXFLAGS += \

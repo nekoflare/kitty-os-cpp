@@ -12,11 +12,11 @@ bool driver_ctrl_find_and_call(pci_dev* pci_handle)
     {
         __attribute__((aligned(0x10))) struct driver_entry_t driver_entry = __driver_array[i];
 
-        if (driver_entry.is_loaded)
-        {
-            kstd::printf("The driver is already loaded!\n");
-            continue;
-        }
+        //if (driver_entry.is_loaded)
+        //{
+         //   kstd::printf("The driver is already loaded!\n");
+        //    continue;
+        //}
 
         for (size_t i = 0; driver_entry.requirements_count > i; i++)
         {

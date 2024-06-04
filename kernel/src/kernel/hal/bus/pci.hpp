@@ -61,6 +61,7 @@ struct pci_dev
     size_t bus, slot, function;
 
     bool is_pcie;
+    acpi_mcfg_base_address_allocation_structure* str;
 
     uint8_t header_type;
     void* raw_pci_device_data;
@@ -110,9 +111,20 @@ extern const size_t pci_db_count;
 void pci_init();
 void pcie_init();
 
+void pcix_add_device(pci_dev* dev);
+
+const char* pci_get_device_name(const uint16_t vendor_id, const uint16_t device_id, const uint16_t subsystem_vendor_id, const uint16_t subsystem_device_id);
+
+void pcie_enable_bus_mastering(pci_dev* dev);
+void pcie_enable_io_mastering(pci_dev* dev);
+void pcie_enable_mem_mastering(pci_dev* dev);
+
+void pci_dump_database();
+
 constexpr uint64_t pcie_create_mmio(acpi_mcfg_base_address_allocation_structure* structure, size_t bus_index, size_t slot_index, size_t function_index, size_t offset)
 {
-    return 0;
+    uint64_t address = ((((bus_index * 256) + (slot_index * 8)) + function_index) * 4096) + offset + structure->base_address;
+    return address;
 }
 
 #endif //KITTY_OS_CPP_PCI_HPP

@@ -24,6 +24,10 @@
 #include <exec/elf/loader.hpp>
 #include <libs/cpuinfo/cpuinfo.hpp>
 #include <kernel/irqs/uniirq.hpp>
+#include <devices/ps2/mouse/ps2_mouse.hpp>
+#include <devices/ata/ata.hpp>
+#include <ramvfs/ramvfs.hpp>
+#include <libs/imgdraw/imgdraw.hpp>
 
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
@@ -58,9 +62,11 @@ void memset_qw(void *ptr, uint64_t value, size_t count) {
     }
 }
 
+uint64_t clk = 0;
 void irq0_clock(Registers_x86_64* regs)
 {
-    kstd::printf(".");
+    clk ++;
+    //kstd::printf(".");
 }
 
 extern "C" void kernel_main()
@@ -82,8 +88,7 @@ extern "C" void kernel_main()
     heap_init();
     smbios_init();
     acpi_init();
-    //unreachable();
-    //aio_pci_init();
+    aio_pci_init();
 
     uirq_register_irq(0, &irq0_clock);
     uirq_unmask_irq(0);
@@ -93,20 +98,25 @@ extern "C" void kernel_main()
     smbios_dump_info();
     pmm_print_memory_information();
 
-
     //pci_dev_hdr_common* hdr = pci_get_hdr(0, 0, 0);
     //pci_dev_enumerate(pci_dev_head);
 
+    auto lfb = Framebuffer::GetFramebuffer(0);
+    for (size_t i = 0; lfb->mode_count > i; i++)
+    {
+        auto m = lfb->modes[i];
+        kstd::printf("%lld x %lld @ %hd\n", m->width, m->height, m->bpp);
+    }
+
     GpuResolution res = {
-            .width = 1920,
-            .height = 1080,
+            .width = 2048,
+            .height = 1536,
             .bpp = 32
     };
-    driver_status_t st = ioctl_auto(DT_GPU, nullptr, GPU_SET_RESOLUTION, reinterpret_cast<const char*>(&res), nullptr);
+    //driver_status_t st = ioctl_auto(DT_GPU, nullptr, GPU_SET_RESOLUTION, reinterpret_cast<const char*>(&res), nullptr);
 
-    kstd::printf("ST = %llx\n", st);
+    //kstd::printf("ST = %llx\n", st);
 
-    aio_pci_init();
 
     if (CPUInfo::IsAMD())
     {
@@ -146,6 +156,13 @@ extern "C" void kernel_main()
         kstd::printf("AVX2, ");
     if (CPUInfo::HasAVX512_F())
         kstd::printf("AVX512-F");
+    kstd::printf("\n");
+
+    ps2_mouse_init();
+
+    //pci_dump_database();
+
+    
 
     [[nodiscard]] while (true)
     {

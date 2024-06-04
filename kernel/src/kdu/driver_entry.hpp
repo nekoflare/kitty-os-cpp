@@ -22,6 +22,7 @@ typedef enum __attribute__((aligned(0x10))) driver_load : uint32_t {
 
 typedef enum __attribute__((aligned(0x10))) driver_types : uint32_t {
     DT_SERIAL,
+    DT_STORAGE,
     DT_USB_1_0_SERIAL,
     DT_GPU,
     DT_AUDIO,

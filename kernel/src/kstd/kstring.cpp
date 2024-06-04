@@ -164,6 +164,13 @@ namespace kstd
         return originalDestination;
     }
 
+    int strcmp(const char* str1, const char* str2)
+    {
+        size_t idx = 0;
+        while (str1[idx] == str2[idx] && str1[idx] != 0 && str2[idx] != 0) idx++;
+        return str1[idx] - str2[idx];
+    }
+
 }
 
 kstd::string::string(const char* str)

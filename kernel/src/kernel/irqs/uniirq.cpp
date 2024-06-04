@@ -10,13 +10,13 @@ bool using_apic = false;
 void uirq_mask_irq(int irq)
 {
     if (using_apic) return;
-
+    kstd::printf("Masking IRQ%d using PIC.\n", irq);
     irq_set_mask(irq);
 }
 void uirq_unmask_irq(int irq)
 {
     if (using_apic) return;
-
+    kstd::printf("Unmasking IRQ%d using PIC.\n", irq);
     irq_clear_mask(irq);
 }
 

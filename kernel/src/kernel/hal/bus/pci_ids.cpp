@@ -1,10 +1,9 @@
-#include <cstddef>
 #include "pci.hpp"
+#include <cstddef>
 
 const size_t pci_db_count = 35320;
 
 pci_db_entry pci_db[] = {
-    {0x1234, 0x1111, 0x0000, 0x0000, "(QEMU) VGA adapter"},
     {0x0010, 0x8139, 0x0000, 0x0000, "(Allied Telesis, Inc (Wrong ID)) AT-2500TX V3 Ethernet"},
     {0x0014, 0x7a00, 0x0000, 0x0000, "(Loongson Technology LLC) Hyper Transport Bridge Controller"},
     {0x0014, 0x7a02, 0x0000, 0x0000, "(Loongson Technology LLC) APB (Advanced Peripheral Bus) Controller"},
@@ -19942,13 +19941,13 @@ pci_db_entry pci_db[] = {
     {0x1500, 0x1360, 0x0000, 0x0000, "(DELTA Electronics, Inc) RTL81xx RealTek Ethernet"},
     {0x1507, 0x0001, 0x0000, 0x0000, "(Motorola \?\? / HTEC) MPC105 [Eagle]"},
     {0x1507, 0x0002, 0x0000, 0x0000, "(Motorola \?\? / HTEC) MPC106 [Grackle]"},
-    {0x1507, 0x0003, 0x0000, 0x0000, "(Motorola \?? / HTEC) MPC8240 [Kahlua]"},
-    {0x1507, 0x0100, 0x0000, 0x0000, "(Motorola \?? / HTEC) MC145575 [HFC-PCI]"},
-    {0x1507, 0x0431, 0x0000, 0x0000, "(Motorola \?? / HTEC) KTI829c 100VG"},
-    {0x1507, 0x4801, 0x0000, 0x0000, "(Motorola \?? / HTEC) Raven"},
-    {0x1507, 0x4802, 0x0000, 0x0000, "(Motorola \?? / HTEC) Falcon"},
-    {0x1507, 0x4803, 0x0000, 0x0000, "(Motorola \?? / HTEC) Hawk"},
-    {0x1507, 0x4806, 0x0000, 0x0000, "(Motorola \?? / HTEC) CPX8216"},
+    {0x1507, 0x0003, 0x0000, 0x0000, "(Motorola \?\? / HTEC) MPC8240 [Kahlua]"},
+    {0x1507, 0x0100, 0x0000, 0x0000, "(Motorola \?\? / HTEC) MC145575 [HFC-PCI]"},
+    {0x1507, 0x0431, 0x0000, 0x0000, "(Motorola \?\? / HTEC) KTI829c 100VG"},
+    {0x1507, 0x4801, 0x0000, 0x0000, "(Motorola \?\? / HTEC) Raven"},
+    {0x1507, 0x4802, 0x0000, 0x0000, "(Motorola \?\? / HTEC) Falcon"},
+    {0x1507, 0x4803, 0x0000, 0x0000, "(Motorola \?\? / HTEC) Hawk"},
+    {0x1507, 0x4806, 0x0000, 0x0000, "(Motorola \?\? / HTEC) CPX8216"},
     {0x1516, 0x0800, 0x0000, 0x0000, "(MYSON Technology Inc) MTD-8xx 100/10M Ethernet PCI Adapter"},
     {0x1516, 0x0803, 0x0000, 0x0000, "(MYSON Technology Inc) SURECOM EP-320X-S 100/10M Ethernet PCI Adapter"},
     {0x1516, 0x1320, 0x0000, 0x0000, "(MYSON Technology Inc) 10bd  SURECOM EP-320X-S 100/10M Ethernet PCI Adapter"},
