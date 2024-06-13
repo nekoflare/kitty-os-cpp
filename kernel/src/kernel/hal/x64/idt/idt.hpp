@@ -67,7 +67,7 @@ constexpr GateDescriptor64 IDT_ENTRY(
 
 struct Registers_x86_64
 {
-    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rdi, rsi, rbp, rsp, rdx, rcx, rbx, rax, interrupt_number, error_code, rip, cs, rflags, orig_rsp, ss;
+    uint64_t cr3, gs, fs, es, ds, r15, r14, r13, r12, r11, r10, r9, r8, rdi, rsi, rbp, rsp, rdx, rcx, rbx, rax, interrupt_number, error_code, rip, cs, rflags, orig_rsp, ss;
 } __attribute__((packed));
 
 extern volatile GateDescriptor64 idt[256];
@@ -76,6 +76,7 @@ void flush_idt();
 extern "C" void enable_interrupts();
 extern "C" void disable_interrupts();
 extern "C" void flush_idt_asm(IDTR* idtr);
+void print_registers(Registers_x86_64* regs);
 
 typedef void (*idt_function_pointer)(Registers_x86_64*);
 
@@ -89,5 +90,6 @@ struct intr
 void idt_attach_interrupt(int int_idx, idt_function_pointer fn);
 void hook_interrupt(int int_idx, idt_function_pointer fn);
 void idt_internal_call(int int_idx, Registers_x86_64* regs);
+void idt_enable_sched();
 
 #endif //KITTY_OS_CPP_IDT_HPP

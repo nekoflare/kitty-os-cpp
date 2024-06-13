@@ -1,0 +1,1443 @@
+PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+KernelTerminal ~ > heheehl
+Command "heheehl" not found.
+KernelTerminal ~ > 
+KernelTerminal ~ > okay it works!
+Command "okay" not found.
+KernelTerminal ~ > asdASDASD
+Command "asdASDASD" not found.
+KernelTerminal ~ > PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+We've received an interrupt!
+RAX: 0000000000000000 RBX: 00000000FFFFFF16 RCX: 000000000000002F RDX: 00000000000003F8
+RSI: FFFFFFFF80269DDC RDI: 0000000000000000 RBP: 00000000FFFFFF16 RSP: FFFF800000F4BE48
+R8:  FFFFFFFF80252508 R9:  0000000000000004 R10: 0000000000000001 R11: FFFF8000E830075C
+R12: 00000000FFFFFF16 R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+RIP: FFFFFFFF80000173
+CS: 8  DS: 10 SS: 10 ES: 10 FS: 10 GS: 10
+Orig RSP: FFFF800000F4BEA0 CR3: 0000000000F3B000
+Error code: 0000000000000000 Interrupt index: 000000000000000E
+RFLAGS: PF ZF IF RF 
+(#PF) Page Fault
+Linear address where the issue happened: 6C
+The error has been caused by: non-present page. Read access. Kernel mode. 
+[VMM] Getting physical address of addr 6C.
+[VMM] PML4e address: FFFF800000F3B000.
+[VMM] PDPe address: FFFF800000F36000
+[VMM] PDe address: FFFF800000F35000
+[VMM] PTe address: FFFF800000F34000
+[VMM] Physical address: 0
+Flags for PML4e: 
+Present, Read/Write, User, 
+Flags for PDPe: 
+Present, Read/Write, User, 
+Flags for PDe: 
+Present, Read/Write, User, 
+Flags for PTe: 
+Supervisor, 
+
+PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+No FADT.
+(S:M:H) 22 22 22KernelTerminal ~ > PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+No FADT.
+(S:M:H) 72 57 24KernelTerminal ~ > PML4e address: F3D000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+No FADT.
+(S:M:H) 22 64 24KernelTerminal ~ > PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+(S:M:H) 22 50 18KernelTerminal ~ > PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+Current year: 3224
+KernelTerminal ~ > PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+Current century: 32
+Current year: 24
+KernelTerminal ~ > PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+Current century: 32
+Current year: 24
+KernelTerminal ~ > PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+Current year: 2024
+KernelTerminal ~ > Get-Time
+Command "Get-Time" not found.
+KernelTerminal ~ > PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+We've received an interrupt!
+RAX: 0000000000000020 RBX: 0000000000000018 RCX: 000000000000002F RDX: 000000000000000A
+RSI: FFFFFFFF80269F3C RDI: 0000000000000000 RBP: 0000000000000006 RSP: FFFF800000F4BE18
+R8:  FFFFFFFF80252668 R9:  0000000000000004 R10: 0000000000000001 R11: FFFF8000E830075C
+R12: 000000000000000D R13: 0000000000000013 R14: 0000000000000009 R15: 000000000000001C
+RIP: FFFFFFFF80000230
+CS: 8  DS: 10 SS: 10 ES: 10 FS: 10 GS: 10
+Orig RSP: FFFF800000F4BE70 CR3: 0000000000F3B000
+Error code: 0000000000000002 Interrupt index: 000000000000000E
+RFLAGS: SF IF RF 
+(#PF) Page Fault
+Linear address where the issue happened: 0
+The error has been caused by: non-present page. Write access. Kernel mode. 
+[VMM] Getting physical address of addr 0.
+[VMM] PML4e address: FFFF800000F3B000.
+[VMM] PDPe address: FFFF800000F36000
+[VMM] PDe address: FFFF800000F35000
+[VMM] PTe address: FFFF800000F34000
+[VMM] Physical address: 0
+Flags for PML4e: 
+Present, Read/Write, User, 
+Flags for PDPe: 
+Present, Read/Write, User, 
+Flags for PDe: 
+Present, Read/Write, User, 
+Flags for PTe: 
+Supervisor, 
+
+PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+We've received an interrupt!
+RAX: 0000000000000020 RBX: 0000000000000018 RCX: 000000000000002F RDX: 000000000000000A
+RSI: FFFFFFFF80269F3C RDI: 0000000000000000 RBP: 0000000000000006 RSP: FFFF800000F4BE18
+R8:  FFFFFFFF80252668 R9:  0000000000000004 R10: 0000000000000001 R11: FFFF8000E830075C
+R12: 000000000000000D R13: 0000000000000013 R14: 0000000000000009 R15: 0000000000000035
+RIP: FFFFFFFF80000230
+CS: 8  DS: 10 SS: 10 ES: 10 FS: 10 GS: 10
+Orig RSP: FFFF800000F4BE70 CR3: 0000000000F3B000
+Error code: 0000000000000002 Interrupt index: 000000000000000E
+RFLAGS: SF IF RF 
+(#PF) Page Fault
+Linear address where the issue happened: 0
+The error has been caused by: non-present page. Write access. Kernel mode. 
+[VMM] Getting physical address of addr 0.
+[VMM] PML4e address: FFFF800000F3B000.
+[VMM] PDPe address: FFFF800000F36000
+[VMM] PDe address: FFFF800000F35000
+[VMM] PTe address: FFFF800000F34000
+[VMM] Physical address: 0
+Flags for PML4e: 
+Present, Read/Write, User, 
+Flags for PDPe: 
+Present, Read/Write, User, 
+Flags for PDe: 
+Present, Read/Write, User, 
+Flags for PTe: 
+Supervisor, 
+
+PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+KernelTerminal ~ > Get-Time
+(30:10:19) [13.6.24]
+KernelTerminal ~ > PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+KernelTerminal ~ > Get-Time
+(33:11:19) [13.6.2024]
+KernelTerminal ~ > g Well done. Time is added to the ysst    system! But there's no public api for t it tho.." ' PML4e address: F3B000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+KernelTerminal ~ > TG  Get-Time
+Using FADT.
+(46:21:19) [13.6.2024]
+KernelTerminal ~ > rPML4e address: F3F000
+[PMM] Recalculating memory.
+[PMM] The largest address: 100000000.
+[PMM] Boundaries of memory: 0 - 4.0 (GB).
+[PMM] The rounded address is: 100000000.
+[PMM] New rounded boundaries of memory: 0 - 4.0 (GB).
+[PMM] Space required for the bitmap: 128.0 (KB)
+[PMM] Found perfect entry for the bitmap.
+	2. 4E000 -> 98000 (Usable memory) (296.0 KB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF80000004E000.
+BITMAP ADDRESS: 0xFFFF80000004E000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 6F000
+PDE ptr: 70000
+PTE ptr: 71000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F69B0
+Number of structures: 272
+[ACPI] Initializing...
+RSDP address: FFFF8000000F6A00
+RSDT address: FFFF800000EEE50F
+XSDT address: FFFF800000EEE4B3
+[ACPI] [RSDT] Entry count: 7
+[ACPI] [RSDT] Entry 0: EFEF67
+[ACPI] [RSDT] Entry 1: EEE83D
+[ACPI] [RSDT] Entry 2: EEE753
+[ACPI] [RSDT] Entry 3: EEE717
+[ACPI] [RSDT] Entry 4: EEE5AF
+[ACPI] [RSDT] Entry 5: EEE577
+[ACPI] [RSDT] Entry 6: EEE54F
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+BOOT
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+SRAT
+HPET
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:7190) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+Found device: (8086:7191) (Intel Corporation) 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+Found device: (8086:7110) (Intel Corporation) 82371AB/EB/MB PIIX4 ISA
+Found device: (15AD:0405) (VMware) SVGA II Adapter
+[VMW] Loaded VMWare SVGA II driver!
+IO port: 1070
+E8000000
+Found device: (1000:0030) (Broadcom / LSI) 53c1030 PCI-X Fusion-MPT Dual Ultra320 SCSI
+Found device: (15AD:0790) (VMware) PCI bridge
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:07A0) (VMware) PCI Express Root Port
+Found device: (15AD:0774) (VMware) USB1.1 UHCI Controller
+Found device: (8086:100F) (Intel Corporation) 82545EM Gigabit Ethernet Controller (Copper)
+Found device: (1274:1371) (Ensoniq) ES1371/ES1373 / Creative Labs CT2518
+Found device: (15AD:0770) (VMware) USB2 EHCI Controller
+Found device: (15AD:07E0) (VMware) SATA AHCI controller
+Initializing VMWSA device.
+Found device: (15AD:077A) Unknown device
+Unmasking IRQ1 using PIC.
+This CPU is AMD.
+Virtual bus width: 48
+Physical bus width: 45
+Model name: AMD Ryzen 5 2600 Six-Core Processor            
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+Creating new task.
+The RIP: FFFFFFFF80017E10
+The RSP: FFFFFA0000016220
+Printing all processes.
+Processes: 
+PID: 1 Name: krnl.exe
+Enabling sched.
+KernelTerminal ~ > Lock me up daddy.
+Scheding this shit.
+RAX: 0000000000000001 RBX: FFFFFFFF8024FFB0 RCX: FFFFFFFF8024FFB0 RDX: 0000000000000001
+RSI: 0000000000000000 RDI: FFFFFFFF8024DEA0 RBP: 0000000000000001 RSP: FFFF800000F4DD18
+R8:  0000000000000004 R9:  FFFF800000F4FE70 R10: FFFFFFFFFFFFFFFF R11: 0000000000002000
+R12: 0000000000000006 R13: 0000000000000004 R14: 0000000000000000 R15: FFFFFFFF8024FFB0
+RIP: FFFFFFFF8000DEC4
+CS: 8  DS: 10 SS: 10 ES: 10 FS: 10 GS: 10
+Orig RSP: FFFF800000F4DD78 CR3: 0000000000F3F000
+Error code: 0000000000000000 Interrupt index: 0000000000000090
+RFLAGS: IF 
+Basic graphics driver.
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000 RDX: 0000000000000000
+RSI: 0000000000000000 RDI: 0000000000000000 RBP: FFFFFA0000016220 RSP: FFFFFA0000016220
+R8:  0000000000000000 R9:  0000000000000000 R10: 0000000000000000 R11: 0000000000000000
+R12: 0000000000000000 R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+RIP: FFFFFFFF80017E10
+CS: 8  DS: 10 SS: 10 ES: 10 FS: 10 GS: 10
+Orig RSP: 0000000000000000 CR3: 0000000000F3F000
+Error code: 0000000000000000 Interrupt index: 0000000000000000
+RFLAGS: IF 
+(#DE) Division Error
+Scheduling...
+We've received an interrupt!
+RAX: FFFFFFFFFFFFFFFF RBX: FFFFFFFFFFFFFFFF RCX: 0000000000000000 RDX: 0000000000001000
+RSI: 0000000000000000 RDI: 0000000000000000 RBP: FFFFFA0000016220 RSP: FFFFFA00000161F8
+R8:  0000000000000000 R9:  0000000000000000 R10: 0000000000000000 R11: 0000000000000000
+R12: 0000000000000000 R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+RIP: FFFFFFFF80017DDF
+CS: 8  DS: 10 SS: 10 ES: 10 FS: 10 GS: 10
+Orig RSP: FFFFFA0000016250 CR3: 0000000000F3F000
+Error code: 000000000000FFFC Interrupt index: 000000000000000D
+RFLAGS: PF SF RF 
+(#GP) General Protection Fault

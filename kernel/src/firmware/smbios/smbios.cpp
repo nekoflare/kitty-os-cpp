@@ -43,10 +43,9 @@ void smbios_init() {
         return;
     }
 
-    kstd::printf("SMBIOS pointer: %lx\n", smbios_pointer);
+    kstd::printf("SMBIOS pointer: %p\n", smbios_pointer);
 
-
-    kstd::printf("Number of structures: %ld\n", static_cast<uint64_t>(smbios_32bit->number_of_structures));
+    kstd::printf("Number of structures: %zu\n", static_cast<size_t>(smbios_32bit->number_of_structures));
 
     smbios_get_entry(0);
 }
@@ -88,6 +87,6 @@ void smbios_dump_info()
         auto t = reinterpret_cast<SMBIOS_Tag*>(smbios_get_entry(i));
         auto name = smbios_entry_type_to_string(t->type);
 
-        kstd::printf("(%ld). %s", i, name);
+        kstd::printf("(%ld). %s\n", i + 1, name);
     }
 }

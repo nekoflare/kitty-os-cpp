@@ -82,7 +82,7 @@ _start:
 
     ; Align the stack
     mov rax, rsp
-    and ax, 0xFFF0
+    and ax, 0xFF00
     mov rsp,rax
 
     ; start the kernel

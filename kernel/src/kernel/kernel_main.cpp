@@ -24,10 +24,17 @@
 #include <exec/elf/loader.hpp>
 #include <libs/cpuinfo/cpuinfo.hpp>
 #include <kernel/irqs/uniirq.hpp>
-#include <devices/ps2/mouse/ps2_mouse.hpp>
+// #include <devices/ps2/mouse/ps2_mouse.hpp>
 #include <devices/ata/ata.hpp>
 #include <ramvfs/ramvfs.hpp>
 #include <libs/imgdraw/imgdraw.hpp>
+#include <kernel/clock.hpp>
+#include <debugging/debug_print.hpp>
+#include <kernel/hal/x64/tss/tss.hpp>
+#include <kernel/proc/processes.hpp>
+#include <kernel/kbd.hpp>
+#include <kernel_terminal/kt.hpp>
+#include <devices/rtc/rtc.hpp>
 
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
@@ -62,12 +69,7 @@ void memset_qw(void *ptr, uint64_t value, size_t count) {
     }
 }
 
-uint64_t clk = 0;
-void irq0_clock(Registers_x86_64* regs)
-{
-    clk ++;
-    //kstd::printf(".");
-}
+extern "C" void test_func();
 
 extern "C" void kernel_main()
 {
@@ -76,6 +78,7 @@ extern "C" void kernel_main()
         __init_array[i]();
     }
 
+    dbg_init();
     Framebuffer::Initialize();
     kstd::InitializeTerminal();
     flush_gdt();
@@ -86,37 +89,22 @@ extern "C" void kernel_main()
     vmm_init();
     pmm_init();
     heap_init();
+    clk_init();
     smbios_init();
     acpi_init();
     aio_pci_init();
 
-    uirq_register_irq(0, &irq0_clock);
-    uirq_unmask_irq(0);
-
     driver_ctrl_call_ald();
-    driver_ctrl_enumerate_drivers();
-    smbios_dump_info();
-    pmm_print_memory_information();
-
-    //pci_dev_hdr_common* hdr = pci_get_hdr(0, 0, 0);
-    //pci_dev_enumerate(pci_dev_head);
-
-    auto lfb = Framebuffer::GetFramebuffer(0);
-    for (size_t i = 0; lfb->mode_count > i; i++)
-    {
-        auto m = lfb->modes[i];
-        kstd::printf("%lld x %lld @ %hd\n", m->width, m->height, m->bpp);
-    }
+    //driver_ctrl_enumerate_drivers();
+    //smbios_dump_info();
+    //pmm_print_memory_information();
 
     GpuResolution res = {
             .width = 2048,
             .height = 1536,
             .bpp = 32
     };
-    //driver_status_t st = ioctl_auto(DT_GPU, nullptr, GPU_SET_RESOLUTION, reinterpret_cast<const char*>(&res), nullptr);
-
-    //kstd::printf("ST = %llx\n", st);
-
+    ioctl_auto(DT_GPU, nullptr, GPU_SET_RESOLUTION, reinterpret_cast<const char*>(&res), nullptr);
 
     if (CPUInfo::IsAMD())
     {
@@ -158,11 +146,20 @@ extern "C" void kernel_main()
         kstd::printf("AVX512-F");
     kstd::printf("\n");
 
-    ps2_mouse_init();
-
+    // ps2_mouse_init();
     //pci_dump_database();
 
+    tss_flush();
+    sched_init();
+    kstd::printf("Creating new task.\n");
+    proc_create_task(10, "krnl.exe", &test_func);
+    kstd::printf("Printing all processes.\n");
+    proc_print_all_processes();
+    kstd::printf("Enabling sched.\n");
+    idt_enable_sched();
     
+
+    kt_main();
 
     [[nodiscard]] while (true)
     {

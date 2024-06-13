@@ -7,6 +7,8 @@
 #include <kstd/kstring.hpp>
 #include <cstdarg>
 #include <kernel/hal/x64/io.hpp>
+#include <debugging/debug_print.hpp>
+#include <kernel_settings.hpp>
 
 namespace kstd
 {
@@ -128,14 +130,22 @@ namespace kstd
 
     void puts(const char* s)
     {
-        flanterm_write(ft_ctx, s, kstd::strlen(s));
+        if constexpr (kstd_enable_printing)
+        {
+            flanterm_write(ft_ctx, s, kstd::strlen(s));
+        }
         e9_puts(s);
+        dbg_write_str(s);
     }
 
     void putc(const char c)
     {
-        flanterm_write(ft_ctx, (const char*)&c, 1);
+        if constexpr (kstd_enable_printing)
+        {
+            flanterm_write(ft_ctx, (const char *) &c, 1);
+        }
         e9_putc(c);
+        dbg_write_chr(c);
     }
 
     void print_signed_integer(signed int si)
@@ -262,7 +272,7 @@ namespace kstd
         putc('.');
 
         // Print fractional part
-        const int maxPrecision = 100;
+        const int maxPrecision = 16;
         int precision = 0;
         while (precision < maxPrecision)
         {
@@ -379,7 +389,7 @@ namespace kstd
         }
 
         // Array to store hexadecimal digits
-        char hex_digits[32];
+        char hex_digits[32] = {"0"};
         int i = 0;
 
         // Extract hexadecimal digits
@@ -461,35 +471,65 @@ namespace kstd
         }
     }
 
+    bool print_hex_tailing_zeroes = false;
+
+    void enable_tailing_zeroes()
+    {
+        print_hex_tailing_zeroes = true;
+    }
+
+    void disable_tailing_zeroes()
+    {
+        print_hex_tailing_zeroes = false;
+    }
 
     void print_unsigned_long_long_hexadecimal(unsigned long long ull)
     {
-        // Handle the base case of 0
-        if (ull == 0)
-        {
-            putc('0');
-            return;
+        // Array to store hexadecimal digits, initialize with '0'
+        char hex_digits[16];
+        for (int i = 0; i < 16; i++) {
+            hex_digits[i] = '0';
         }
 
-        // Array to store hexadecimal digits
-        char hex_digits[32];
-        int i = 0;
+        // Variable to track the position in the array
+        int i = 15;
 
         // Extract hexadecimal digits
         while (ull != 0)
         {
             int remainder = ull % 16;
             if (remainder < 10)
-                hex_digits[i++] = '0' + remainder; // Convert to ASCII
+                hex_digits[i--] = '0' + remainder; // Convert to ASCII
             else
-                hex_digits[i++] = 'A' + (remainder - 10); // Convert to ASCII
+                hex_digits[i--] = 'A' + (remainder - 10); // Convert to ASCII
             ull /= 16;
         }
 
-        // Print hexadecimal digits in reverse order
-        for (int j = i - 1; j >= 0; j--)
+        // Print hexadecimal digits
+        if (print_hex_tailing_zeroes)
         {
-            putc(hex_digits[j]);
+            // Print all 16 characters, including trailing zeroes
+            for (int j = 0; j < 16; j++)
+            {
+                putc(hex_digits[j]);
+            }
+        }
+        else
+        {
+            // Print without trailing zeroes
+            bool leading_zeroes = true;
+            for (int j = 0; j < 16; j++)
+            {
+                if (hex_digits[j] != '0' || !leading_zeroes)
+                {
+                    putc(hex_digits[j]);
+                    leading_zeroes = false;
+                }
+            }
+            if (leading_zeroes)
+            {
+                putc('0');
+            }
         }
     }
 
@@ -670,13 +710,13 @@ namespace kstd
         }
     }
 
+
     void printf(const char* fmt, ...)
     {
         va_list args;
         va_start(args, fmt);
-
+        
         unsigned int uint;
-
         while (*fmt)
         {
             switch (*fmt)

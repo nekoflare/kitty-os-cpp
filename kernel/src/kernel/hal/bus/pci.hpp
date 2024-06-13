@@ -120,6 +120,7 @@ void pcie_enable_io_mastering(pci_dev* dev);
 void pcie_enable_mem_mastering(pci_dev* dev);
 
 void pci_dump_database();
+void pci_enumerate_devices();
 
 constexpr uint64_t pcie_create_mmio(acpi_mcfg_base_address_allocation_structure* structure, size_t bus_index, size_t slot_index, size_t function_index, size_t offset)
 {

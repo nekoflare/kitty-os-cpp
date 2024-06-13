@@ -77,7 +77,7 @@ typedef struct {
     uint16_t pmic0_revision_number;
     uint16_t rcd_manufacturer_id;
     uint16_t rcd_revision_number;
-} SMBIOS_MemoryDevice __attribute__((packed));
+} SMBIOS_MemoryDevice;
 
 enum MemoryDeviceType {
     TypeOther = 0x01,

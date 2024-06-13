@@ -22,14 +22,20 @@ namespace kstd
     char* strcpy(char* destination, const char* source);
     char* strcat(char* destination, const char* source);
     int strcmp(const char* str1, const char* str2);
+    char* strdup(const char* str);
+    char tolower(char c);
+    char toupper(char c);
+    bool isalpha(char c);
 
     class string
     {
     private:
         char* data;
         size_t length;
+        size_t capacity; // Add capacity to manage memory
 
     public:
+        // Iterator class definition
         class iterator {
         private:
             char* ptr;
@@ -61,25 +67,94 @@ namespace kstd
             }
         };
 
-        string() : data(nullptr), length(0) {}
-        string(const char* str);
-        ~string();
+        // Constructors and destructor
+        string() : data(nullptr), length(0), capacity(0) {}
 
-        string (const string& other);
+        string(const char* str) : data(nullptr), length(0), capacity(0) {
+            size_t len = strlen(str);
+            reserve(len + 1); // +1 for null terminator
+            strcpy(data, str);
+            length = len;
+        }
 
-        string& operator=(const string& other);
+        ~string() {
+            if (data) {
+                delete[] data;
+            }
+        }
 
-        size_t size() const;
-        bool empty() const;
-        const char* c_str() const;
+        string(const string& other) : data(nullptr), length(0), capacity(0) {
+            reserve(other.length + 1); // +1 for null terminator
+            strcpy(data, other.data);
+            length = other.length;
+        }
 
-        string& operator+=(const string& other);
-        string& operator+=(const char other);
+        // Assignment operator
+        string& operator=(const string& other) {
+            if (this != &other) {
+                reserve(other.length + 1); // +1 for null terminator
+                strcpy(data, other.data);
+                length = other.length;
+            }
+            return *this;
+        }
 
-        void reserve(size_t newCapacity);
+        // Capacity management
+        void reserve(size_t newCapacity) {
+            if (newCapacity > capacity) {
+                char* newData = new char[newCapacity];
+                if (data) {
+                    strcpy(newData, data);
+                    delete[] data;
+                }
+                data = newData;
+                capacity = newCapacity;
+            }
+        }
 
-        void clear();
+        // Size and empty check
+        size_t size() const {
+            return length;
+        }
 
+        bool empty() const {
+            return length == 0;
+        }
+
+        // Access to C-string
+        const char* c_str() const {
+            return data;
+        }
+
+        // Concatenation operators
+        string& operator+=(const string& other) {
+            size_t newLength = length + other.length;
+            reserve(newLength + 1); // +1 for null terminator
+            strcat(data, other.data);
+            length = newLength;
+            return *this;
+        }
+
+        string& operator+=(const char other) {
+            size_t newLength = length + 1;
+            reserve(newLength + 1); // +1 for null terminator
+            data[length] = other;
+            data[length + 1] = '\0'; // Null-terminate the string
+            length = newLength;
+            return *this;
+        }
+
+        // Clear the string
+        void clear() {
+            if (data) {
+                delete[] data;
+                data = nullptr;
+            }
+            length = 0;
+            capacity = 0;
+        }
+
+        // Iterator methods
         iterator begin() {
             return iterator(data);
         }
@@ -88,7 +163,7 @@ namespace kstd
             return iterator(data + length);
         }
 
-        // Alias for begin() and end()
+        // Const iterator methods
         iterator begin() const {
             return iterator(data);
         }

@@ -52,65 +52,82 @@ struct acpi_apic
     // After this we got interrupt controller structures
 } __attribute__((packed));
 
+struct GenericAddressStructure
+{
+    uint8_t AddressSpace;
+    uint8_t BitWidth;
+    uint8_t BitOffset;
+    uint8_t AccessSize;
+    uint64_t Address;
+};
+
 struct acpi_fadt
 {
     acpi_sdt_common common;
 
-    uint32_t firmware_ctrl; // Physical address of FACS
-    uint32_t dsdt_address; // Physical address of DSDT
-    uint8_t reserved;
-    uint8_t preferred_PM_profile;
-    uint16_t sci_int;
-    uint32_t smi_cmd;
-    uint8_t acpi_enable;
-    uint8_t acpi_disable;
-    uint8_t s4bios_req;
-    uint8_t pstate_cnt;
-    uint32_t PM1a_EVT_BLK;
-    uint32_t PM1b_EVT_BLK;
-    uint32_t PM1a_CNT_BLK;
-    uint32_t PM1b_CNT_BLK;
-    uint32_t PM2_CNT_BLK;
-    uint32_t PM_TMR_BLK;
-    uint32_t GPE0_BLK;
-    uint32_t GPE1_BLK;
-    uint8_t PM1_EVT_LEN;
-    uint8_t PM1_CNT_LEN;
-    uint8_t PM2_CNT_LEN;
-    uint8_t PM_TMR_LEN;
-    uint8_t GPE0_BLK_LEN;
-    uint8_t GPE1_BLK_LEN;
-    uint8_t GPE1_BASE;
-    uint8_t CST_CNT;
-    uint16_t P_LVL2_LAT;
-    uint16_t P_LVL3_LAT;
-    uint16_t FLUSH_SIZE;
-    uint16_t FLUSH_STRIDE;
-    uint8_t DUTY_OFFSET;
-    uint8_t DUTY_WIDTH;
-    uint8_t DAY_ALRM;
-    uint8_t MON_ALRM;
-    uint8_t CENTURY;
-    uint16_t IAPC_BOOT_ARCH;
-    uint8_t reserved2;
-    uint32_t flags;
-    uint8_t RESET_REG[12];
-    uint8_t RESET_VALUE;
-    uint16_t ARM_BOOT_ARCH;
-    uint8_t fadt_minor_version;
-    uint64_t X_FIRMWARE_CTRL;
-    uint64_t X_DSDT;
-    uint8_t X_PM1a_EVT_BLK[12];
-    uint8_t X_PM1b_EVT_BLK[12];
-    uint8_t X_PM1a_CNT_BLK[12];
-    uint8_t X_PM1b_CNT_BLK[12];
-    uint8_t X_PM2_CNT_BLK[12];
-    uint8_t X_PM_TMR_BLK[12];
-    uint8_t X_GPE0_BLK[12];
-    uint8_t X_GPE1_BLK[12];
-    uint8_t SLEEP_CONTROL_REG[12];
-    uint8_t SLEEP_STATUS_REG[12];
-    uint64_t hypervisor_vendor_identity;
+    uint32_t FirmwareCtrl;
+    uint32_t Dsdt;
+
+    // field used in ACPI 1.0; no longer in use, for compatibility only
+    uint8_t  Reserved;
+
+    uint8_t  PreferredPowerManagementProfile;
+    uint16_t SCI_Interrupt;
+    uint32_t SMI_CommandPort;
+    uint8_t  AcpiEnable;
+    uint8_t  AcpiDisable;
+    uint8_t  S4BIOS_REQ;
+    uint8_t  PSTATE_Control;
+    uint32_t PM1aEventBlock;
+    uint32_t PM1bEventBlock;
+    uint32_t PM1aControlBlock;
+    uint32_t PM1bControlBlock;
+    uint32_t PM2ControlBlock;
+    uint32_t PMTimerBlock;
+    uint32_t GPE0Block;
+    uint32_t GPE1Block;
+    uint8_t  PM1EventLength;
+    uint8_t  PM1ControlLength;
+    uint8_t  PM2ControlLength;
+    uint8_t  PMTimerLength;
+    uint8_t  GPE0Length;
+    uint8_t  GPE1Length;
+    uint8_t  GPE1Base;
+    uint8_t  CStateControl;
+    uint16_t WorstC2Latency;
+    uint16_t WorstC3Latency;
+    uint16_t FlushSize;
+    uint16_t FlushStride;
+    uint8_t  DutyOffset;
+    uint8_t  DutyWidth;
+    uint8_t  DayAlarm;
+    uint8_t  MonthAlarm;
+    uint8_t  Century;
+
+    // reserved in ACPI 1.0; used since ACPI 2.0+
+    uint16_t BootArchitectureFlags;
+
+    uint8_t  Reserved2;
+    uint32_t Flags;
+
+    // 12 byte structure; see below for details
+    GenericAddressStructure ResetReg;
+
+    uint8_t  ResetValue;
+    uint8_t  Reserved3[3];
+
+    // 64bit pointers - Available on ACPI 2.0+
+    uint64_t                X_FirmwareControl;
+    uint64_t                X_Dsdt;
+
+    GenericAddressStructure X_PM1aEventBlock;
+    GenericAddressStructure X_PM1bEventBlock;
+    GenericAddressStructure X_PM1aControlBlock;
+    GenericAddressStructure X_PM1bControlBlock;
+    GenericAddressStructure X_PM2ControlBlock;
+    GenericAddressStructure X_PMTimerBlock;
+    GenericAddressStructure X_GPE0Block;
+    GenericAddressStructure X_GPE1Block;
 } __attribute__((packed));
 
 struct acpi_mcfg
@@ -168,5 +185,6 @@ void acpi_init();
 
 acpi_mcfg* acpi_get_mcfg();
 acpi_madt* acpi_get_madt();
+acpi_fadt* acpi_get_fadt();
 
 #endif //KITTY_OS_CPP_ACPI_HPP

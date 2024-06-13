@@ -1,10 +1,3 @@
-//
-// Created by Piotr on 31.05.2024.
-//
-
-#ifndef KITTY_OS_CPP_KVECTOR_HPP
-#define KITTY_OS_CPP_KVECTOR_HPP
-
 #include <initializer_list>
 
 namespace kstd
@@ -98,23 +91,31 @@ namespace kstd
             --size;
         }
 
-        // Access element by index
-        T& operator[](size_t index)
+        // Erase an element at a specified position
+        void erase(size_t index)
         {
             if (index >= size)
             {
-                return nullptr;
+                return; // Index out of bounds
             }
+
+            // Shift elements to the left
+            for (size_t i = index; i < size - 1; ++i)
+            {
+                array[i] = array[i + 1];
+            }
+            --size;
+        }
+
+        // Access element by index
+        T& operator[](size_t index)
+        {
             return array[index];
         }
 
         // Access element by index (const version)
         const T& operator[](size_t index) const
         {
-            if (index >= size)
-            {
-               return nullptr;
-            }
             return array[index];
         }
 
@@ -172,7 +173,10 @@ namespace kstd
         {
             return iterator(array + size);
         }
+
+        bool empty() const
+        {
+            return size == 0;
+        }
     };
 }
-
-#endif // KITTY_OS_CPP_KVECTOR_HPP

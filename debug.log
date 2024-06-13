@@ -1,0 +1,69 @@
+PML4e address: 7FF52000
+[PMM] Recalculating memory.
+[PMM] The largest address: 10000000000.
+[PMM] Boundaries of memory: 0 - 1.0 (TB).
+[PMM] The rounded address is: 10000000000.
+[PMM] New rounded boundaries of memory: 0 - 1.0 (TB).
+[PMM] Space required for the bitmap: 32.0 (MB)
+[PMM] Found perfect entry for the bitmap.
+	5. 100000 -> 7F26A000 (Usable memory) (1.9857559204101562 GB)
+[PMM] Recalculating memory.
+[PMM] The bitmap address is: 0xFFFF800000100000.
+BITMAP ADDRESS: 0xFFFF800000100000
+[PMM] Finished!
+Initializing heap.
+PML4e: 1F4, Base address: FFFFFA0000000000
+PML4e entry: 1F4
+PDPe entry: 0
+PDe entry: 0
+PTe entry: 0
+PDPE ptr: 4F000
+PDE ptr: 50000
+PTE ptr: 51000
+Using AVX malloc function.
+Unmasking IRQ0 using PIC.
+We have 32-bit SMBIOS.
+SMBIOS pointer: 0xFFFF8000000F52A0
+Number of structures: 10
+[ACPI] Initializing...
+RSDP address: FFFF8000000F5280
+RSDT address: FFFF80007FFE274A
+XSDT address: 0
+[ACPI] [RSDT] Entry count: 5
+[ACPI] [RSDT] Entry 0: 7FFE24EA
+[ACPI] [RSDT] Entry 1: 7FFE25DE
+[ACPI] [RSDT] Entry 2: 7FFE26AE
+[ACPI] [RSDT] Entry 3: 7FFE26E6
+[ACPI] [RSDT] Entry 4: 7FFE2722
+FACP
+[ACPI] [FADT] Parsing FADT table...
+[ACPI] [FADT] Done!
+APIC
+[ACPI] [MADT] Parsing MADT table...
+[ACPI] [MADT] Done!
+HPET
+MCFG
+[ACPI] [MCFG] Parsing MCFG table...
+[ACPI] [MCFG] Done!
+WAET
+[ACPI] Done!
+[Kernel] Using PCI express.
+Found device: (8086:29C0) (Intel Corporation) 82G33/G31/P35/P31 Express DRAM Controller
+Found device: (1234:1111) Unknown device
+[BV] Starting...
+[BV] This device is using PCI-e.
+[BV] Done!
+Found device: (8086:10D3) (Intel Corporation) 82574L Gigabit Network Connection
+Found device: (1B36:000D) (Red Hat, Inc.) QEMU XHCI Host Controller
+Found device: (8086:2918) (Intel Corporation) 82801IB (ICH9) LPC Interface Controller
+Unmasking IRQ1 using PIC.
+[BV] IOCTL message: 0
+[BV] Changing screen resolution to 2048x1536 @ 32...
+This CPU is AMD.
+Virtual bus width: 57
+Physical bus width: 40
+Model name: QEMU TCG CPU version 2.5+
+Vendor ID: AuthenticAMD
+SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
+Current year: 3224
+KernelTerminal ~ > 

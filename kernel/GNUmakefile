@@ -58,27 +58,24 @@ override SHARED_FLAGS := \
     -fno-stack-check \
     -fno-lto \
     -fPIE \
-    -finline-functions \
-    -funroll-loops \
-    -ffast-math \
-    -fomit-frame-pointer \
-    -ftree-vectorize \
     -m64 \
     -march=x86-64 \
     -mno-mmx \
     -msse \
-    -msse2 \
+    -mno-sse2 \
     -mno-red-zone \
     -static \
     -Isrc/kkd \
     -pedantic \
     -O3 \
+    -ffunction-sections \
 
 # Internal C++ flags that should not be changed by the user.
 override CXXFLAGS += \
     -std=c++20 \
     -fno-rtti \
     -fno-exceptions \
+    -fno-use-cxa-atexit \
     -fno-threadsafe-statics \
     $(SHARED_FLAGS) \
 

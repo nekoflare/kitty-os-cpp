@@ -58,8 +58,21 @@ struct GDTSegmentDescriptor
     uint8_t base_three;
 } __attribute__((packed));
 
+struct gdt_system_segment_descriptor {
+    uint16_t limit0;
+    uint16_t base0;
+    uint8_t base1;
+    uint8_t access_byte;
+    uint8_t limit1 : 4;
+    uint8_t flags : 4;
+    uint8_t base2;
+    uint32_t base3;
+} __attribute__((packed));
+
 void flush_gdt();
 extern "C" void flush_gdt_asm(GDTR* gdtr);
+
+extern struct GDTSegmentDescriptor gdt[];
 
 #define GDT_ENTRY(_Base, _Limit, _Access, _Flags) {                    \
     .limit_one = static_cast<uint16_t>(_Limit & 0xFFFF),               \

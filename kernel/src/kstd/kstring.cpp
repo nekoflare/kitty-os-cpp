@@ -171,88 +171,40 @@ namespace kstd
         return str1[idx] - str2[idx];
     }
 
-}
+    char* strdup(const char* str)
+    {
+        if (str == nullptr)
+        {
+            return nullptr;
+        }
 
-kstd::string::string(const char* str)
-{
-    length = kstd::strlen(str);
-    data = new char[length + 1]; // +1 for termination
-    kstd::strcpy(data, str);
-}
+        // Allocate memory for the copy
+        size_t len = strlen(str) + 1; // +1 for the null terminator
+        char* copy = new char[len];
 
-kstd::string::~string()
-{
-    delete[] data;
-}
+        // Copy the string
+        strcpy(copy, str);
 
-kstd::string::string(const kstd::string& other)
-{
-    length = other.length;
-    data = new char[length + 1]; // +1 for termination
-    kstd::strcpy(data, other.data);
-}
-
-kstd::string& kstd::string::operator=(const kstd::string &other)
-{
-    if (this != &other) {
-        delete[] data;
-        length = other.length;
-        data = new char[length + 1]; // +1 for null terminator
-        kstd::strcpy(data, other.data);
+        return copy;
     }
-    return *this;
-}
 
-size_t kstd::string::size() const {
-    return length;
-}
-
-const char* kstd::string::c_str() const {
-    return data;
-}
-
-kstd::string& kstd::string::operator+=(const kstd::string &other) {
-    size_t newLength = length + other.length;
-    char* newData = new char[newLength + 1]; // +1 for null terminator
-    kstd::strcpy(newData, data);
-    kstd::strcat(newData, other.data);
-    delete[] data;
-    data = newData;
-    length = newLength;
-    return *this;
-}
-
-
-kstd::string& kstd::string::operator+=(const char other) {
-    char* new_data = new char[length + 2];
-    strcpy(new_data, data);
-    new_data[length] = other;
-    new_data[length + 1] = '\0'; // Null terminator
-    delete[] data;
-    data = new_data;
-    ++length;
-    return *this;
-}
-
-bool kstd::string::empty() const {
-    return length == 0;
-}
-
-void kstd::string::clear() {
-    delete[] data;
-    data = nullptr;
-    length = 0;
-}
-
-void kstd::string::reserve(size_t newCapacity)
-{
-    if (newCapacity <= length) return; // No need to reallocate
-
-    char* newData = new char[newCapacity];
-    if (data) {
-        kstd::memcpy(newData, data, length); // Copy existing data
-        delete[] data; // Delete old data
+    char tolower(char c)
+    {
+        if (c >= 'A' && c <= 'Z') {
+            return c + ('a' - 'A');
+        }
+        return c;
     }
-    data = newData;
-    length = newCapacity;
+
+    char toupper(char c)
+    {
+        if (c >= 'a' && c <= 'z') {
+            return c - ('a' - 'A');
+        }
+        return c;
+    }
+
+    bool isalpha(char c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
 }

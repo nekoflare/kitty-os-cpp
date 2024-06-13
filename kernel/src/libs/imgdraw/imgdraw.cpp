@@ -2,6 +2,7 @@
 // Created by Piotr on 04.06.2024.
 //
 
+#include <kstd/kstdio.hpp>
 #include "imgdraw.hpp"
 
 unsigned int *tga_parse(unsigned char *ptr, int size)

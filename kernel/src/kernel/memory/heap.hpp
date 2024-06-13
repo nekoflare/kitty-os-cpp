@@ -36,8 +36,6 @@ private:
     size_t last_pdpe_entry = 0;
     size_t last_pde_entry = 0;
     size_t last_pte_entry = 0;
-
-    // Base address
 public:
     using AllocFnPtr = void* (Heap::*)(size_t);
     AllocFnPtr alloc_fn = nullptr;

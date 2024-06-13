@@ -85,7 +85,7 @@ static void pmm_calculate_memory(limine_memmap_entry** entries, const size_t ent
             default:
                 if constexpr (pmm_verbose)
                 {
-                    kstd::printf("[PMM] There's an invalid memory map entry at index: %lx and has numeric type number of: %ld.\n", i, entry->type);
+                    kstd::printf("[PMM] Invalid memory map entry at index: %zx and has numeric type number of: %llu.\n", i + 1, entry->type);
                 }
                 break;
         }
@@ -95,7 +95,7 @@ static void pmm_calculate_memory(limine_memmap_entry** entries, const size_t ent
 static void pmm_print_memmap_entry(const size_t i, const limine_memmap_entry* entry)
 {
     mem_size s = pmm_calculate_effective_size(entry->length);
-    kstd::printf("%ld. %lx -> %lx (%s) (%f %sB)\n", i, entry->base, entry->base + entry->length,
+    kstd::printf("\t%zu. %llx -> %llx (%s) (%f %sB)\n", i + 1, entry->base, entry->base + entry->length,
                  pmm_limine_memmap_type_to_string(entry->type), s.size, s.prefix);
 }
 
@@ -176,7 +176,7 @@ void pmm_print_unaligned_memory_map_entries()
 
         if (entry->base % PAGE_SIZE != 0)
         {
-            kstd::printf("    "); // Add padding.
+            kstd::printf("\t"); // Add padding.
             pmm_print_memmap_entry(i, entry);
         }
     }
@@ -250,7 +250,7 @@ void pmm_init()
 
         if constexpr (pmm_verbose)
         {
-            kstd::printf("[PMM] The largest address: %lx.\n", max_address);
+            kstd::printf("[PMM] The largest address: %llx.\n", max_address);
 
             mem_size _size = pmm_calculate_effective_size(max_address);
             kstd::printf("[PMM] Boundaries of memory: 0 - %f (%sB).\n", _size.size, _size.prefix);
@@ -261,7 +261,7 @@ void pmm_init()
 
         if constexpr (pmm_verbose)
         {
-            kstd::printf("[PMM] The rounded address is: %lx.\n", rounded_max_address);
+            kstd::printf("[PMM] The rounded address is: %llx.\n", rounded_max_address);
 
             mem_size _size = pmm_calculate_effective_size(max_address);
             kstd::printf("[PMM] New rounded boundaries of memory: 0 - %f (%sB).\n", _size.size, _size.prefix);
@@ -318,7 +318,7 @@ void pmm_init()
 
         if constexpr (pmm_verbose)
         {
-            kstd::printf("[PMM] The bitmap address is: %lx.\n", pmm_memory_bitmap_raw);
+            kstd::printf("[PMM] The bitmap address is: %p.\n", static_cast<void*>(pmm_memory_bitmap_raw));
         }
 
         if (pmm_memory_bitmap_raw == nullptr)
@@ -329,7 +329,7 @@ void pmm_init()
             unreachable();
         }
 
-        kstd::printf("BITMAP ADDRESS: %llx\n", pmm_memory_bitmap_raw);
+        kstd::printf("BITMAP ADDRESS: %p\n", static_cast<void*>(pmm_memory_bitmap_raw));
 
         pmm_bitmap_controller.Initialize(pmm_memory_bitmap_raw, pmm_memory_bitmap_size);
 

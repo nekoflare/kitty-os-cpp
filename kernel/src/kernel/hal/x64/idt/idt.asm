@@ -45,11 +45,38 @@ isr_common:
     push r14
     push r15
 
+    xor rax, rax
+
+    mov ax, ds
+    push rax
+    mov ax, es
+    push rax
+    mov ax, fs
+    push rax
+    mov ax, gs
+    push rax
+
+    mov rax, cr3
+    push rax
+
     cld
 
     ; Push the address of the structure onto the stack
     lea rdi, [rsp]   ; Address of the saved registers
     call interrupt_handler
+
+    pop rax
+    mov cr3, rax
+
+    xor rax, rax
+    pop rax
+    mov gs, ax
+    pop rax
+    mov fs, ax
+    pop rax
+    mov es, ax
+    pop rax
+    mov ds, ax
 
     pop r15
     pop r14

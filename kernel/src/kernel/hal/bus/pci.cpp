@@ -114,7 +114,7 @@ void pcie_parse_device(acpi_mcfg_base_address_allocation_structure* structure, s
 
     if (hdr->device_id != 0xffff && hdr->vendor_id != 0xffff)
     {
-        kstd::printf("Found device: %s\n", pci_get_device_name(hdr->vendor_id, hdr->device_id, 0, 0));
+        kstd::printf("Found device: (%hx:%hx) %s\n", hdr->vendor_id, hdr->device_id, pci_get_device_name(hdr->vendor_id, hdr->device_id, 0, 0));
         pcie_call_driver(structure, data, bus_index, slot_index, 0);
         invalid_device_count = 0;
     }
@@ -185,8 +185,7 @@ void pci_dump_database()
     for (size_t i = 0; pci_db_count > i; i++)
     {
         auto e = pci_db[i];
-        if (e.subsystem_vendor_id != 0)
-            kstd::printf("(%zu). %s\n", i, e.name);
+        kstd::printf("(%zu). %s\n", i, e.name);
     }
 }
 
@@ -216,6 +215,26 @@ void pcie_init() {
 }
 
 pci_dev* pci_dev_head = nullptr;
+
+void pci_enumerate_devices()
+{
+    auto dev = pci_dev_head;
+
+    if (dev == nullptr)
+    {
+        kstd::printf("No devices have been found!\n");
+
+        return;
+    }
+
+    while (dev->next != nullptr)
+    {
+        auto name = pci_get_device_name(dev->vendor_id, dev->device_id, dev->subsystem_vendor_id, dev->subsystem_device_id);
+        if (dev->is_pcie)
+            kstd::printf("PCI-e [%lx : %lx : %lx : %lx] %s\n", dev->pci_segment, dev->bus, dev->slot, dev->function, name);
+        dev = dev->next;
+    }
+}
 
 void pcix_add_device(pci_dev* dev)
 {

@@ -20,6 +20,7 @@ acpi_rsdp* rsdp_table = nullptr;
 acpi_rsdt* rsdt_table = nullptr;
 acpi_xsdt* xsdt_table = nullptr;
 acpi_mcfg* mcfg_table = nullptr;
+acpi_fadt* fadt_table = nullptr;
 
 uint64_t* acpi_discovered_tables[512] = { nullptr };
 
@@ -36,6 +37,11 @@ void acpi_print_name(uint32_t s)
 acpi_mcfg* acpi_get_mcfg()
 {
     return mcfg_table;
+}
+
+acpi_fadt* acpi_get_fadt()
+{
+    return fadt_table;
 }
 
 void acpi_parse_mcfg(acpi_mcfg* _mcfg_table)
@@ -56,6 +62,15 @@ void acpi_parse_madt(acpi_madt* _madt_table)
     madt_table = _madt_table;
 
     kstd::printf("[ACPI] [MADT] Done!\n");
+}
+
+void acpi_parse_fadt(acpi_fadt* _fadt_table)
+{
+    kstd::printf("[ACPI] [FADT] Parsing FADT table...\n");
+
+    fadt_table = _fadt_table;
+
+    kstd::printf("[ACPI] [FADT] Done!\n");
 }
 
 acpi_madt* acpi_get_madt()
@@ -113,6 +128,11 @@ void acpi_init()
         if (sdt->signature == 'CIPA') // APIC but in reverse order
         {
             acpi_parse_madt(reinterpret_cast<acpi_madt*>(table));
+        }
+
+        if (sdt->signature == 'PCAF') // FACP but in reverse order
+        {
+            acpi_parse_fadt(reinterpret_cast<acpi_fadt*>(table));
         }
 
         i++;

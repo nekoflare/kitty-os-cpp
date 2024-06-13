@@ -29,6 +29,9 @@ namespace kstd
     int get_cursor_x();
     int get_cursor_y();
 
+    void enable_tailing_zeroes();
+    void disable_tailing_zeroes();
+
     void print_signed_integer(signed int si);
     void print_unsigned_integer_octal(unsigned int si);
     void print_unsigned_integer_hexadecimal(unsigned int si);

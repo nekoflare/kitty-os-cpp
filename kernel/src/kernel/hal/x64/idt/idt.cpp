@@ -7,6 +7,7 @@
 #include <control/control.hpp>
 #include <kernel/irqs/pic/pic.hpp>
 #include "../../kernel_calls/kcalls.hpp"
+#include <kernel/proc/processes.hpp>
 
 const char* exception_strings[32] = {
         "(#DE) Division Error",
@@ -98,6 +99,47 @@ static void print_page_fault_info(Registers_x86_64& regs) {
 
     kstd::printf("\n");
 }
+static void print_rflags(uint64_t rflags)
+{
+    if (rflags & 0x00000001) kstd::printf("CF ");
+    if (rflags & 0x00000004) kstd::printf("PF ");
+    if (rflags & 0x00000010) kstd::printf("AF ");
+    if (rflags & 0x00000040) kstd::printf("ZF ");
+    if (rflags & 0x00000080) kstd::printf("SF ");
+    if (rflags & 0x00000100) kstd::printf("TF ");
+    if (rflags & 0x00000200) kstd::printf("IF ");
+    if (rflags & 0x00000400) kstd::printf("DF ");
+    if (rflags & 0x00000800) kstd::printf("OF ");
+    if (rflags & 0x00010000) kstd::printf("RF ");
+    if (rflags & 0x00020000) kstd::printf("VM ");
+    if (rflags & 0x00040000) kstd::printf("AC ");
+    if (rflags & 0x00080000) kstd::printf("VIF ");
+    if (rflags & 0x00100000) kstd::printf("VIP ");
+    if (rflags & 0x00200000) kstd::printf("ID ");
+    if (rflags & 0x80000000) kstd::printf("AI ");
+    kstd::printf("\n");
+}
+
+void print_registers(Registers_x86_64* regs)
+{
+    kstd::enable_tailing_zeroes();
+    kstd::printf("RAX: %llx RBX: %llx RCX: %llx RDX: %llx\n", regs->rax, regs->rbx, regs->rcx, regs->rdx);
+    kstd::printf("RSI: %llx RDI: %llx RBP: %llx RSP: %llx\n", regs->rsi, regs->rdi, regs->rbp, regs->rsp);
+    kstd::printf("R8:  %llx R9:  %llx R10: %llx R11: %llx\n", regs->r8,  regs->r9,  regs->r10, regs->r11);
+    kstd::printf("R12: %llx R13: %llx R14: %llx R15: %llx\n", regs->r12, regs->r13, regs->r14, regs->r15);
+    kstd::printf("RIP: %llx\n", regs->rip);
+    kstd::disable_tailing_zeroes();
+    kstd::printf("CS: %llx  DS: %llx SS: %llx ES: %llx FS: %llx GS: %llx\n", regs->cs, regs->ds, regs->ss, regs->es, regs->fs, regs->gs);
+    kstd::enable_tailing_zeroes();
+    kstd::printf("Orig RSP: %llx CR3: %llx\n", regs->orig_rsp, regs->cr3);
+    kstd::printf("Error code: %llx Interrupt index: %llx\n", regs->error_code, regs->interrupt_number);
+    kstd::disable_tailing_zeroes();
+    kstd::printf("RFLAGS: ");
+    print_rflags(regs->rflags);
+    kstd::printf("%s\n", exception_strings[regs->interrupt_number]);
+}
+
+bool enabled_sched = false;
 
 extern "C" void interrupt_handler(Registers_x86_64* regs)
 {
@@ -111,30 +153,25 @@ extern "C" void interrupt_handler(Registers_x86_64* regs)
     if (regs->interrupt_number >= 0x90 && regs->interrupt_number <= 0xa0)
     {
         uint64_t irq = regs->interrupt_number - 0x90;
-        // kstd::printf("We got data from PIC: IRQ%d\n", static_cast<unsigned int>(irq));
+
+        //if (irq != 0)
+            //kstd::printf("We got data from PIC: IRQ%d\n", static_cast<unsigned int>(irq));
 
         idt_internal_call(regs->interrupt_number, regs);
 
         pic_send_eoi(irq);
-
-        return;
     }
-
-    kstd::printf("We've received an interrupt!\n");
-
-    kstd::printf("RAX: %lx RBX: %lx RCX: %lx RDX: %lx\nR8: %lx R9: %lx R10: %lx R11: %lx\nR12: %lx R13: %lx R14: %lx R15: %lx\nRSI: %lx RDI: %lx RBP: %lx\nRSP: %lx CS@RIP: %lx@%lx\n",
-                 regs->rax, regs->rbx, regs->rcx, regs->rdx,
-                 regs->r8, regs->r9, regs->r10, regs->r11,
-                 regs->r12, regs->r13, regs->r13, regs->r15,
-                 regs->rsi, regs->rdi, regs->rbp, regs->rsp,
-                 regs->cs, regs->rip);
 
     if (regs->interrupt_number < 32)
     {
-        kstd::printf("%s\n", exception_strings[regs->interrupt_number]);
+        kstd::enable_tailing_zeroes();
+        kstd::printf("We've received an interrupt!\n");
+        print_registers(regs);
 
         switch (regs->interrupt_number)
         {
+            case 1:
+                return;
             case 14:
                 print_page_fault_info(*regs);
 
@@ -144,7 +181,17 @@ extern "C" void interrupt_handler(Registers_x86_64* regs)
         unreachable();
     }
 
+    if (enabled_sched && regs->interrupt_number == 0x90)
+    {
+        proc_scheduler(regs);
+    }
+
     return;
+}
+
+void idt_enable_sched()
+{
+    enabled_sched = true;
 }
 
 void flush_idt()
