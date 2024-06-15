@@ -236,7 +236,6 @@ namespace Framebuffer
             }
         }
     }
-
     void DrawLine(size_t _FbIdx, size_t x0, size_t y0, size_t x1, size_t y1, uint8_t r, uint8_t g, uint8_t b)
     {
         ssize_t dx = static_cast<ssize_t>(ccm::abs(static_cast<ssize_t>(x1) - static_cast<ssize_t>(x0)));
@@ -262,6 +261,95 @@ namespace Framebuffer
                 err += dx;
                 y0 += sy;
             }
+        }
+    }
+    uint32_t GetPixel(size_t _FbIdx, size_t xpos, size_t ypos)
+    {
+        if (_FbIdx >= _Fbcount)
+        {
+            return 0; // Invalid framebuffer index
+        }
+
+        auto fb = _Framebuffers[_FbIdx];
+
+        auto fbwidth = fb->width;
+        auto fbheight = fb->height;
+
+        if (xpos >= fbwidth || ypos >= fbheight)
+        {
+            return 0; // Invalid pixel coordinates, exit function
+        }
+
+        // Calculate the offset of the pixel in memory
+        size_t offset = (ypos * fbwidth + xpos) * (fb->bpp / 8);
+
+        // Calculate the address of the pixel in memory
+        volatile uint8_t* pixelAddress = reinterpret_cast<volatile uint8_t*>(fb->address) + offset;
+
+        // Read the pixel value
+        uint32_t pixelValue = 0;
+        for (size_t i = 0; i < fb->bpp / 8; ++i)
+        {
+            pixelValue |= pixelAddress[i] << (i * 8);
+        }
+
+        // Extract and shift color components
+        uint8_t rShift = fb->red_mask_shift;
+        uint8_t gShift = fb->green_mask_shift;
+        uint8_t bShift = fb->blue_mask_shift;
+
+        uint32_t rMask = (1 << fb->red_mask_size) - 1;
+        uint32_t gMask = (1 << fb->green_mask_size) - 1;
+        uint32_t bMask = (1 << fb->blue_mask_size) - 1;
+
+        uint32_t r = (pixelValue >> rShift) & rMask;
+        uint32_t g = (pixelValue >> gShift) & gMask;
+        uint32_t b = (pixelValue >> bShift) & bMask;
+
+        // Combine the color components into a single 32-bit value
+        return (r << 16) | (g << 8) | b;
+    }
+
+    void DrawPixelAlpha(size_t _FbIdx, size_t xpos, size_t ypos, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+        if (_FbIdx >= _Fbcount) {
+            return;  // Invalid framebuffer index
+        }
+
+        auto fb = _Framebuffers[_FbIdx];
+
+        auto fbwidth = fb->width;
+        auto fbheight = fb->height;
+
+        if (xpos >= fbwidth || ypos >= fbheight) {
+            return;  // Invalid pixel coordinates, exit function
+        }
+
+        // Calculate the offset of the pixel in memory
+        size_t offset = (ypos * fbwidth + xpos) * (fb->bpp / 8);
+
+        // Calculate the address of the pixel in memory
+        volatile uint8_t* pixelAddress = reinterpret_cast<volatile uint8_t*>(fb->address) + offset;
+
+        // Retrieve the existing pixel value
+        uint32_t pixelValue = GetPixel(_FbIdx, xpos, ypos);
+
+        // Extract current RGB values from the pixel (assuming RGBA8888 format)
+        uint8_t currentR = (pixelValue >> 16) & 0xFF;
+        uint8_t currentG = (pixelValue >> 8) & 0xFF;
+        uint8_t currentB = pixelValue & 0xFF;
+
+        // Apply alpha blending
+        uint8_t invAlpha = 255 - a;
+        uint8_t newR = (r * a + currentR * invAlpha) / 255;
+        uint8_t newG = (g * a + currentG * invAlpha) / 255;
+        uint8_t newB = (b * a + currentB * invAlpha) / 255;
+
+        // Create the new pixel value
+        uint32_t newPixelValue = (currentR & 0xFF000000) | (newR << 16) | (newG << 8) | newB;
+
+        // Write the new pixel value back to memory
+        for (size_t i = 0; i < fb->bpp / 8; ++i) {
+            pixelAddress[i] = (newPixelValue >> (i * 8)) & 0xFF;
         }
     }
 

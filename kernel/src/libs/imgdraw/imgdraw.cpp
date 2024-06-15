@@ -97,16 +97,26 @@ void tga_draw(unsigned char* ptr, int size, int x, int y)
     if (data == nullptr)
     {
         kstd::printf("Failed to draw the image.\n");
-
         return;
     }
 
     int w = data[0];
     int h = data[1];
 
-    data += 2;
+    auto pix_data = data + 2;
 
-    // Framebuffer::DrawPixel(0, pixx, pixy, pixr, pixg, pixb);
+    for (int i = 0; i < h; i++)
+    {
+        for (int j = 0; j < w; j++)
+        {
+            auto pix_idx = (i * w + j) * 3;  // Assuming 24-bit TGA (3 bytes per pixel)
+            auto b = pix_data[pix_idx];
+            auto g = pix_data[pix_idx + 1];
+            auto r = pix_data[pix_idx + 2];
+
+            Framebuffer::DrawPixel(0, x + j, y + i, r, g, b);
+        }
+    }
 
     delete[] data;
 }

@@ -2,7 +2,17 @@
 // Created by Piotr on 12.05.2024.
 //
 
+#include <kstd/kvector.hpp>
 #include "driver_ctrl.hpp"
+
+uint64_t last_dci = 0; // Last driver identifier
+
+uint64_t allocate_dci()
+{
+    auto dci = last_dci;
+    last_dci++;
+    return dci;
+}
 
 bool driver_ctrl_find_and_call(pci_dev* pci_handle)
 {
@@ -11,12 +21,6 @@ bool driver_ctrl_find_and_call(pci_dev* pci_handle)
     for (size_t i = 0; driver_array_size > i; i++)
     {
         __attribute__((aligned(0x10))) struct driver_entry_t driver_entry = __driver_array[i];
-
-        //if (driver_entry.is_loaded)
-        //{
-         //   kstd::printf("The driver is already loaded!\n");
-        //    continue;
-        //}
 
         for (size_t i = 0; driver_entry.requirements_count > i; i++)
         {
@@ -28,7 +32,7 @@ bool driver_ctrl_find_and_call(pci_dev* pci_handle)
             )
             {
                 // call it.
-                driver_entry.driver_entry(pci_handle);
+                auto e = driver_entry.driver_entry(pci_handle);
 
                 return true;
             }
@@ -40,7 +44,7 @@ bool driver_ctrl_find_and_call(pci_dev* pci_handle)
             )
             {
                 // call it.
-                driver_entry.driver_entry(pci_handle);
+                auto e = driver_entry.driver_entry(pci_handle);
 
                 return true;
             }

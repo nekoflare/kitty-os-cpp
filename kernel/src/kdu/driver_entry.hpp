@@ -59,7 +59,7 @@ struct __attribute__((aligned(0x10))) driver_entry_t {
 
     driver_type_t driver_designation;
     driver_load_t driver_load;
-    driver_status_t (*driver_entry)(pci_dev*);
+    driver_handle_t (*driver_entry)(pci_dev*);
     driver_status_t (*driver_cleanup)();
     driver_status_t (*driver_ioctl)(driver_handle_t*, uint64_t, const char*, char*); // question, question_buffer, answer_buffer
 

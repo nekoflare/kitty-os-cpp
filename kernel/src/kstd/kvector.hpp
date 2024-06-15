@@ -1,5 +1,7 @@
 #include <initializer_list>
 
+#include <cstddef>
+
 namespace kstd
 {
     template <typename T>

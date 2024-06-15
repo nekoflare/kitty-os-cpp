@@ -6,7 +6,7 @@ PML4e address: 7FF52000
 [PMM] New rounded boundaries of memory: 0 - 1.0 (TB).
 [PMM] Space required for the bitmap: 32.0 (MB)
 [PMM] Found perfect entry for the bitmap.
-	5. 100000 -> 7F26A000 (Usable memory) (1.9857559204101562 GB)
+	5. 100000 -> 7F1A6000 (Usable memory) (1.9850082397460937 GB)
 [PMM] Recalculating memory.
 [PMM] The bitmap address is: 0xFFFF800000100000.
 BITMAP ADDRESS: 0xFFFF800000100000
@@ -57,13 +57,14 @@ Found device: (8086:10D3) (Intel Corporation) 82574L Gigabit Network Connection
 Found device: (1B36:000D) (Red Hat, Inc.) QEMU XHCI Host Controller
 Found device: (8086:2918) (Intel Corporation) 82801IB (ICH9) LPC Interface Controller
 Unmasking IRQ1 using PIC.
-[BV] IOCTL message: 0
-[BV] Changing screen resolution to 2048x1536 @ 32...
 This CPU is AMD.
 Virtual bus width: 57
 Physical bus width: 40
 Model name: QEMU TCG CPU version 2.5+
 Vendor ID: AuthenticAMD
 SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
-Current year: 3224
+[BV] IOCTL message: 0
+[BV] Changing screen resolution to 1024x768 @ 32...
+KernelTerminal ~ > lol
+Command "lol" not found.
 KernelTerminal ~ > 

@@ -6,7 +6,7 @@
 
 extern driver_type driver_entry_t bv_drv_desc;
 
-static driver_status_t bv_entry(pci_dev* pci_handle)
+static driver_handle_t bv_entry(pci_dev* pci_handle)
 {
     kstd::printf("[BV] Starting...\n");
 
@@ -18,7 +18,7 @@ static driver_status_t bv_entry(pci_dev* pci_handle)
     }
 
     kstd::printf("[BV] Done!\n");
-    return DS_SUCCESS;
+    return {};
 }
 
 static driver_status_t bv_cleanup()

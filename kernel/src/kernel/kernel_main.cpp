@@ -35,6 +35,7 @@
 #include <kernel/kbd.hpp>
 #include <kernel_terminal/kt.hpp>
 #include <devices/rtc/rtc.hpp>
+#include <libs/rand/rand.hpp>
 
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
@@ -62,17 +63,10 @@ void aio_pci_init()
     }
 }
 
-void memset_qw(void *ptr, uint64_t value, size_t count) {
-    uint64_t *p = (uint64_t *)ptr;
-    for (size_t i = 0; i < count; ++i) {
-        p[i] = value;
-    }
-}
-
-extern "C" void test_func();
-
 extern "C" void kernel_main()
 {
+    bochs_breakpoint();
+
     for (size_t i = 0; &__init_array[i] != __init_array_end; i++)
     {
         __init_array[i]();
@@ -98,13 +92,6 @@ extern "C" void kernel_main()
     //driver_ctrl_enumerate_drivers();
     //smbios_dump_info();
     //pmm_print_memory_information();
-
-    GpuResolution res = {
-            .width = 2048,
-            .height = 1536,
-            .bpp = 32
-    };
-    ioctl_auto(DT_GPU, nullptr, GPU_SET_RESOLUTION, reinterpret_cast<const char*>(&res), nullptr);
 
     if (CPUInfo::IsAMD())
     {
@@ -150,14 +137,14 @@ extern "C" void kernel_main()
     //pci_dump_database();
 
     tss_flush();
-    sched_init();
-    kstd::printf("Creating new task.\n");
-    proc_create_task(10, "krnl.exe", &test_func);
-    kstd::printf("Printing all processes.\n");
-    proc_print_all_processes();
-    kstd::printf("Enabling sched.\n");
-    idt_enable_sched();
-    
+
+    GpuResolution res = {
+            .width = 1024,
+            .height = 768,
+            .bpp = 32
+    };
+
+    ioctl_auto(DT_GPU, nullptr, GPU_SET_RESOLUTION, reinterpret_cast<const char*>(&res), nullptr);
 
     kt_main();
 

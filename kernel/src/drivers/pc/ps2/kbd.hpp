@@ -18,7 +18,7 @@ struct scan_code_entry_t
     special_character special_chr;
 };
 
-static driver_status_t ps2kbd_entry(pci_dev* dev);
+static driver_handle_t ps2kbd_entry(pci_dev* dev);
 static driver_status_t ps2kbd_cleanup();
 static driver_status_t ps2kbd_ioctl(
         driver_handle_t* driver_handle,

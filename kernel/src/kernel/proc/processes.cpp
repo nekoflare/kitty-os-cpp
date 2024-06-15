@@ -10,6 +10,9 @@ kstd::mutex proc_mtx;
 
 void sched_init()
 {
+    current_process = new process_t(0, "kernel", {}, false, 100);
+    proc_head = current_process;
+    proc_head->registers.cr3 = vmm_read_cr3();
     proc_mtx.unlock();
 }
 
@@ -109,22 +112,46 @@ void proc_print_all_processes()
 
     proc_mtx.unlock();
 }
+bool dirty_fix = false;
 
 void proc_scheduler(Registers_x86_64* regs)
 {
-    kstd::printf("Lock me up daddy.\n");
-
     proc_mtx.lock();
 
-    kstd::printf("Scheding this shit.\n");
-
-    print_registers(regs);
-
-    // scheduling it is.
     if (proc_head == nullptr)
     {
         proc_mtx.unlock();
         return;
+    }
+
+    if (current_process != nullptr)
+    {
+        // Save the current context (registers) of the running process
+        current_process->registers.rip = regs->rip;
+        current_process->registers.orig_rsp = regs->rsp;
+        current_process->registers.rflags = regs->rflags;
+        current_process->registers.cs = regs->cs;
+        current_process->registers.ds = regs->ds;
+        current_process->registers.ss = regs->ss;
+        current_process->registers.es = regs->es;
+        current_process->registers.fs = regs->fs;
+        current_process->registers.gs = regs->gs;
+        current_process->registers.rax = regs->rax;
+        current_process->registers.rbx = regs->rbx;
+        current_process->registers.rcx = regs->rcx;
+        current_process->registers.rdx = regs->rdx;
+        current_process->registers.rsi = regs->rsi;
+        current_process->registers.rdi = regs->rdi;
+        current_process->registers.rbp = regs->rbp;
+        current_process->registers.r8 = regs->r8;
+        current_process->registers.r9 = regs->r9;
+        current_process->registers.r10 = regs->r10;
+        current_process->registers.r11 = regs->r11;
+        current_process->registers.r12 = regs->r12;
+        current_process->registers.r13 = regs->r13;
+        current_process->registers.r14 = regs->r14;
+        current_process->registers.r15 = regs->r15;
+        current_process->registers.cr3 = regs->cr3; // Save the CR3 register
     }
 
     if (current_process == nullptr)
@@ -140,19 +167,32 @@ void proc_scheduler(Registers_x86_64* regs)
         }
     }
 
-    auto v = regs->orig_rsp;
-
-    // do fuckery with registers.
-    kstd::memcpy(regs, &current_process->registers, sizeof(Registers_x86_64));
-
-    regs->orig_rsp = v;
-    regs->ss = 0x10;
-    regs->cs = 0x8;
-
-    print_registers(&current_process->registers);
-
-    kstd::printf("Scheduling...\n");
-    bochs_breakpoint();
+    // Restore the context (registers) of the next process to run
+    regs->rip = current_process->registers.rip;
+    regs->orig_rsp = current_process->registers.rsp;
+    regs->rflags = current_process->registers.rflags;
+    regs->cs = current_process->registers.cs;
+    regs->ds = current_process->registers.ds;
+    regs->ss = current_process->registers.ss;
+    regs->es = current_process->registers.es;
+    regs->fs = current_process->registers.fs;
+    regs->gs = current_process->registers.gs;
+    regs->rax = current_process->registers.rax;
+    regs->rbx = current_process->registers.rbx;
+    regs->rcx = current_process->registers.rcx;
+    regs->rdx = current_process->registers.rdx;
+    regs->rsi = current_process->registers.rsi;
+    regs->rdi = current_process->registers.rdi;
+    regs->rbp = current_process->registers.rbp;
+    regs->r8 = current_process->registers.r8;
+    regs->r9 = current_process->registers.r9;
+    regs->r10 = current_process->registers.r10;
+    regs->r11 = current_process->registers.r11;
+    regs->r12 = current_process->registers.r12;
+    regs->r13 = current_process->registers.r13;
+    regs->r14 = current_process->registers.r14;
+    regs->r15 = current_process->registers.r15;
+    regs->cr3 = current_process->registers.cr3; // Restore the CR3 register
 
     proc_mtx.unlock();
 }

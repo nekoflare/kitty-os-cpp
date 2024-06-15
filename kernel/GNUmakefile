@@ -60,15 +60,18 @@ override SHARED_FLAGS := \
     -fPIE \
     -m64 \
     -march=x86-64 \
-    -mno-mmx \
+    -mmmx \
     -msse \
-    -mno-sse2 \
+    -msse2 \
+    -mavx \
+    -mavx2 \
     -mno-red-zone \
     -static \
     -Isrc/kkd \
     -pedantic \
     -O3 \
     -ffunction-sections \
+    -msoft-float \
 
 # Internal C++ flags that should not be changed by the user.
 override CXXFLAGS += \

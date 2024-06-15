@@ -19,7 +19,7 @@ static uint32_t vmware_read_reg(uint32_t reg)
     return inl(vmw_io_port + SVGA_VALUE);
 }
 
-static driver_status_t vmware_svgaii_entry(pci_dev* pci_handle)
+static driver_handle_t vmware_svgaii_entry(pci_dev* pci_handle)
 {
     kstd::printf("[VMW] Loaded VMWare SVGA II driver!\n");
 
@@ -28,7 +28,7 @@ static driver_status_t vmware_svgaii_entry(pci_dev* pci_handle)
     {
         kstd::printf("[VMW] Vendor ID or Device ID is invalid!\n");
 
-        return DS_FAILURE;
+        return {};
     }
 
     if (pci_handle == nullptr)
@@ -60,14 +60,13 @@ static driver_status_t vmware_svgaii_entry(pci_dev* pci_handle)
     {
         kstd::printf("[VMW] Unsupported spec: %x\n", specid);
         //unreachable();
-        return DS_FAILURE;
+        return {};
     }
     vmware_write_reg(SVGA_REG_ENABLE, 1);
 
     vmware_svgaii_driver_descriptor.is_loaded = true;
 
-
-    return DS_SUCCESS;
+    return {};
 }
 
 static driver_status_t vmw_set_res(

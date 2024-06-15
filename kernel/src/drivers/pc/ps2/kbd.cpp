@@ -199,7 +199,7 @@ static void ps2kbd_get_key_state(char* request_answer)
     resp->special_character_code = k->special_chr;
 }
 
-static driver_status_t ps2kbd_entry(pci_dev* dev)
+static driver_handle_t ps2kbd_entry(pci_dev* dev)
 {
     // Todo: check if there's a keyboard connected.
 
@@ -209,7 +209,7 @@ static driver_status_t ps2kbd_entry(pci_dev* dev)
     ps2kbd_key_mtx.lock();
 
     ps2kbd_desc.is_loaded = true;
-    return DS_SUCCESS;
+    return {};
 }
 
 static driver_status_t ps2kbd_cleanup()

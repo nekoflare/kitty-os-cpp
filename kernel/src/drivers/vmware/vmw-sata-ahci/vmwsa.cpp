@@ -4,10 +4,10 @@
 
 #include "vmwsa.hpp"
 
-static driver_status_t vmwsa_entry(pci_dev* dev)
+static driver_handle_t vmwsa_entry(pci_dev* dev)
 {
     kstd::printf("Initializing VMWSA device.\n");
-    return DS_SUCCESS;
+    return {};
 }
 
 static driver_status_t vmwsa_ioctl(driver_handle_t* handle, uint64_t question, const char* buffer, char* answer)

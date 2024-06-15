@@ -13,6 +13,7 @@
 #include "ccmath/internal/support/is_constant_evaluated.hpp"
 #include "ccmath/internal/support/type_traits.hpp"
 
+
 #include <climits>
 
 namespace ccm::support
@@ -40,7 +41,7 @@ namespace ccm::support
 
 		// Check for overflow by comparing the signs
 		bool overflow = false;
-		if (std::is_signed_v<T>)
+		if constexpr (std::is_signed_v<T>)
 		{
 			if ((a > 0 && b > 0 && lres < 0) || (a < 0 && b < 0 && lres > 0)) { overflow = true; }
 		}
@@ -77,7 +78,7 @@ namespace ccm::support
 
 		// Check for overflow by comparing the signs
 		bool overflow = false;
-		if (std::is_signed_v<T>)
+		if constexpr (std::is_signed_v<T>)
 		{
 			if ((b > 0 && a < std::numeric_limits<T>::min() + b) || (b < 0 && a > std::numeric_limits<T>::max() + b)) { overflow = true; }
 		}
@@ -102,7 +103,7 @@ namespace ccm::support
 	template <typename T>
 	[[nodiscard]] constexpr std::enable_if_t<traits::ccm_is_unsigned_v<T>, T> add_with_carry(T a, T b, T carry_in, T & carry_out)
 	{
-		if constexpr (!is_constant_evaluated())
+		if (!is_constant_evaluated())
 		{
 #if CCM_HAS_BUILTIN(__builtin_addcb)
 			RETURN_IF(unsigned char, __builtin_addcb)
@@ -129,7 +130,7 @@ namespace ccm::support
 	template <typename T>
 	[[nodiscard]] constexpr std::enable_if_t<traits::ccm_is_unsigned_v<T>, T> sub_with_borrow(T a, T b, T carry_in, T & carry_out)
 	{
-		if constexpr (!is_constant_evaluated())
+		if (!is_constant_evaluated())
 		{
 #if CCM_HAS_BUILTIN(__builtin_subcb)
 			RETURN_IF(unsigned char, __builtin_subcb)
