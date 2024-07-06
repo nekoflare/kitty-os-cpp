@@ -10,3 +10,4 @@ eth_null-txdump.txt
 kernel/bin/kernel
 *.log
 vmware-com-dump.txt
+.idea/
