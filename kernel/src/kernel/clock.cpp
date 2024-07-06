@@ -7,7 +7,7 @@
 constexpr size_t pit_frequency = 200;
 uint64_t clk = 0;
 
-void clk_handler(Registers_x86_64* regs)
+void clk_handler([[maybe_unused]] Registers_x86_64* regs)
 {
     clk++;
 }

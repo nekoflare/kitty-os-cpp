@@ -13,19 +13,38 @@ elf_object_t* elf_create_object(void* elf_bin, size_t elf_bin_size)
 
     // Allocate new PML4e.
     uint64_t pml4e_pa = pmm_alloc_page();
+    if (!pml4e_pa) {
+        kstd::printf("Failed to allocate PML4e page.\n");
+        delete obj;
+        return nullptr;
+    }
+
     auto pml4e_va = vmm_make_virtual<uint8_t*>(pml4e_pa);
+    if (!pml4e_va) {
+        kstd::printf("Failed to map PML4e virtual address.\n");
+        pmm_free_page(pml4e_pa);
+        delete obj;
+        return nullptr;
+    }
 
     obj->pml4e_dir_physical = pml4e_pa;
 
     // Clear pml4e
-    for (size_t i = 0; 4096 > i; i++)
+    for (size_t i = 0; i < 4096; i++)
         pml4e_va[i] = 0x0;
 
     // Copy last 256 entries of kernel pml4e to this pml4e.
     pml4e* kernel_pml4e = vmm_make_virtual<pml4e*>(vmm_get_pml4());
+    if (!kernel_pml4e) {
+        kstd::printf("Failed to map kernel PML4e virtual address.\n");
+        pmm_free_page(pml4e_pa);
+        delete obj;
+        return nullptr;
+    }
+
     pml4e* program_pml4e = reinterpret_cast<pml4e*>(pml4e_va);
 
-    for (size_t i = 0; 512 > i; i++)
+    for (size_t i = 0; i < 512; i++)
     {
         program_pml4e[i] = kernel_pml4e[i];
     }
@@ -40,8 +59,8 @@ elf_object_t* elf_create_object(void* elf_bin, size_t elf_bin_size)
 void elf_move_data(elf_object_t* obj, uint64_t virtual_address, void* data, size_t len)
 {
     size_t pages = (len + 4095) / PAGE_SIZE; // Calculate number of pages needed
-    kstd::printf("required pages: %llx\n", pages);
-    kstd::printf("%llx -> %llx (%lld)\n", data, virtual_address, len);
+    kstd::printf("required pages: %lx\n", pages);
+    kstd::printf("%p -> %lx (%ld)\n", data, virtual_address, len);
 
     if (pages == 0)
     {
@@ -61,8 +80,15 @@ void elf_move_data(elf_object_t* obj, uint64_t virtual_address, void* data, size
     for (size_t i = 0; i < pages; i++)
     {
         uint64_t page = pmm_alloc_page();
+        if (!page) {
+            kstd::printf("Failed to allocate page.\n");
+            return;
+        }
 
-        vmm_map(obj->pml4e_dir, virtual_address, page, PROT_RW | PROT_SUPERVISOR, MAP_PRESENT, MISC_INVLPG);
+        if (!vmm_map(obj->pml4e_dir, virtual_address, page, PROT_RW | PROT_SUPERVISOR, MAP_PRESENT, MISC_INVLPG)) {
+            kstd::printf("Failed to map virtual address.\n");
+            return;
+        }
 
         pte++;
         if (pte >= 512)
@@ -88,36 +114,38 @@ void elf_move_data(elf_object_t* obj, uint64_t virtual_address, void* data, size
         va.offset = off;
 
         virtual_address = vmm_sva_to_va(va);
-        kstd::printf("new VA: %llx\n", virtual_address);
+        kstd::printf("new VA: %lx\n", virtual_address);
     }
 
     // Move the memory now.
-    kstd::printf("\n\n%hhx\n\n", *(uint8_t*)data);
-    bochs_breakpoint();
-
     auto d = reinterpret_cast<uint8_t*>(data);
     auto v = reinterpret_cast<uint8_t*>(original_virtual_address); // Use the original virtual address
-    for (size_t i = 0; i < len; i++)
-    {
-        // bochs_breakpoint();
-        v[i] = d[i];
-        if (d[i]) kstd::printf("%llx: %hhx ",v+i, v[i]);
-        if (v[i] != d[i])
-        {
-            kstd::printf("Move failure.\n");
-        }
+
+    // Check bounds
+    if (reinterpret_cast<uint8_t*>(data) + len > reinterpret_cast<uint8_t*>(obj->elf_bin) + obj->elf_bin_size) {
+        kstd::printf("Data to move exceeds ELF binary bounds.\n");
+        return;
     }
 
-    kstd::printf("Moved %lld bytes to %llx from %llx.\n", len, original_virtual_address, data);
-    //bochs_breakpoint();
+    for (size_t i = 0; i < len; i++)
+    {
+        v[i] = d[i];
+    }
+
+    kstd::printf("Moved %ld bytes to %lx from %p.\n", len, original_virtual_address, data);
 }
 
 void elf_load_object(elf_object_t* obj) {
     kstd::printf("ELF Header:\n");
     elf_header_64* hdr = reinterpret_cast<elf_header_64*>(obj->elf_bin);
 
+    if (hdr->magic[0] != 0x7F || hdr->magic[1] != 'E' || hdr->magic[2] != 'L' || hdr->magic[3] != 'F') {
+        kstd::printf("Invalid ELF magic.\n");
+        return;
+    }
+
     kstd::printf("  Magic:   ");
-    for (int i = 0; i < 16; ++i) {
+    for (int i = 0; i < 4; ++i) {
         kstd::printf("%hhx ", hdr->magic[i]);
     }
     kstd::printf("\n");
@@ -137,9 +165,9 @@ void elf_load_object(elf_object_t* obj) {
     }
     kstd::printf("  Machine:                           Advanced Micro Devices X86-64\n");
     kstd::printf("  Version:                           0x%x\n", hdr->elf_version);
-    kstd::printf("  Entry point address:               0x%llx\n", hdr->program_entry_offset);
-    kstd::printf("  Start of program headers:          %lld (bytes into file)\n", hdr->program_header_table_offset);
-    kstd::printf("  Start of section headers:          %lld (bytes into file)\n", hdr->section_header_table_offset);
+    kstd::printf("  Entry point address:               0x%lx\n", hdr->program_entry_offset);
+    kstd::printf("  Start of program headers:          %ld (bytes into file)\n", hdr->program_header_table_offset);
+    kstd::printf("  Start of section headers:          %ld (bytes into file)\n", hdr->section_header_table_offset);
     kstd::printf("  Flags:                             0x%x\n", hdr->flags);
     kstd::printf("  Size of this header:               %d (bytes)\n", hdr->elf_hdr_size);
     kstd::printf("  Size of program headers:           %d (bytes)\n", hdr->sizeof_entry_in_program_hdr_table);
@@ -174,10 +202,9 @@ void elf_load_object(elf_object_t* obj) {
     uint64_t program_entry_count = hdr->program_hdr_entry_count;
 
     // Calculate the size of a program header entry
-    size_t program_hdr_size = sizeof(elf_segment);
+    [[maybe_unused]] size_t program_hdr_size = sizeof(elf_segment);
 
     obj->start = hdr->program_entry_offset;
-
 
     // Iterate through each program header entry
     for (size_t i = 0; i < program_entry_count; i++) {
@@ -185,28 +212,25 @@ void elf_load_object(elf_object_t* obj) {
         uint64_t entry_offset = program_entry_file_offset + i * program_entry_size;
 
         // Retrieve the program header entry
-        auto program_entry = reinterpret_cast<elf_segment*>(obj->elf_bin + entry_offset);
+        auto program_entry = reinterpret_cast<elf_segment*>(reinterpret_cast<size_t>(obj->elf_bin) + entry_offset);
 
-        // Print the segment type, virtual address, and segment length
-        //kstd::printf("Segment %lld:\n", i);
-        //kstd::printf("\tSegment Type: %u\n", program_entry->type);
-        //kstd::printf("\tVirtual Address: 0x%llx\n", program_entry->p_vaddr);
-        //kstd::printf("\tSegment Length: 0x%llx\n", program_entry->p_memsz);
-        //kstd::printf("\tFile sz: 0x%llx\n", program_entry->p_filesz);
+        if (program_entry->p_offset + program_entry->p_filesz > obj->elf_bin_size) {
+            kstd::printf("Program segment exceeds ELF binary bounds.\n");
+            continue;
+        }
 
-        if (program_entry->type == 1)
-            elf_move_data(obj, program_entry->p_vaddr, obj->elf_bin + program_entry->p_offset, program_entry->p_filesz);
+        if (program_entry->type == 1) {
+            elf_move_data(obj, program_entry->p_vaddr, reinterpret_cast<void*>(reinterpret_cast<size_t>(obj->elf_bin) + program_entry->p_offset), program_entry->p_filesz);
+        }
         bochs_breakpoint();
     }
-
 }
-
 
 void elf_invoke_object(elf_object_t* obj)
 {
-    elf_trampoline(obj->pml4e_dir_physical, obj->start);
-
     kstd::printf("Invoking the object.\n");
+
+    elf_trampoline(obj->pml4e_dir_physical, obj->start);
 }
 
 void elf_destroy_object(elf_object_t* obj)

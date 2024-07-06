@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <kstd/kstdio.hpp>
 #include <limine.h>
-#include <kernel/memory/vmm.hpp>
+#include <mm/vmm.hpp>
 
 struct acpi_sdt_common
 {

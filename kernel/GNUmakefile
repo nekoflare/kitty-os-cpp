@@ -51,8 +51,11 @@ $(eval $(call DEFAULT_VAR,LDFLAGS,$(DEFAULT_LDFLAGS)))
 
 # Internal flags shared by both C and C++ compilers.
 override SHARED_FLAGS := \
+    -Werror \
     -Wall \
     -Wextra \
+    -pedantic-errors \
+    -Wformat=2 \
     -ffreestanding \
     -fno-stack-protector \
     -fno-stack-check \
@@ -60,26 +63,31 @@ override SHARED_FLAGS := \
     -fPIE \
     -m64 \
     -march=x86-64 \
-    -mmmx \
     -msse \
-    -msse2 \
-    -mavx \
-    -mavx2 \
+    -mno-mmx \
+    -mno-sse2 \
+    -mno-sse3 \
+    -mno-ssse3 \
+    -mno-avx \
+    -mno-avx2 \
+    -mno-avx512f \
     -mno-red-zone \
     -static \
     -Isrc/kkd \
-    -pedantic \
-    -O3 \
-    -ffunction-sections \
-    -msoft-float \
+	-pedantic \
+	-O2 \
+	-finline-functions \
+	-ftree-loop-optimize \
+	-ftree-vectorize \
+	-ffast-math \
 
 # Internal C++ flags that should not be changed by the user.
 override CXXFLAGS += \
     -std=c++20 \
     -fno-rtti \
     -fno-exceptions \
-    -fno-use-cxa-atexit \
     -fno-threadsafe-statics \
+    -Wold-style-cast \
     $(SHARED_FLAGS) \
 
 # Internal C flags that should not be changed by the user.
@@ -90,6 +98,7 @@ override CFLAGS += \
 # Internal C/C++ preprocessor flags that should not be changed by the user.
 override CPPFLAGS := \
     -I src \
+    -I ./ \
     $(CPPFLAGS) \
     -MMD \
     -MP
@@ -108,7 +117,8 @@ override LDFLAGS += \
 # Internal nasm flags that should not be changed by the user.
 override NASMFLAGS += \
     -Wall \
-    -f elf64
+    -f elf64 \
+    -gDWARF
 
 # Use "find" to glob all *.cpp, *.c, *.S, and *.asm files in the tree and obtain the
 # object and header dependency file names.

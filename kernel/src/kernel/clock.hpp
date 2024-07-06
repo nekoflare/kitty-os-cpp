@@ -5,8 +5,8 @@
 #ifndef KITTY_OS_CPP_CLOCK_HPP
 #define KITTY_OS_CPP_CLOCK_HPP
 
-#include <devices/pit/pit.hpp>
-#include <kernel/irqs/uniirq.hpp>
+#include <drivers/clock/pit/pit.hpp>
+#include <hal/x64/irqs/uniirq.hpp>
 
 typedef struct _ktime_t
 {

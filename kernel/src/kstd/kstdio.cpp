@@ -2,13 +2,13 @@
 // Created by Piotr on 03.05.2024.
 //
 
-#include "kstdio.hpp"
-#include <kernel/fb/fb.hpp>
-#include <kstd/kstring.hpp>
-#include <cstdarg>
-#include <kernel/hal/x64/io.hpp>
-#include <debugging/debug_print.hpp>
+#include <kernel/debugging/debug_print.hpp>
+#include <drivers/video/fb/fb.hpp>
 #include <kernel_settings.hpp>
+#include <kstd/kstring.hpp>
+#include <kstd/kstdio.hpp>
+#include <hal/x64/io.hpp>
+#include <cstdarg>
 
 namespace kstd
 {
@@ -22,7 +22,7 @@ namespace kstd
         ft_ctx = flanterm_fb_init(
                 NULL,
                 NULL,
-                (unsigned int*)main_framebuffer->address, main_framebuffer->width, main_framebuffer->height, main_framebuffer->pitch,
+                reinterpret_cast<unsigned int*>(main_framebuffer->address), main_framebuffer->width, main_framebuffer->height, main_framebuffer->pitch,
                 main_framebuffer->red_mask_size, main_framebuffer->red_mask_shift,
                 main_framebuffer->green_mask_size, main_framebuffer->green_mask_shift,
                 main_framebuffer->blue_mask_size, main_framebuffer->blue_mask_shift,
@@ -46,7 +46,7 @@ namespace kstd
         ft_ctx = flanterm_fb_init(
                 NULL,
                 NULL,
-                (unsigned int*)main_framebuffer->address, main_framebuffer->width, main_framebuffer->height, main_framebuffer->pitch,
+                reinterpret_cast<unsigned int*>(main_framebuffer->address), main_framebuffer->width, main_framebuffer->height, main_framebuffer->pitch,
                 main_framebuffer->red_mask_size, main_framebuffer->red_mask_shift,
                 main_framebuffer->green_mask_size, main_framebuffer->green_mask_shift,
                 main_framebuffer->blue_mask_size, main_framebuffer->blue_mask_shift,
@@ -142,7 +142,7 @@ namespace kstd
     {
         if constexpr (kstd_enable_printing)
         {
-            flanterm_write(ft_ctx, (const char *) &c, 1);
+            flanterm_write(ft_ctx, reinterpret_cast<const char*>(&c), 1);
         }
         e9_putc(c);
         dbg_write_chr(c);
@@ -265,7 +265,7 @@ namespace kstd
         }
 
         // Print integer part
-        unsigned int integerPart = (unsigned int)d;
+        unsigned int integerPart = static_cast<unsigned int>(d);
         print_unsigned_integer(integerPart);
 
         // Print decimal point
@@ -278,7 +278,7 @@ namespace kstd
         {
             d -= integerPart; // Subtract integer part
             d *= 10; // Move next decimal place
-            integerPart = (unsigned int)d; // Get next integer part
+            integerPart = static_cast<unsigned int>(d); // Get next integer part
             putc('0' + integerPart); // Print next digit
             precision++;
             // Check if fractional part is zero
@@ -289,14 +289,14 @@ namespace kstd
 
     void print_pointer(void* ptr)
     {
-        unsigned long long int address = (unsigned long long int)ptr; // Convert pointer to unsigned integer
+        unsigned long long int address = reinterpret_cast<unsigned long long int>(ptr); // Convert pointer to unsigned integer
 
         putc('0');
         putc('x');
 
         // Print pointer address in hexadecimal format
         // Print higher 32 bits
-        unsigned int higher_bits = (unsigned int)(address >> 32);
+        unsigned int higher_bits = static_cast<unsigned int>(address >> 32);
         for (int i = 28; i >= 0; i -= 4)
         {
             unsigned int hex_digit = (higher_bits >> i) & 0xF;
@@ -307,7 +307,7 @@ namespace kstd
         }
 
         // Print lower 32 bits
-        unsigned int lower_bits = (unsigned int)(address & 0xFFFFFFFF);
+        unsigned int lower_bits = static_cast<unsigned int>(address & 0xFFFFFFFF);
         for (int i = 28; i >= 0; i -= 4)
         {
             unsigned int hex_digit = (lower_bits >> i) & 0xF;
@@ -716,7 +716,6 @@ namespace kstd
         va_list args;
         va_start(args, fmt);
         
-        unsigned int uint;
         while (*fmt)
         {
             switch (*fmt)

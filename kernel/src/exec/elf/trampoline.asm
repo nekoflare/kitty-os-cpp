@@ -11,6 +11,7 @@ elf_trampoline:
     mov cr3, rax
 
     xchg bx, bx
-    jmp rsi
+
+    call rsi
 
     ret

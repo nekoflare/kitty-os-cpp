@@ -26,6 +26,8 @@ namespace kstd
     char tolower(char c);
     char toupper(char c);
     bool isalpha(char c);
+    bool isspace(char c);
+    unsigned long long strtoull(const char* str, char base);
 
     class string
     {

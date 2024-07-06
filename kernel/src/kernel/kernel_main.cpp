@@ -2,40 +2,22 @@
 // Created by Piotr on 02.05.2024.
 //
 
-#include "kernel/fb/fb.hpp"
-#include "kernel/hal/x64/gdt/gdt.hpp"
-#include "control/control.hpp"
-#include "kstd/kstdio.hpp"
-#include <kernel/hal/x64/idt/idt.hpp>
-#include <stdint.h>
-#include <stddef.h>
-#include <sys/types.h>
-#include <kdu/driver_entry.hpp>
-#include <kdu/driver_ctrl.hpp>
-#include <kernel/memory/pmm.hpp>
-#include <kernel/memory/vmm.hpp>
-#include <firmware/smbios/smbios.hpp>
-#include <kernel/memory/pmm.hpp>
+#include <limine.h>
 #include <firmware/acpi/acpi.hpp>
-#include <kernel/hal/bus/pci.hpp>
-#include <kdu/apis/graphics.hpp>
-#include <kernel/memory/heap.hpp>
-#include <kstd/kvector.hpp>
+#include <public/kdu/driver_ctrl.hpp>
 #include <exec/elf/loader.hpp>
-#include <libs/cpuinfo/cpuinfo.hpp>
-#include <kernel/irqs/uniirq.hpp>
-// #include <devices/ps2/mouse/ps2_mouse.hpp>
-#include <devices/ata/ata.hpp>
-#include <ramvfs/ramvfs.hpp>
-#include <libs/imgdraw/imgdraw.hpp>
+#include <kterm/kt.hpp>
+#include <kernel/debugging/debug_print.hpp>
+#include <hal/bus/pci.hpp>
+#include <sched/processes.hpp>
+#include <public/kdu/apis/graphics.hpp>
+#include <hal/x64/tss/tss.hpp>
 #include <kernel/clock.hpp>
-#include <debugging/debug_print.hpp>
-#include <kernel/hal/x64/tss/tss.hpp>
-#include <kernel/proc/processes.hpp>
-#include <kernel/kbd.hpp>
-#include <kernel_terminal/kt.hpp>
-#include <devices/rtc/rtc.hpp>
-#include <libs/rand/rand.hpp>
+#include <mm/heap.hpp>
+#include <drivers/video/fb/fb.hpp>
+#include <hal/x64/gdt/gdt.hpp>
+#include <hal/x64/idt/idt.hpp>
+#include <firmware/smbios/smbios.hpp>
 
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
@@ -44,12 +26,13 @@ limine_module_response* module_response = nullptr;
 
 volatile limine_module_request module_request = {
         .id = LIMINE_MODULE_REQUEST,
+        .revision = 0,
         .response = nullptr,
         .internal_module_count = 0,
-        .internal_modules = nullptr
+        .internal_modules = nullptr,
 };
 
-void aio_pci_init()
+void initialize_pci()
 {
     if (acpi_get_mcfg() == nullptr)
     {
@@ -65,90 +48,55 @@ void aio_pci_init()
 
 extern "C" void kernel_main()
 {
-    bochs_breakpoint();
+    dbg_init();
+    Framebuffer::Initialize();
+    kstd::InitializeTerminal();
+
+    vmm_init();
+    pmm_init();
+    heap_init();
 
     for (size_t i = 0; &__init_array[i] != __init_array_end; i++)
     {
         __init_array[i]();
     }
 
-    dbg_init();
-    Framebuffer::Initialize();
-    kstd::InitializeTerminal();
     flush_gdt();
     flush_idt();
     uniirq_init();
     enable_interrupts();
 
-    vmm_init();
-    pmm_init();
-    heap_init();
     clk_init();
     smbios_init();
     acpi_init();
-    aio_pci_init();
+    initialize_pci();
 
     driver_ctrl_call_ald();
-    //driver_ctrl_enumerate_drivers();
-    //smbios_dump_info();
-    //pmm_print_memory_information();
+    driver_ctrl_enumerate_drivers();
+    smbios_dump_info();
+    pmm_print_memory_information();
 
-    if (CPUInfo::IsAMD())
-    {
-        kstd::printf("This CPU is AMD.\n");
-    }
-    else
-    {
-        kstd::printf("This CPU is Intel.\n");
-    }
-
-    kstd::printf("Virtual bus width: %zu\n", CPUInfo::GetVirtualBusWidth());
-    kstd::printf("Physical bus width: %zu\n", CPUInfo::GetPhysicalBusWidth());
-
-    auto model_name = CPUInfo::GetCPUModelName();
-    kstd::printf("Model name: %s\n", model_name);
-
-    auto vendor_id = CPUInfo::GetCPUVendorID();
-    kstd::printf("Vendor ID: %s\n", CPUInfo::GetCPUVendorID());
-
-    if (CPUInfo::HasSSE())
-        kstd::printf("SSE, ");
-    if (CPUInfo::HasSSE2())
-        kstd::printf("SSE2, ");
-    if (CPUInfo::HasSSE3())
-        kstd::printf("SSE3, ");
-    if (CPUInfo::HasSupplementalSSE3())
-        kstd::printf("SSSE3, ");
-    if (CPUInfo::HasSSE4a())
-        kstd::printf("SSE4a, ");
-    if (CPUInfo::HasSSE4_1())
-        kstd::printf("SSE4.1, ");
-    if (CPUInfo::HasSSE4_2())
-        kstd::printf("SSE4.2, ");
-    if (CPUInfo::HasAVX())
-        kstd::printf("AVX, ");
-    if (CPUInfo::HasAVX2())
-        kstd::printf("AVX2, ");
-    if (CPUInfo::HasAVX512_F())
-        kstd::printf("AVX512-F");
-    kstd::printf("\n");
-
-    // ps2_mouse_init();
-    //pci_dump_database();
-
+    sched_init();
+    idt_enable_sched();
     tss_flush();
 
-    GpuResolution res = {
-            .width = 1024,
-            .height = 768,
-            .bpp = 32
-    };
+    for (size_t i = 0; module_request.response->module_count > i; i++) {
+        auto mod = module_request.response->modules[i];
+        kstd::printf("%s\n", mod->cmdline);
+        if (kstd::strcmp(mod->cmdline, "init.exe") == 0) {
+            kstd::printf("Found initpg.exe.\n");
 
-    ioctl_auto(DT_GPU, nullptr, GPU_SET_RESOLUTION, reinterpret_cast<const char*>(&res), nullptr);
+            auto obj = elf_create_object(mod->address, mod->size);
+
+            elf_load_object(obj);
+            elf_invoke_object(obj);
+
+        }
+    }
 
     kt_main();
 
-    [[nodiscard]] while (true)
+    while (true)
     {
         asm volatile ("nop");
     }

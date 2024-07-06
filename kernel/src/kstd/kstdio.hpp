@@ -5,12 +5,12 @@
 #ifndef KITTY_OS_CPP_KSTDIO_HPP
 #define KITTY_OS_CPP_KSTDIO_HPP
 
-#include <flanterm/flanterm.h>
-#include <flanterm/backends/fb.h>
-#include <stdint.h>
-#include <sys/types.h>
+#include <external/flanterm/backends/fb.h>
+#include <external/flanterm/flanterm.h>
 #include <ccmath/basic.hpp>
-#include <kernel/hal/x64/io.hpp>
+#include <hal/x64/io.hpp>
+#include <sys/types.h>
+#include <stdint.h>
 
 namespace kstd
 {

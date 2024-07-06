@@ -8,15 +8,15 @@
 #include <limine.h>
 #include <kstd/kstdio.hpp>
 #include <cstdint>
-#include <kernel/memory/vmm.hpp>
+#include <mm/vmm.hpp>
 #include <kstd/kstring.hpp>
 
 typedef struct {
     char anchor_string[4];
     uint8_t ep_checksum;
     uint8_t ep_length;
-    uint8_t smbios_major_ver;
-    uint8_t smbios_minor_ver;
+    uint8_t major_ver;
+    uint8_t minor_ver;
     uint16_t structure_max_size;
     uint8_t ep_revision;
     uint8_t formatted_area[5];
@@ -27,6 +27,19 @@ typedef struct {
     uint16_t number_of_structures;
     uint8_t bcd_revision;
 } SMBIOS_32bit;
+
+typedef struct {
+    char anchor_string[5]; // _SM3_
+    uint8_t ep_checksum;
+    uint8_t ep_length;
+    uint8_t major_ver;
+    uint8_t minor_ver;
+    uint8_t docrev;
+    uint8_t ep_revision;
+    uint8_t rsvd;
+    uint32_t str_table_max_size;
+    uint64_t str_table_address;
+} SMBIOS_64bit;
 
 typedef uint16_t SMBIOS_HANDLE;
 

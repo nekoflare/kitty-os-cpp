@@ -1,3 +1,4 @@
+
 //
 // Created by Piotr on 31.05.2024.
 //
@@ -5,8 +6,8 @@
 #ifndef KITTY_OS_CPP_LOADER_HPP
 #define KITTY_OS_CPP_LOADER_HPP
 
-#include <kernel/memory/vmm.hpp>
-#include <kernel/memory/pmm.hpp>
+#include <mm/vmm.hpp>
+#include <mm/pmm.hpp>
 
 extern "C" void elf_trampoline(uint64_t new_pml4e, uint64_t new_address);
 
@@ -22,7 +23,7 @@ struct elf_object_t
 /// Create new ELF object.
 elf_object_t* elf_create_object(void* elf_bin, size_t elf_bin_size);
 
-    /// Load the object to the memory.
+/// Load the object to the memory.
 void elf_load_object(elf_object_t* obj);
 
 /// Execute the object.

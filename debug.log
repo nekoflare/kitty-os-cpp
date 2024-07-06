@@ -1,4 +1,4 @@
-PML4e address: 7FF52000
+PML4e address: 7FF45000
 [PMM] Recalculating memory.
 [PMM] The largest address: 10000000000.
 [PMM] Boundaries of memory: 0 - 1.0 (TB).
@@ -6,21 +6,14 @@ PML4e address: 7FF52000
 [PMM] New rounded boundaries of memory: 0 - 1.0 (TB).
 [PMM] Space required for the bitmap: 32.0 (MB)
 [PMM] Found perfect entry for the bitmap.
-	5. 100000 -> 7F1A6000 (Usable memory) (1.9850082397460937 GB)
-[PMM] Recalculating memory.
+	5. 100000 -> 7F1BA000 (Usable memory) (1.9850845336914062 GB)
+0xFFFF80007FF5D000[PMM] Recalculating memory.
 [PMM] The bitmap address is: 0xFFFF800000100000.
 BITMAP ADDRESS: 0xFFFF800000100000
 [PMM] Finished!
-Initializing heap.
-PML4e: 1F4, Base address: FFFFFA0000000000
-PML4e entry: 1F4
-PDPe entry: 0
-PDe entry: 0
-PTe entry: 0
 PDPE ptr: 4F000
 PDE ptr: 50000
 PTE ptr: 51000
-Using AVX malloc function.
 Unmasking IRQ0 using PIC.
 We have 32-bit SMBIOS.
 SMBIOS pointer: 0xFFFF8000000F52A0
@@ -36,35 +29,113 @@ XSDT address: 0
 [ACPI] [RSDT] Entry 3: 7FFE26E6
 [ACPI] [RSDT] Entry 4: 7FFE2722
 FACP
-[ACPI] [FADT] Parsing FADT table...
-[ACPI] [FADT] Done!
 APIC
-[ACPI] [MADT] Parsing MADT table...
-[ACPI] [MADT] Done!
 HPET
 MCFG
-[ACPI] [MCFG] Parsing MCFG table...
-[ACPI] [MCFG] Done!
 WAET
 [ACPI] Done!
-[Kernel] Using PCI express.
-Found device: (8086:29C0) (Intel Corporation) 82G33/G31/P35/P31 Express DRAM Controller
-Found device: (1234:1111) Unknown device
-[BV] Starting...
-[BV] This device is using PCI-e.
-[BV] Done!
-Found device: (8086:10D3) (Intel Corporation) 82574L Gigabit Network Connection
-Found device: (1B36:000D) (Red Hat, Inc.) QEMU XHCI Host Controller
-Found device: (8086:2918) (Intel Corporation) 82801IB (ICH9) LPC Interface Controller
+[Kernel] Using legacy PCI local bus.
 Unmasking IRQ1 using PIC.
-This CPU is AMD.
-Virtual bus width: 57
-Physical bus width: 40
-Model name: QEMU TCG CPU version 2.5+
-Vendor ID: AuthenticAMD
-SSE, SSE2, SSE3, SSSE3, SSE4a, SSE4.1, SSE4.2, AVX, 
-[BV] IOCTL message: 0
-[BV] Changing screen resolution to 1024x768 @ 32...
-KernelTerminal ~ > lol
-Command "lol" not found.
-KernelTerminal ~ > 
+Drivers: Driver name: PS/2 keyboard
+Author: Piotr
+Version:1.0
+Description:Keyboard driver
+
+Driver name: SATA AHCI driver
+Author: Piotr
+Version:Pre-release 1.00
+Description:SATA AHCI driver
+
+Driver name: Bochs video adapter driver.
+Author: Piotr
+Version:Pre-release 1.00
+Description:Simple driver to do simple things.
+
+Driver name: VMWare SVGA II driver.
+Author: Piotr
+Version:Pre-release 1.00
+Description:Basic graphics driver.
+
+Dumping SMBIOS information...
+(1). BIOS Information
+(2). System Information
+(3). System Enclosure or Chassis
+(4). Processor Information
+(5). Physical Memory Array
+(6). Memory Device
+(7). Memory Array Mapped Address
+(8). Memory Array Mapped Address
+(9). System Boot Information
+(10). End-Of-Table
+[PMM] Printing memory map entries: 
+    	1. 1000 -> 4E000 (Bootloader reclaimable memory) (308.0 KB)
+    	2. 4E000 -> 9F000 (Usable memory) (324.0 KB)
+    	3. 9FC00 -> A0000 (Reserved memory) (1.0 KB)
+    	4. F0000 -> 100000 (Reserved memory) (64.0 KB)
+    	5. 2100000 -> 7F1BA000 (Usable memory) (1.9538345336914062 GB)
+    	6. 7F1BA000 -> 7F1BC000 (Kernel and modules (Reserved)) (8.0 KB)
+    	7. 7F1BC000 -> 7F1BD000 (Bootloader reclaimable memory) (4.0 KB)
+    	8. 7F1BD000 -> 7F1BF000 (Usable memory) (8.0 KB)
+    	9. 7F1BF000 -> 7F1C0000 (Bootloader reclaimable memory) (4.0 KB)
+    	10. 7F1C0000 -> 7F26B000 (Kernel and modules (Reserved)) (684.0 KB)
+    	11. 7F26B000 -> 7F270000 (Bootloader reclaimable memory) (20.0 KB)
+    	12. 7F270000 -> 7F281000 (Kernel and modules (Reserved)) (68.0 KB)
+    	13. 7F281000 -> 7F293000 (Bootloader reclaimable memory) (72.0 KB)
+    	14. 7F293000 -> 7F685000 (Kernel and modules (Reserved)) (3.9453125 MB)
+    	15. 7F685000 -> 7FB2A000 (Bootloader reclaimable memory) (4.64453125 MB)
+    	16. 7FB2A000 -> 7FB34000 (Usable memory) (40.0 KB)
+    	17. 7FB34000 -> 7FFDE000 (Bootloader reclaimable memory) (4.6640625 MB)
+    	18. 7FFDE000 -> 80000000 (Reserved memory) (136.0 KB)
+    	19. B0000000 -> C0000000 (Reserved memory) (256.0 MB)
+    	20. FD000000 -> FD3E8000 (Framebuffer memory) (3.90625 MB)
+    	21. FED1C000 -> FED20000 (Reserved memory) (16.0 KB)
+    	22. FFFC0000 -> 100000000 (Reserved memory) (256.0 KB)
+    	23. 100000000 -> 280000000 (Usable memory) (6.0 GB)
+    	24. FD00000000 -> 10000000000 (Reserved memory) (12.0 GB)
+[PMM] Overall memory: 20.2225122451782226 (GB)
+[PMM] Free memory: 7.9541740417480468 (GB)
+[PMM] Reserved memory: 12.2683229446411132 (GB)
+[PMM] Bad memory: 0.0 (B)
+[PMM] Unusable memory: 12.2504510879516601 (GB)
+[PMM] Free pages: 1.9885435104370117 [MP]
+[PMM] Unaligned memory entries  (to the page): 
+		3. 9FC00 -> A0000 (Reserved memory) (1.0 KB)
+[[ END ]]
+autorun.ico
+image
+init.exe
+Found initpg.exe.
+Copied PML4e over to program's PML4e.
+ELF Header:
+  Magic:   7F 45 4C 46 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x800000
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          5136 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         4
+  Size of section headers:           64 (bytes)
+  Number of section headers:         8
+  Section header string table index: 7
+required pages: 2
+0xFFFF80007F1BA120 -> 800000 (4241)
+new VA: 801000
+new VA: 802000
+Moved 4241 bytes to 800000 from 0xFFFF80007F1BA120.
+required pages: 0
+0xFFFF80007F1BA120 -> 0 (0)
+ignoring this entry
+required pages: 1
+0xFFFF80007F1BB1B8 -> 802098 (8)
+new VA: 803098
+Moved 8 bytes to 802098 from 0xFFFF80007F1BB1B8.
+Invoking the object.

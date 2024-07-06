@@ -12,8 +12,9 @@ volatile static limine_smbios_request smbios_request = {
 
 volatile static limine_smbios_response* smbios = nullptr;
 
-static SMBIOS_32bit* smbios_32bit = nullptr;
-static bool smbios_64bit = false;
+SMBIOS_32bit* smbios32 = nullptr;
+SMBIOS_64bit* smbios64 = nullptr;
+bool is_smbios64 = false;
 
 void smbios_init() {
     if (smbios_request.response == nullptr) {
@@ -21,41 +22,37 @@ void smbios_init() {
         return;
     }
 
-    void* smbios_pointer;
-
     smbios = smbios_request.response;
 
-    if (smbios->entry_32 != nullptr) {
-        kstd::printf("We have 32-bit SMBIOS.\n");
-
-        smbios_pointer = smbios->entry_32;
-
-        smbios_32bit = static_cast<SMBIOS_32bit *>(smbios_pointer);
-    } else if (smbios->entry_64 != nullptr) {
+    if (smbios->entry_64 != nullptr) {
         kstd::printf("We have 64-bit SMBIOS.\n");
 
-        smbios_64bit = true;
-        smbios_pointer = smbios->entry_64;
+        is_smbios64 = true;
+        smbios64 = static_cast<SMBIOS_64bit *>(smbios->entry_64);
+    } else if (smbios->entry_32 != nullptr) {
+        kstd::printf("We have 32-bit SMBIOS.\n");
 
-        // Todo: add 64-bit smbios
+        smbios32 = static_cast<SMBIOS_32bit *>(smbios->entry_32);
     } else {
         kstd::printf("No SMBIOS pointer is available.\n");
         return;
     }
 
+    void* smbios_pointer = is_smbios64 ? static_cast<void*>(smbios64) : static_cast<void*>(smbios32);
     kstd::printf("SMBIOS pointer: %p\n", smbios_pointer);
 
-    kstd::printf("Number of structures: %zu\n", static_cast<size_t>(smbios_32bit->number_of_structures));
-
-    smbios_get_entry(0);
+    if (!is_smbios64)
+        kstd::printf("Number of structures: %zu\n", static_cast<size_t>(smbios32->number_of_structures));
+    else
+        kstd::printf("Number of structures: unknown for 64-bit\n"); // TODO: Implement proper structure counting for 64-bit
 }
 
 void* smbios_get_entry(size_t idx) {
-    if (idx >= smbios_get_structure_count() || !smbios_32bit) {
+    if (is_smbios64 || idx >= smbios_get_structure_count()) {
         return nullptr;
     }
 
-    uintptr_t current_address = reinterpret_cast<uintptr_t>(smbios_32bit);
+    uintptr_t current_address = reinterpret_cast<uintptr_t>(smbios32) + sizeof(SMBIOS_32bit);
     for (size_t i = 0; i < idx; ++i) {
         SMBIOS_Tag* tag = reinterpret_cast<SMBIOS_Tag*>(current_address);
         current_address += tag->length;
@@ -71,22 +68,21 @@ void* smbios_get_entry(size_t idx) {
 }
 
 size_t smbios_get_structure_count() {
-    // Todo: add support for 64 bit too
-    return smbios_32bit->number_of_structures;
+    if (is_smbios64) {
+        // TODO: Implement structure count for 64-bit SMBIOS
+        return 0; // Placeholder
+    }
+    return smbios32->number_of_structures;
 }
 
-void smbios_dump_info()
-{
+void smbios_dump_info() {
     kstd::printf("Dumping SMBIOS information...\n");
 
     size_t entry_count = smbios_get_structure_count();
-    uint64_t last_entry_type = 0;
-
-    for (size_t i = 0; i < entry_count; i++)
-    {
+    for (size_t i = 0; i < entry_count; i++) {
         auto t = reinterpret_cast<SMBIOS_Tag*>(smbios_get_entry(i));
         auto name = smbios_entry_type_to_string(t->type);
 
-        kstd::printf("(%ld). %s\n", i + 1, name);
+        kstd::printf("(%zu). %s\n", i + 1, name);
     }
 }

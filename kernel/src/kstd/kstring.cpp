@@ -2,6 +2,7 @@
 // Created by Piotr on 03.05.2024.
 //
 
+#include <climits>
 #include "kstring.hpp"
 
 namespace kstd
@@ -207,4 +208,67 @@ namespace kstd
     bool isalpha(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
+
+    bool isspace(char c) {
+        return (c == ' ' || c == '\t' || c == '\n' ||
+                c == '\v' || c == '\f' || c == '\r');
+    }
+
+    unsigned long long strtoull(const char* str, char base)
+    {
+        const char* s = str;
+        unsigned long long result = 0;
+        int actual_base = 0;
+
+        // Determine the actual base
+        if (base == 'x' || base == 'X') {
+            actual_base = 16;
+        } else if (base == 'o' || base == 'O') {
+            actual_base = 8;
+        } else if (base == 'd') {
+            actual_base = 10;
+        } else {
+            // Invalid base character
+            return 0;
+        }
+
+        // Skip leading whitespace
+        while (kstd::isspace(*s)) {
+            s++;
+        }
+
+        // Handle hexadecimal prefix if base is 16
+        if (actual_base == 16 && *s == '0' && (*(s + 1) == 'x' || *(s + 1) == 'X')) {
+            s += 2;
+        }
+
+        while (*s) {
+            unsigned long long digit = 0;
+
+            if (*s >= '0' && *s <= '9') {
+                digit = *s - '0';
+            } else if (actual_base == 16 && *s >= 'a' && *s <= 'f') {
+                digit = *s - 'a' + 10;
+            } else if (actual_base == 16 && *s >= 'A' && *s <= 'F') {
+                digit = *s - 'A' + 10;
+            } else {
+                break;
+            }
+
+            if (digit >= static_cast<unsigned long long>(actual_base)) {
+                break;
+            }
+
+            if (result > (ULLONG_MAX - digit) / actual_base) {
+                result = ULLONG_MAX;
+                break;
+            }
+
+            result = result * actual_base + digit;
+            s++;
+        }
+
+        return result;
+    }
+
 }

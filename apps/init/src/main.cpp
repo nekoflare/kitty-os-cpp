@@ -5,15 +5,10 @@
 #include <cstdint>
 #include <Kitty.hpp>
 
-int test = 20;
-// TODO: The memory isn't aligned! The page is here but data not there! Do something idiot!
-
+auto are_you_ugly_on_purpose = "Test";
 
 int main()
 {
-    if (test == 10)
-        KernWrite("10");
-    else
-        KernWrite("!10");
+    KernWrite(are_you_ugly_on_purpose);
     return 0;
 }

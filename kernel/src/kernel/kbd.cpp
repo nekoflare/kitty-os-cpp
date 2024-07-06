@@ -4,8 +4,8 @@
 
 #include "kbd.hpp"
 
-#include <kdu/apis/keyboard.hpp>
-#include <kdu/driver_ctrl.hpp>
+#include <public/kdu/apis/keyboard.hpp>
+#include <public/kdu/driver_ctrl.hpp>
 
 struct conv_table_entry
 {
@@ -66,7 +66,7 @@ bool kbd_is_in_table(char c)
 KeyboardKeyState kbd_get_kks()
 {
     static KeyboardKeyState kks {};
-    ioctl_auto(DT_KEYBOARD, nullptr, GetKeyState, nullptr, (char*)&kks);
+    ioctl_auto(DT_KEYBOARD, nullptr, GetKeyState, nullptr, reinterpret_cast<char*>(&kks));
     return kks;
 }
 

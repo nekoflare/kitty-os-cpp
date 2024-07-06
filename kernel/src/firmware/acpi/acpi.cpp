@@ -2,6 +2,7 @@
 // Created by Piotr on 26.05.2024.
 //
 
+#include <kstd/kstring.hpp>
 #include "acpi.hpp"
 
 volatile limine_rsdp_request acpi_rsdp_request = {
@@ -96,19 +97,19 @@ void acpi_init()
     if (rsdp_table->xsdt_address != 0)
         xsdt_table = reinterpret_cast<acpi_xsdt*>(vmm_make_virtual<uint64_t>(rsdp_table->xsdt_address));
 
-    kstd::printf("RSDP address: %llx\n", rsdp_table);
-    kstd::printf("RSDT address: %llx\n", rsdt_table);
-    kstd::printf("XSDT address: %llx\n", xsdt_table);
+    kstd::printf("RSDP address: %lx\n", reinterpret_cast<uint64_t>(rsdp_table));
+    kstd::printf("RSDT address: %lx\n", reinterpret_cast<uint64_t>(rsdt_table));
+    kstd::printf("XSDT address: %lx\n", reinterpret_cast<uint64_t>(xsdt_table));
 
     acpi_entry_count = (rsdt_table->common.length - sizeof(acpi_rsdt)) / 4;
 
-    kstd::printf("[ACPI] [RSDT] Entry count: %lld\n", acpi_entry_count);
+    kstd::printf("[ACPI] [RSDT] Entry count: %ld\n", acpi_entry_count);
 
     volatile uint32_t* entries = reinterpret_cast<volatile uint32_t*>(reinterpret_cast<volatile uint8_t*>(rsdt_table) + sizeof(acpi_rsdt));
 
     // Print each entry
     for (size_t i = 0; i < acpi_entry_count; ++i) {
-        kstd::printf("[ACPI] [RSDT] Entry %lld: %x\n", i, entries[i]);
+        kstd::printf("[ACPI] [RSDT] Entry %zu: %x\n", i, entries[i]);
         acpi_discovered_tables[i] = vmm_make_virtual<uint64_t*>(entries[i]);
     }
 
@@ -120,17 +121,17 @@ void acpi_init()
         acpi_print_name(sdt->signature);
         kstd::puts("\n");
 
-        if (sdt->signature == 'GFCM') // MCFG but in reverse order
+        if (kstd::strcmp(reinterpret_cast<char*>(&sdt->signature), "MCFG") == 0) // MCFG but in reverse order
         {
             acpi_parse_mcfg(reinterpret_cast<acpi_mcfg*>(table));
         }
 
-        if (sdt->signature == 'CIPA') // APIC but in reverse order
+        if (kstd::strcmp(reinterpret_cast<char*>(&sdt->signature), "APIC") == 0) // APIC but in reverse order
         {
             acpi_parse_madt(reinterpret_cast<acpi_madt*>(table));
         }
 
-        if (sdt->signature == 'PCAF') // FACP but in reverse order
+        if (kstd::strcmp(reinterpret_cast<char*>(&sdt->signature), "FACP") == 0) // FACP but in reverse order
         {
             acpi_parse_fadt(reinterpret_cast<acpi_fadt*>(table));
         }
