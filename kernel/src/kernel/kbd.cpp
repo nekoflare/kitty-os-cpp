@@ -6,6 +6,7 @@
 
 #include <public/kdu/apis/keyboard.hpp>
 #include <public/kdu/driver_ctrl.hpp>
+#include <kstd/kstring.hpp>
 
 struct conv_table_entry
 {

@@ -2,6 +2,7 @@
 // Created by Piotr on 30.05.2024.
 //
 
+#include <mm/vmm.hpp>
 #include <public/kdu/driver_ctrl.hpp>
 #include <kstd/kstring.hpp>
 #include "pci.hpp"
@@ -192,7 +193,7 @@ void pci_dump_database()
 void pcie_init() {
     if (is_pci_initialized || is_pcie_initialized) return;
 
-    acpi_mcfg* mcfg = acpi_get_mcfg();
+    acpi_mcfg* mcfg = reinterpret_cast<acpi_mcfg*>(acpi_get_table("MCFG"));
     if (mcfg == nullptr) {
         kstd::printf("MCFG table is null. Not using PCI-e\n");
         return; // Exit function if MCFG table is null

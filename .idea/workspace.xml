@@ -14,8 +14,13 @@
   <component name="ChangeListManager">
     <list default="true" id="8256a7b5-62c6-4950-9dba-ad4446acca33" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/debug.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/serial.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/drivers/clock/rtc/rtc.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/drivers/clock/rtc/rtc.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/drivers/interactive/ps2/kbd.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/drivers/interactive/ps2/kbd.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/firmware/acpi/acpi.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/firmware/acpi/acpi.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/firmware/acpi/acpi.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/firmware/acpi/acpi.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/hal/bus/pci.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/hal/bus/pci.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/kernel/kbd.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/kernel/kbd.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/src/kernel/kernel_main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/src/kernel/kernel_main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +109,7 @@
       <workItem from="1720101864937" duration="17000" />
       <workItem from="1720180437046" duration="368000" />
       <workItem from="1720191223592" duration="95000" />
-      <workItem from="1720256831024" duration="33000" />
+      <workItem from="1720256831024" duration="4582000" />
     </task>
     <servers />
   </component>

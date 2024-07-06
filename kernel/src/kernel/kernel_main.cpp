@@ -34,7 +34,7 @@ volatile limine_module_request module_request = {
 
 void initialize_pci()
 {
-    if (acpi_get_mcfg() == nullptr)
+    if (acpi_get_table("MCFG") == nullptr)
     {
         kstd::printf("[Kernel] Using legacy PCI local bus.\n");
         pci_init();
@@ -89,7 +89,7 @@ extern "C" void kernel_main()
             auto obj = elf_create_object(mod->address, mod->size);
 
             elf_load_object(obj);
-            elf_invoke_object(obj);
+            //elf_invoke_object(obj);
 
         }
     }
