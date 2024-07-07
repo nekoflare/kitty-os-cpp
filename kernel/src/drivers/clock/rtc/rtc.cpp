@@ -39,7 +39,7 @@ void rtc_get_time(ktime_t* time)
     uint32_t century = 20; // update this every century
 
     // Here, we should use ACPI to get century register.
-    acpi_fadt* fadt = reinterpret_cast<acpi_fadt*>(acpi_get_table("FACP"));
+    acpi_fadt* fadt = acpi_get_fadt();
 
     if (fadt != nullptr)
     {

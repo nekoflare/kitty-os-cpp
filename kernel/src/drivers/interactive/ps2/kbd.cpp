@@ -118,6 +118,8 @@ static void ps2kbd_irq_handler([[maybe_unused]] Registers_x86_64* regs)
         if ((scan_code_buffer[0] == 0xE0 && scan_code_length == 2) ||  // Handle 0xE0 xx
             (scan_code_buffer[0] == 0xE1 && scan_code_length == 6))    // Handle 0xE1 xx xx xx xx
         {
+            auto code = ps2kbd_combine_scan_code(scan_code_buffer, scan_code_length);
+            kstd::printf("%lx\n", code);
             ps2kbd_parse_key(scan_code_buffer, scan_code_length, was_press);
             special_codes = false;  // Reset special codes flag
             scan_code_length = 0;   // Reset scan code length
@@ -127,6 +129,8 @@ static void ps2kbd_irq_handler([[maybe_unused]] Registers_x86_64* regs)
 
     scan_code_buffer[0] = scan_code;
     scan_code_length = 1;
+    auto code = ps2kbd_combine_scan_code(scan_code_buffer, scan_code_length);
+    kstd::printf("%lx\n", code);
     ps2kbd_parse_key(scan_code_buffer, scan_code_length, was_press);
 }
 

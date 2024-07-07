@@ -6,6 +6,9 @@
 #define KITTY_OS_CPP_ACPI_HPP
 
 #include <stdint.h>
+#include <kstd/kstdio.hpp>
+#include <limine.h>
+#include <mm/vmm.hpp>
 
 struct acpi_sdt_common
 {
@@ -156,6 +159,22 @@ struct acpi_madt_entry
     uint8_t entry_length;
 } __attribute__((packed));
 
+inline const char* madt_entry_type_to_string(uint8_t entry_type)
+{
+    switch (entry_type)
+    {
+        case 0: return "Processor Local APIC";
+        case 1: return "I/O APIC";
+        case 2: return "I/O APIC Interrupt Source Override";
+        case 3: return "I/O APIC Non-maskable interrupt source";
+        case 4: return "Local APIC Non-maskable interrupts";
+        case 5: return "Local APIC Address override";
+        case 6: return "Processor Local x2APIC";
+        default:
+            return "Unknown APIC entry.";
+    }
+}
+
 struct acpi_xsdt
 {
     acpi_sdt_common common;
@@ -163,7 +182,9 @@ struct acpi_xsdt
 };
 
 void acpi_init();
-void* acpi_get_table(const char* signature);
-bool acpi_table_exists(const char* signature);
+
+acpi_mcfg* acpi_get_mcfg();
+acpi_madt* acpi_get_madt();
+acpi_fadt* acpi_get_fadt();
 
 #endif //KITTY_OS_CPP_ACPI_HPP

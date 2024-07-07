@@ -19,6 +19,7 @@ void vmm_init()
             if constexpr (vmm_verbose)
             {
                 kstd::printf("[VMM] HDDM request response in null.\n");
+                asm volatile ("cli; hlt");
             }
         }
 
@@ -33,8 +34,6 @@ void vmm_init()
 
 bool vmm_map(pml4e* pml4e, uint64_t virt_address, uint64_t phys_address, int prot_flags, int map_flags, int misc_flags)
 {
-    if (pml4e == nullptr) return false;
-
     vmm_address va = vmm_split_va(virt_address);
 
     // Alignment check.
@@ -43,10 +42,19 @@ bool vmm_map(pml4e* pml4e, uint64_t virt_address, uint64_t phys_address, int pro
         if constexpr (vmm_verbose)
         {
             kstd::printf("Physical address isn't aligned to page.\n");
-            unreachable();
         }
 
+        unreachable();
         return false;
+    }
+
+    if (virt_address % PAGE_SIZE != 0)
+    {
+        if constexpr (vmm_verbose)
+        {
+            kstd::printf("Virtual address isn't aligned to the page.\n");
+        }
+        unreachable();
     }
 
     // Get separate flags already.
@@ -70,8 +78,9 @@ bool vmm_map(pml4e* pml4e, uint64_t virt_address, uint64_t phys_address, int pro
         pml4e[va.pml4e].pdpe_ptr = p >> 12;
         pml4e[va.pml4e].present = map_present;
         pml4e[va.pml4e].read_write = protection_rw;
-if constexpr (vmm_verbose)
-        kstd::printf("PDPE ptr: %lx\n", p);
+
+        if constexpr (vmm_verbose)
+                kstd::printf("PDPE ptr: %lx\n", p);
     }
 
     pdpe* pdpe = reinterpret_cast<struct pdpe*>((pml4e[va.pml4e].pdpe_ptr << 12) + vmm_hhdm->offset);

@@ -2,9 +2,6 @@
 // Created by Piotr on 26.05.2024.
 //
 
-#include <limine.h>
-#include <kstd/kstdio.hpp>
-#include <mm/vmm.hpp>
 #include <kstd/kstring.hpp>
 #include "acpi.hpp"
 
@@ -14,105 +11,133 @@ volatile limine_rsdp_request acpi_rsdp_request = {
         .response = nullptr,
 };
 
-static bool acpi_is_xsdt = false;
-static acpi_rsdp* acpi_rsdp_pointer = nullptr;
-static acpi_rsdt* acpi_rsdt_pointer = nullptr;
-static acpi_xsdt* acpi_xsdt_pointer = nullptr;
-static bool acpi_is_initialized = false;
+volatile limine_rsdp_response* acpi_rsdp_limine = nullptr;
 
-void acpi_init() {
-    if (acpi_rsdp_request.response == nullptr) {
-        acpi_is_initialized = false;
+/**
+ * Tables
+ */
+void* acpi_table_start = nullptr;
+acpi_rsdp* rsdp_table = nullptr;
+acpi_rsdt* rsdt_table = nullptr;
+acpi_xsdt* xsdt_table = nullptr;
+acpi_mcfg* mcfg_table = nullptr;
+acpi_fadt* fadt_table = nullptr;
+
+uint64_t* acpi_discovered_tables[512] = { nullptr };
+
+size_t acpi_entry_count = 0;
+
+void acpi_print_name(uint32_t s)
+{
+    char str[5] {0};
+    kstd::memcpy(str, reinterpret_cast<void*>(&s), 4);
+    str[4] = 0;
+    kstd::puts(str);
+}
+
+acpi_mcfg* acpi_get_mcfg()
+{
+    return mcfg_table;
+}
+
+acpi_fadt* acpi_get_fadt()
+{
+    return fadt_table;
+}
+
+void acpi_parse_mcfg(acpi_mcfg* _mcfg_table)
+{
+    kstd::printf("[ACPI] [MCFG] Parsing MCFG table...\n");
+
+    mcfg_table = _mcfg_table;
+
+    kstd::printf("[ACPI] [MCFG] Done!\n");
+}
+
+acpi_madt* madt_table = nullptr;
+
+void acpi_parse_madt(acpi_madt* _madt_table)
+{
+    kstd::printf("[ACPI] [MADT] Parsing MADT table...\n");
+
+    madt_table = _madt_table;
+
+    kstd::printf("[ACPI] [MADT] Done!\n");
+}
+
+void acpi_parse_fadt(acpi_fadt* _fadt_table)
+{
+    kstd::printf("[ACPI] [FADT] Parsing FADT table...\n");
+
+    fadt_table = _fadt_table;
+
+    kstd::printf("[ACPI] [FADT] Done!\n");
+}
+
+acpi_madt* acpi_get_madt()
+{
+    return madt_table;
+}
+
+void acpi_init()
+{
+    kstd::printf("[ACPI] Initializing...\n");
+
+    if (acpi_rsdp_request.response == nullptr)
+    {
+        kstd::printf("[ACPI] No RSDP has been found on this machine.\n");
+
         return;
     }
 
-    acpi_rsdp_pointer = reinterpret_cast<acpi_rsdp*>(acpi_rsdp_request.response->address);
+    acpi_rsdp_limine = acpi_rsdp_request.response;
 
-    if (acpi_rsdp_pointer->revision > 0) {
-        // uses XSDT
-        acpi_is_xsdt = true;
-        acpi_xsdt_pointer = reinterpret_cast<acpi_xsdt*>(acpi_rsdp_pointer->xsdt_address);
-    } else {
-        // uses RSDT
-        acpi_is_xsdt = false;
-        acpi_rsdt_pointer = reinterpret_cast<acpi_rsdt*>(acpi_rsdp_pointer->rsdt_address);
+    rsdp_table = reinterpret_cast<acpi_rsdp*>(acpi_rsdp_limine->address);
+    rsdt_table = reinterpret_cast<acpi_rsdt*>(vmm_make_virtual<uint64_t>(rsdp_table->rsdt_address));
+    if (rsdp_table->xsdt_address != 0)
+        xsdt_table = reinterpret_cast<acpi_xsdt*>(vmm_make_virtual<uint64_t>(rsdp_table->xsdt_address));
+
+    kstd::printf("RSDP address: %lx\n", reinterpret_cast<uint64_t>(rsdp_table));
+    kstd::printf("RSDT address: %lx\n", reinterpret_cast<uint64_t>(rsdt_table));
+    kstd::printf("XSDT address: %lx\n", reinterpret_cast<uint64_t>(xsdt_table));
+
+    acpi_entry_count = (rsdt_table->common.length - sizeof(acpi_rsdt)) / 4;
+
+    kstd::printf("[ACPI] [RSDT] Entry count: %ld\n", acpi_entry_count);
+
+    volatile uint32_t* entries = reinterpret_cast<volatile uint32_t*>(reinterpret_cast<volatile uint8_t*>(rsdt_table) + sizeof(acpi_rsdt));
+
+    // Print each entry
+    for (size_t i = 0; i < acpi_entry_count; ++i) {
+        kstd::printf("[ACPI] [RSDT] Entry %zu: %x\n", i, entries[i]);
+        acpi_discovered_tables[i] = vmm_make_virtual<uint64_t*>(entries[i]);
     }
 
-    acpi_is_initialized = true;
-}
+    int i = 0;
+    while (acpi_discovered_tables[i] != 0)
+    {
+        uint64_t* table = acpi_discovered_tables[i];
+        acpi_sdt_common* sdt = reinterpret_cast<acpi_sdt_common*>(table);
+        acpi_print_name(sdt->signature);
+        kstd::puts("\n");
 
-void* acpi_get_table(const char* signature) {
-    if (!acpi_is_initialized) return nullptr;
-
-    if (acpi_is_xsdt) {
-        size_t entry_count = (acpi_xsdt_pointer->common.length - sizeof(acpi_xsdt)) / 8; // Pointers are 8-byte wide in this case.
-        uintptr_t* current_table = reinterpret_cast<uintptr_t*>(reinterpret_cast<uintptr_t>(acpi_xsdt_pointer) + sizeof(acpi_xsdt)); // Go to the end of the table where the table pointers live.
-
-        // Iterate through table pointers
-        for (size_t i = 0; entry_count > i; i++) {
-            // Convert address to virtual pointer
-            acpi_sdt_common* current_table_virtual = reinterpret_cast<acpi_sdt_common*>(vmm_make_virtual_singular(current_table[i]));
-
-            if (kstd::memcmp(reinterpret_cast<const void*>(signature), reinterpret_cast<void*>(&current_table_virtual->signature), 4) == 0) {
-                // The table signatures match.
-                return reinterpret_cast<void*>(current_table_virtual);
-            }
+        if (kstd::strcmp(reinterpret_cast<char*>(&sdt->signature), "MCFG") == 0) // MCFG but in reverse order
+        {
+            acpi_parse_mcfg(reinterpret_cast<acpi_mcfg*>(table));
         }
-    } else {
-        // it's using old type
-        size_t entry_count = (acpi_rsdt_pointer->common.length - sizeof(acpi_rsdt)) / 4; // Pointers are 4-byte wide in this case.
-        uint32_t* current_table = reinterpret_cast<uint32_t*>(reinterpret_cast<uintptr_t>(acpi_rsdt_pointer) + sizeof(acpi_rsdt)); // Go to the end of the table where the table pointers live.
 
-        // Iterate through table pointers
-        for (size_t i = 0; entry_count > i; i++) {
-            // Extend the 4-byte address to 8 bytes before conversion
-            uintptr_t table_address = static_cast<uintptr_t>(current_table[i]);
-            acpi_sdt_common* current_table_virtual = reinterpret_cast<acpi_sdt_common*>(vmm_make_virtual_singular(table_address));
-
-            if (kstd::memcmp(reinterpret_cast<const void*>(signature), reinterpret_cast<void*>(&current_table_virtual->signature), 4) == 0) {
-                // The table signatures match.
-                return reinterpret_cast<void*>(current_table_virtual);
-            }
+        if (kstd::strcmp(reinterpret_cast<char*>(&sdt->signature), "APIC") == 0) // APIC but in reverse order
+        {
+            acpi_parse_madt(reinterpret_cast<acpi_madt*>(table));
         }
+
+        if (kstd::strcmp(reinterpret_cast<char*>(&sdt->signature), "FACP") == 0) // FACP but in reverse order
+        {
+            acpi_parse_fadt(reinterpret_cast<acpi_fadt*>(table));
+        }
+
+        i++;
     }
 
-    return nullptr;
-}
-
-bool acpi_table_exists(const char* signature) {
-    if (!acpi_is_initialized) return false;
-
-    if (acpi_is_xsdt) {
-        size_t entry_count = (acpi_xsdt_pointer->common.length - sizeof(acpi_xsdt)) / 8; // Pointers are 8-byte wide in this case.
-        uintptr_t* current_table = reinterpret_cast<uintptr_t*>(reinterpret_cast<uintptr_t>(acpi_xsdt_pointer) + sizeof(acpi_xsdt)); // Go to the end of the table where the table pointers live.
-
-        // Iterate through table pointers
-        for (size_t i = 0; entry_count > i; i++) {
-            // Convert address to virtual pointer
-            acpi_sdt_common* current_table_virtual = reinterpret_cast<acpi_sdt_common*>(vmm_make_virtual_singular(current_table[i]));
-
-            if (kstd::memcmp(reinterpret_cast<const void*>(signature), reinterpret_cast<void*>(&current_table_virtual->signature), 4) == 0) {
-                // The table signatures match.
-                return true;
-            }
-        }
-    } else {
-        // it's using old type
-        size_t entry_count = (acpi_rsdt_pointer->common.length - sizeof(acpi_rsdt)) / 4; // Pointers are 4-byte wide in this case.
-        uint32_t* current_table = reinterpret_cast<uint32_t*>(reinterpret_cast<uintptr_t>(acpi_rsdt_pointer) + sizeof(acpi_rsdt)); // Go to the end of the table where the table pointers live.
-
-        // Iterate through table pointers
-        for (size_t i = 0; entry_count > i; i++) {
-            // Extend the 4-byte address to 8 bytes before conversion
-            uintptr_t table_address = static_cast<uintptr_t>(current_table[i]);
-            acpi_sdt_common* current_table_virtual = reinterpret_cast<acpi_sdt_common*>(vmm_make_virtual_singular(table_address));
-
-            if (kstd::memcmp(reinterpret_cast<const void*>(signature), reinterpret_cast<void*>(&current_table_virtual->signature), 4) == 0) {
-                // The table signatures match.
-                return true;
-            }
-        }
-    }
-
-    return false;
+    kstd::printf("[ACPI] Done!\n");
 }

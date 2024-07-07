@@ -7,6 +7,7 @@
 #include <arch/x64/control/control.hpp>
 #include <hal/x64/irqs/pic/pic.hpp>
 #include <sched/processes.hpp>
+#include <kernel/syscalls/syscalls.hpp>
 
 const char* exception_strings[32] = {
         "(#DE) Division Error",
@@ -168,6 +169,11 @@ extern "C" void interrupt_handler(Registers_x86_64* regs)
         }
 
         unreachable();
+    }
+
+    if (regs->rax == 0x80)
+    {
+        sctbl_call(regs);
     }
 
     if (enabled_sched && regs->interrupt_number == 0x90)

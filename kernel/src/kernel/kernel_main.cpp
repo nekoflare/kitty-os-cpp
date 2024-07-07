@@ -10,7 +10,6 @@
 #include <kernel/debugging/debug_print.hpp>
 #include <hal/bus/pci.hpp>
 #include <sched/processes.hpp>
-#include <public/kdu/apis/graphics.hpp>
 #include <hal/x64/tss/tss.hpp>
 #include <kernel/clock.hpp>
 #include <mm/heap.hpp>
@@ -18,6 +17,7 @@
 #include <hal/x64/gdt/gdt.hpp>
 #include <hal/x64/idt/idt.hpp>
 #include <firmware/smbios/smbios.hpp>
+#include <kernel/syscalls/syscalls.hpp>
 
 extern void (*__init_array[])();
 extern void (*__init_array_end[])();
@@ -34,7 +34,7 @@ volatile limine_module_request module_request = {
 
 void initialize_pci()
 {
-    if (acpi_get_table("MCFG") == nullptr)
+    if (acpi_get_mcfg() == nullptr)
     {
         kstd::printf("[Kernel] Using legacy PCI local bus.\n");
         pci_init();
@@ -45,6 +45,8 @@ void initialize_pci()
         pcie_init();
     }
 }
+
+extern "C" void fuckme();
 
 extern "C" void kernel_main()
 {
@@ -80,19 +82,7 @@ extern "C" void kernel_main()
     idt_enable_sched();
     tss_flush();
 
-    for (size_t i = 0; module_request.response->module_count > i; i++) {
-        auto mod = module_request.response->modules[i];
-        kstd::printf("%s\n", mod->cmdline);
-        if (kstd::strcmp(mod->cmdline, "init.exe") == 0) {
-            kstd::printf("Found initpg.exe.\n");
-
-            auto obj = elf_create_object(mod->address, mod->size);
-
-            elf_load_object(obj);
-            //elf_invoke_object(obj);
-
-        }
-    }
+    sctbl_print_entries();
 
     kt_main();
 
