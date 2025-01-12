@@ -1,0 +1,20 @@
+
+Section Sizes:
+   text	   data	    bss	    dec	    hex	filename
+1223605	1132792	 896928	3253325	 31a44d	kernel.elf
+rm -rf obj template.kmod
+/usr/bin/x86_64-linux-gnu-g++-11 -fpermissive -Wall -O0 -fno-stack-protector -Wextra -ffreestanding -fno-stack-check -fno-lto -pie -fpie -ffunction-sections -fdata-sections -I src/ -fno-rtti -fno-exceptions -fPIE -fPIC -DX86_64 -m64 -msse -mno-mmx -mno-sse2 -mno-sse3 -mno-ssse3 -mno-avx -mno-avx2 -mno-avx512f -mno-red-zone -march=x86-64 -fno-threadsafe-statics -std=c++20 -Wold-style-cast -Isrc/ -Wformat-security -Wformat -g -Isrc/acpi -c src/main.cpp -o obj/main.o
+Linking template.kmod...
+
+Section Sizes:
+   text	   data	    bss	    dec	    hex	filename
+   1320	    304	      0	   1624	    658	template.kmod
+'limine/limine-bios.sys' -> 'iso_root/boot/limine/limine-bios.sys'
+'limine/limine-bios-cd.bin' -> 'iso_root/boot/limine/limine-bios-cd.bin'
+'limine/limine-uefi-cd.bin' -> 'iso_root/boot/limine/limine-uefi-cd.bin'
+'limine/BOOTX64.EFI' -> 'iso_root/EFI/BOOT/BOOTX64.EFI'
+'limine/BOOTIA32.EFI' -> 'iso_root/EFI/BOOT/BOOTIA32.EFI'
+'kernel.elf' -> 'iso_root/kernel'
+'limine.conf' -> 'iso_root/boot/limine/limine.conf'
+'kernel_modules/template/template.kmod' -> 'iso_root/template.kmod'
+68952

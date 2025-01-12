@@ -12,14 +12,31 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8256a7b5-62c6-4950-9dba-ad4446acca33" name="Changes" comment="" />
+    <list default="true" id="4878b3f7-f987-428f-befa-b7bfa98b4214" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/CUDA-symlinks/usr/bin/ptxas" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/CUDA-symlinks/usr/bin/ptxas" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/basic_cross_linux_tree/usr/bin/i386-unknown-linux-gnu-ld" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/basic_cross_linux_tree/usr/bin/i386-unknown-linux-gnu-ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/basic_cross_linux_tree/usr/bin/x86_64-unknown-linux-gnu-ld" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/basic_cross_linux_tree/usr/bin/x86_64-unknown-linux-gnu-ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/basic_cross_linux_tree/usr/i386-unknown-linux-gnu/bin/ld" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/basic_cross_linux_tree/usr/i386-unknown-linux-gnu/bin/ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/basic_cross_linux_tree/usr/x86_64-unknown-linux-gnu/bin/ld" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/basic_cross_linux_tree/usr/x86_64-unknown-linux-gnu/bin/ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_32bit_linux_tree/usr/bin/as" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_32bit_linux_tree/usr/bin/as" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_32bit_linux_tree/usr/bin/ld" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_32bit_linux_tree/usr/bin/ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_32bit_linux_tree/usr/i386-unknown-linux/bin/as" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_32bit_linux_tree/usr/i386-unknown-linux/bin/as" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_32bit_linux_tree/usr/i386-unknown-linux/bin/ld" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_32bit_linux_tree/usr/i386-unknown-linux/bin/ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_64bit_linux_tree/usr/bin/as" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_64bit_linux_tree/usr/bin/as" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_64bit_linux_tree/usr/bin/ld" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_64bit_linux_tree/usr/bin/ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_64bit_linux_tree/usr/x86_64-unknown-linux/bin/as" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_64bit_linux_tree/usr/x86_64-unknown-linux/bin/as" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_64bit_linux_tree/usr/x86_64-unknown-linux/bin/ld" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/clang/test/Driver/Inputs/multilib_64bit_linux_tree/usr/x86_64-unknown-linux/bin/ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/libclc/amdgcn-mesa3d" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/libclc/clc/lib/clspv64" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/libclc/clspv64" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/lldb/test/API/functionalities/breakpoint/breakpoint_with_realpath_and_source_map/symlink1/foo.h" beforeDir="false" afterPath="$PROJECT_DIR$/llvm-project/lldb/test/API/functionalities/breakpoint/breakpoint_with_realpath_and_source_map/symlink1/foo.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/lldb/test/API/functionalities/breakpoint/breakpoint_with_realpath_and_source_map/symlink2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm-project/lldb/tools/lldb-vscode" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="ClangdSettings">
-    <option name="formatViaClangd" value="false" />
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -27,7 +44,7 @@
     </projectState>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/limine" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/uACPI" />
   </component>
   <component name="MakefileLocalSettings">
     <option name="availableProjects">
@@ -35,14 +52,14 @@
         <entry>
           <key>
             <ExternalProjectPojo>
-              <option name="name" value="5124" />
+              <option name="name" value="kos-x64" />
               <option name="path" value="$PROJECT_DIR$" />
             </ExternalProjectPojo>
           </key>
           <value>
             <list>
               <ExternalProjectPojo>
-                <option name="name" value="5124" />
+                <option name="name" value="kos-x64" />
                 <option name="path" value="$PROJECT_DIR$" />
               </ExternalProjectPojo>
             </list>
@@ -56,6 +73,9 @@
       </map>
     </option>
   </component>
+  <component name="MakefilesProjectLoadingState">
+    <option name="doClean" value="false" />
+  </component>
   <component name="ProjectApplicationVersion">
     <option name="ide" value="CLion" />
     <option name="majorVersion" value="2024" />
@@ -63,60 +83,59 @@
     <option name="productBranch" value="Classic" />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 3
+  &quot;associatedIndex&quot;: 0
 }</component>
-  <component name="ProjectId" id="2imVaXfwJA00Tpww8fuJJ6Me7Te" />
+  <component name="ProjectId" id="2qFBM4BiRSkxmu6wDVWQdlIuHUM" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;v6.x-branch-binary&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Piotr/Documents/GitHub/kitty-os-cpp&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.advertisement.text.overridden": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.google.cloudcode.ide_session_index": "20250105_0000",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/kos-x64",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.android.studio.ml.bot.mainConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\kos-x64\src\utilities" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="8256a7b5-62c6-4950-9dba-ad4446acca33" name="Changes" comment="" />
-      <created>1720095803334</created>
+      <changelist id="4878b3f7-f987-428f-befa-b7bfa98b4214" name="Changes" comment="" />
+      <created>1734248391301</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1720095803334</updated>
-      <workItem from="1720095805256" duration="79000" />
-      <workItem from="1720101864937" duration="17000" />
-      <workItem from="1720180437046" duration="368000" />
-      <workItem from="1720191223592" duration="95000" />
-      <workItem from="1720256765875" duration="63000" />
-      <workItem from="1720342879645" duration="5627000" />
+      <updated>1734248391301</updated>
+      <workItem from="1734248392461" duration="640000" />
+      <workItem from="1734249056940" duration="809000" />
+      <workItem from="1734249885999" duration="646000" />
+      <workItem from="1735817858616" duration="4888000" />
+      <workItem from="1736078326611" duration="1149000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/kernel/src/mm/vmm.cpp</url>
-          <line>68</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

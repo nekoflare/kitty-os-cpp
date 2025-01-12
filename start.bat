@@ -1,1 +1,0 @@
-qemu-system-x86_64 ovmf/OVMF.fd -device qemu-xhci -serial mon:stdio -debugcon file:debug.log -device isa-debug-exit,iobase=0x501,iosize=2 -cpu max,+avx -no-shutdown -no-reboot -M smm=off -smp 12 -M q35 -m 8G -serial file:serial.txt -cdrom template.iso -boot d

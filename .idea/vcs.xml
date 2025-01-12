@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/flanterm" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/json" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/limine" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/llvm-project" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/open-gpu-kernel-modules" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/sqlite" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/uACPI" vcs="Git" />
   </component>
 </project>

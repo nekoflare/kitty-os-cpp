@@ -1,0 +1,11 @@
+---
+BasedOnStyle: Microsoft
+BraceWrapping:
+  AfterFunction: true  # Place brace after function on the next line
+  AfterControlStatement: true  # Place brace after control statement (e.g., if, for) on the next line
+  AfterEnum: true
+  AfterClass: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeElse: true
+Language: Cpp
