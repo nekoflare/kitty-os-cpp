@@ -1,10 +1,10 @@
-#include <uacpi/internal/notify.h>
-#include <uacpi/internal/shareable.h>
-#include <uacpi/internal/namespace.h>
 #include <uacpi/internal/log.h>
 #include <uacpi/internal/mutex.h>
-#include <uacpi/internal/utilities.h>
+#include <uacpi/internal/namespace.h>
+#include <uacpi/internal/notify.h>
+#include <uacpi/internal/shareable.h>
 #include <uacpi/internal/stdlib.h>
+#include <uacpi/internal/utilities.h>
 #include <uacpi/kernel_api.h>
 
 static uacpi_handle notify_mutex;
@@ -26,7 +26,8 @@ void uacpi_deinitialize_notify(void)
     notify_mutex = UACPI_NULL;
 }
 
-struct notification_ctx {
+struct notification_ctx
+{
     uacpi_namespace_node *node;
     uacpi_u64 value;
     uacpi_object *node_object;
@@ -47,9 +48,12 @@ static void do_notify(uacpi_handle opaque)
 
     handler = ctx->node_object->handlers->notify_head;
 
-    for (;;) {
-        if (handler == UACPI_NULL) {
-            if (did_notify_root) {
+    for (;;)
+    {
+        if (handler == UACPI_NULL)
+        {
+            if (did_notify_root)
+            {
                 free_notification_ctx(ctx);
                 return;
             }
@@ -70,10 +74,8 @@ uacpi_status uacpi_notify_all(uacpi_namespace_node *node, uacpi_u64 value)
     struct notification_ctx *ctx;
     uacpi_object *node_object;
 
-    node_object = uacpi_namespace_node_get_object_typed(
-        node, UACPI_OBJECT_DEVICE_BIT | UACPI_OBJECT_THERMAL_ZONE_BIT |
-              UACPI_OBJECT_PROCESSOR_BIT
-    );
+    node_object = uacpi_namespace_node_get_object_typed(node, UACPI_OBJECT_DEVICE_BIT | UACPI_OBJECT_THERMAL_ZONE_BIT |
+                                                                  UACPI_OBJECT_PROCESSOR_BIT);
     if (uacpi_unlikely(node_object == UACPI_NULL))
         return UACPI_STATUS_INVALID_ARGUMENT;
 
@@ -82,13 +84,15 @@ uacpi_status uacpi_notify_all(uacpi_namespace_node *node, uacpi_u64 value)
         return ret;
 
     if (node_object->handlers->notify_head == UACPI_NULL &&
-        g_uacpi_rt_ctx.root_object->handlers->notify_head == UACPI_NULL) {
+        g_uacpi_rt_ctx.root_object->handlers->notify_head == UACPI_NULL)
+    {
         ret = UACPI_STATUS_NO_HANDLER;
         goto out;
     }
 
     ctx = uacpi_kernel_alloc(sizeof(*ctx));
-    if (uacpi_unlikely(ctx == UACPI_NULL)) {
+    if (uacpi_unlikely(ctx == UACPI_NULL))
+    {
         ret = UACPI_STATUS_OUT_OF_MEMORY;
         goto out;
     }
@@ -102,9 +106,9 @@ uacpi_status uacpi_notify_all(uacpi_namespace_node *node, uacpi_u64 value)
     uacpi_object_ref(ctx->node_object);
 
     ret = uacpi_kernel_schedule_work(UACPI_WORK_NOTIFICATION, do_notify, ctx);
-    if (uacpi_unlikely_error(ret)) {
-        uacpi_warn("unable to schedule notification work: %s\n",
-                   uacpi_status_to_string(ret));
+    if (uacpi_unlikely_error(ret))
+    {
+        uacpi_warn("unable to schedule notification work: %s\n", uacpi_status_to_string(ret));
         free_notification_ctx(ctx);
     }
 
@@ -113,13 +117,12 @@ out:
     return ret;
 }
 
-static uacpi_device_notify_handler *handler_container(
-    uacpi_handlers *handlers, uacpi_notify_handler target_handler
-)
+static uacpi_device_notify_handler *handler_container(uacpi_handlers *handlers, uacpi_notify_handler target_handler)
 {
     uacpi_device_notify_handler *handler = handlers->notify_head;
 
-    while (handler) {
+    while (handler)
+    {
         if (handler->callback == target_handler)
             return handler;
 
@@ -129,10 +132,8 @@ static uacpi_device_notify_handler *handler_container(
     return UACPI_NULL;
 }
 
-uacpi_status uacpi_install_notify_handler(
-    uacpi_namespace_node *node, uacpi_notify_handler handler,
-    uacpi_handle handler_context
-)
+uacpi_status uacpi_install_notify_handler(uacpi_namespace_node *node, uacpi_notify_handler handler,
+                                          uacpi_handle handler_context)
 {
     uacpi_status ret;
     uacpi_object *obj;
@@ -141,13 +142,14 @@ uacpi_status uacpi_install_notify_handler(
 
     UACPI_ENSURE_INIT_LEVEL_AT_LEAST(UACPI_INIT_LEVEL_SUBSYSTEM_INITIALIZED);
 
-    if (node == uacpi_namespace_root()) {
+    if (node == uacpi_namespace_root())
+    {
         obj = g_uacpi_rt_ctx.root_object;
-    } else {
+    }
+    else
+    {
         ret = uacpi_namespace_node_acquire_object_typed(
-            node, UACPI_OBJECT_DEVICE_BIT | UACPI_OBJECT_THERMAL_ZONE_BIT |
-                  UACPI_OBJECT_PROCESSOR_BIT, &obj
-        );
+            node, UACPI_OBJECT_DEVICE_BIT | UACPI_OBJECT_THERMAL_ZONE_BIT | UACPI_OBJECT_PROCESSOR_BIT, &obj);
         if (uacpi_unlikely_error(ret))
             return ret;
     }
@@ -160,7 +162,8 @@ uacpi_status uacpi_install_notify_handler(
 
     handlers = obj->handlers;
 
-    if (handler_container(handlers, handler) != UACPI_NULL) {
+    if (handler_container(handlers, handler) != UACPI_NULL)
+    {
         ret = UACPI_STATUS_ALREADY_EXISTS;
         goto out;
     }
@@ -184,9 +187,7 @@ out_no_mutex:
     return ret;
 }
 
-uacpi_status uacpi_uninstall_notify_handler(
-    uacpi_namespace_node *node, uacpi_notify_handler handler
-)
+uacpi_status uacpi_uninstall_notify_handler(uacpi_namespace_node *node, uacpi_notify_handler handler)
 {
     uacpi_status ret;
     uacpi_object *obj;
@@ -195,13 +196,14 @@ uacpi_status uacpi_uninstall_notify_handler(
 
     UACPI_ENSURE_INIT_LEVEL_AT_LEAST(UACPI_INIT_LEVEL_SUBSYSTEM_INITIALIZED);
 
-    if (node == uacpi_namespace_root()) {
+    if (node == uacpi_namespace_root())
+    {
         obj = g_uacpi_rt_ctx.root_object;
-    } else {
+    }
+    else
+    {
         ret = uacpi_namespace_node_acquire_object_typed(
-            node, UACPI_OBJECT_DEVICE_BIT | UACPI_OBJECT_THERMAL_ZONE_BIT |
-                  UACPI_OBJECT_PROCESSOR_BIT, &obj
-        );
+            node, UACPI_OBJECT_DEVICE_BIT | UACPI_OBJECT_THERMAL_ZONE_BIT | UACPI_OBJECT_PROCESSOR_BIT, &obj);
         if (uacpi_unlikely_error(ret))
             return ret;
     }
@@ -215,7 +217,8 @@ uacpi_status uacpi_uninstall_notify_handler(
     handlers = obj->handlers;
 
     containing = handler_container(handlers, handler);
-    if (containing == UACPI_NULL) {
+    if (containing == UACPI_NULL)
+    {
         ret = UACPI_STATUS_NOT_FOUND;
         goto out;
     }
@@ -223,14 +226,17 @@ uacpi_status uacpi_uninstall_notify_handler(
     prev_handler = handlers->notify_head;
 
     // Are we the last linked handler?
-    if (prev_handler == containing) {
+    if (prev_handler == containing)
+    {
         handlers->notify_head = containing->next;
         goto out;
     }
 
     // Nope, we're somewhere in the middle. Do a search.
-    while (prev_handler) {
-        if (prev_handler->next == containing) {
+    while (prev_handler)
+    {
+        if (prev_handler->next == containing)
+        {
             prev_handler->next = containing->next;
             goto out;
         }

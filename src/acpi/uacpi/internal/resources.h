@@ -3,7 +3,8 @@
 #include <uacpi/internal/types.h>
 #include <uacpi/resources.h>
 
-enum uacpi_aml_resource {
+enum uacpi_aml_resource
+{
     UACPI_AML_RESOURCE_TYPE_INVALID = 0,
 
     // Small resources
@@ -39,18 +40,21 @@ enum uacpi_aml_resource {
     UACPI_AML_RESOURCE_MAX = UACPI_AML_RESOURCE_CLOCK_INPUT,
 };
 
-enum uacpi_aml_resource_size_kind {
+enum uacpi_aml_resource_size_kind
+{
     UACPI_AML_RESOURCE_SIZE_KIND_FIXED,
     UACPI_AML_RESOURCE_SIZE_KIND_FIXED_OR_ONE_LESS,
     UACPI_AML_RESOURCE_SIZE_KIND_VARIABLE,
 };
 
-enum uacpi_aml_resource_kind {
+enum uacpi_aml_resource_kind
+{
     UACPI_AML_RESOURCE_KIND_SMALL = 0,
     UACPI_AML_RESOURCE_KIND_LARGE,
 };
 
-enum uacpi_resource_convert_opcode {
+enum uacpi_resource_convert_opcode
+{
     UACPI_RESOURCE_CONVERT_OPCODE_END = 0,
 
     /*
@@ -82,8 +86,7 @@ enum uacpi_resource_convert_opcode {
     UACPI_RESOURCE_CONVERT_OPCODE_BIT_FIELD_1,
     UACPI_RESOURCE_CONVERT_OPCODE_BIT_FIELD_2,
     UACPI_RESOURCE_CONVERT_OPCODE_BIT_FIELD_3,
-    UACPI_RESOURCE_CONVERT_OPCODE_BIT_FIELD_6 =
-        UACPI_RESOURCE_CONVERT_OPCODE_BIT_FIELD_3 + 3,
+    UACPI_RESOURCE_CONVERT_OPCODE_BIT_FIELD_6 = UACPI_RESOURCE_CONVERT_OPCODE_BIT_FIELD_3 + 3,
 
     /*
      * AML -> native:
@@ -241,7 +244,8 @@ enum uacpi_resource_convert_opcode {
     UACPI_RESOURCE_CONVERT_OPCODE_UNREACHABLE,
 };
 
-struct uacpi_resource_convert_instruction {
+struct uacpi_resource_convert_instruction
+{
     uacpi_u8 code;
 
     union {
@@ -261,7 +265,8 @@ struct uacpi_resource_convert_instruction {
     };
 };
 
-struct uacpi_resource_spec {
+struct uacpi_resource_spec
+{
     uacpi_u8 type : 5;
     uacpi_u8 native_type : 5;
     uacpi_u8 resource_kind : 1;
@@ -285,39 +290,26 @@ struct uacpi_resource_spec {
      * native resource given the AML counterpart. This being NULL means no extra
      * bytes are needed, aka native resources is always the same size.
      */
-    uacpi_size (*extra_size_for_native)(
-        const struct uacpi_resource_spec*, void*, uacpi_size
-    );
+    uacpi_size (*extra_size_for_native)(const struct uacpi_resource_spec *, void *, uacpi_size);
 
     /*
      * Calculate the number of bytes needed to represent a native resource as
      * AML. The 'aml_size' field is used if this is NULL.
      */
-    uacpi_size (*size_for_aml)(
-        const struct uacpi_resource_spec*, uacpi_resource*
-    );
+    uacpi_size (*size_for_aml)(const struct uacpi_resource_spec *, uacpi_resource *);
 
     const struct uacpi_resource_convert_instruction *to_native;
     const struct uacpi_resource_convert_instruction *to_aml;
 };
 
-typedef uacpi_iteration_decision (*uacpi_aml_resource_iteration_callback)(
-    void*, uacpi_u8 *data, uacpi_u16 resource_size,
-    const struct uacpi_resource_spec*
-);
+typedef uacpi_iteration_decision (*uacpi_aml_resource_iteration_callback)(void *, uacpi_u8 *data,
+                                                                          uacpi_u16 resource_size,
+                                                                          const struct uacpi_resource_spec *);
 
-uacpi_status uacpi_for_each_aml_resource(
-    uacpi_buffer *buffer, uacpi_aml_resource_iteration_callback cb, void *user
-);
+uacpi_status uacpi_for_each_aml_resource(uacpi_data_view, uacpi_aml_resource_iteration_callback cb, void *user);
 
-uacpi_status uacpi_find_aml_resource_end_tag(
-    uacpi_buffer *buffer, uacpi_size *out_offset
-);
+uacpi_status uacpi_find_aml_resource_end_tag(uacpi_data_view, uacpi_size *out_offset);
 
-uacpi_status uacpi_native_resources_from_aml(
-    uacpi_buffer *aml_buffer, uacpi_resources **out_resources
-);
+uacpi_status uacpi_native_resources_from_aml(uacpi_data_view, uacpi_resources **out_resources);
 
-uacpi_status uacpi_native_resources_to_aml(
-    uacpi_resources *resources, uacpi_object **out_template
-);
+uacpi_status uacpi_native_resources_to_aml(uacpi_resources *resources, uacpi_object **out_template);

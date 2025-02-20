@@ -13,33 +13,26 @@
  * =======================
  */
 #ifndef UACPI_DEFAULT_LOG_LEVEL
-    #define UACPI_DEFAULT_LOG_LEVEL UACPI_LOG_INFO
+#define UACPI_DEFAULT_LOG_LEVEL UACPI_LOG_INFO
 #endif
 
-UACPI_BUILD_BUG_ON_WITH_MSG(
-    UACPI_DEFAULT_LOG_LEVEL < UACPI_LOG_ERROR ||
-    UACPI_DEFAULT_LOG_LEVEL > UACPI_LOG_DEBUG,
-    "configured default log level is invalid"
-);
+UACPI_BUILD_BUG_ON_WITH_MSG(UACPI_DEFAULT_LOG_LEVEL<UACPI_LOG_ERROR || UACPI_DEFAULT_LOG_LEVEL> UACPI_LOG_DEBUG,
+                            "configured default log level is invalid");
 
 #ifndef UACPI_DEFAULT_LOOP_TIMEOUT_SECONDS
-    #define UACPI_DEFAULT_LOOP_TIMEOUT_SECONDS 30
+#define UACPI_DEFAULT_LOOP_TIMEOUT_SECONDS 30
 #endif
 
-UACPI_BUILD_BUG_ON_WITH_MSG(
-    UACPI_DEFAULT_LOOP_TIMEOUT_SECONDS < 1,
-    "configured default loop timeout is invalid (expecting at least 1 second)"
-);
+UACPI_BUILD_BUG_ON_WITH_MSG(UACPI_DEFAULT_LOOP_TIMEOUT_SECONDS < 1,
+                            "configured default loop timeout is invalid (expecting at least 1 second)");
 
 #ifndef UACPI_DEFAULT_MAX_CALL_STACK_DEPTH
-    #define UACPI_DEFAULT_MAX_CALL_STACK_DEPTH 256
+#define UACPI_DEFAULT_MAX_CALL_STACK_DEPTH 256
 #endif
 
-UACPI_BUILD_BUG_ON_WITH_MSG(
-    UACPI_DEFAULT_MAX_CALL_STACK_DEPTH < 4,
-    "configured default max call stack depth is invalid "
-    "(expecting at least 4 frames)"
-);
+UACPI_BUILD_BUG_ON_WITH_MSG(UACPI_DEFAULT_MAX_CALL_STACK_DEPTH < 4,
+                            "configured default max call stack depth is invalid "
+                            "(expecting at least 4 frames)");
 
 /*
  * ===================
@@ -66,7 +59,6 @@ UACPI_BUILD_BUG_ON_WITH_MSG(
  * performance penalty in some cases.
  */
 // #define UACPI_SIZED_FREES
-
 
 /*
  * Makes uacpi_kernel_alloc_zeroed mandatory to implement by the host, uACPI
@@ -105,13 +97,11 @@ UACPI_BUILD_BUG_ON_WITH_MSG(
  * pre-formatted message that is passed to the logging callback.
  */
 #ifndef UACPI_PLAIN_LOG_BUFFER_SIZE
-    #define UACPI_PLAIN_LOG_BUFFER_SIZE 128
+#define UACPI_PLAIN_LOG_BUFFER_SIZE 128
 #endif
 
-UACPI_BUILD_BUG_ON_WITH_MSG(
-    UACPI_PLAIN_LOG_BUFFER_SIZE < 16,
-    "configured log buffer size is too small (expecting at least 16 bytes)"
-);
+UACPI_BUILD_BUG_ON_WITH_MSG(UACPI_PLAIN_LOG_BUFFER_SIZE < 16,
+                            "configured log buffer size is too small (expecting at least 16 bytes)");
 
 /*
  * The size of the table descriptor inline storage. All table descriptors past
@@ -119,12 +109,10 @@ UACPI_BUILD_BUG_ON_WITH_MSG(
  * of one table descriptor is approximately 56 bytes.
  */
 #ifndef UACPI_STATIC_TABLE_ARRAY_LEN
-    #define UACPI_STATIC_TABLE_ARRAY_LEN 16
+#define UACPI_STATIC_TABLE_ARRAY_LEN 16
 #endif
 
-UACPI_BUILD_BUG_ON_WITH_MSG(
-    UACPI_STATIC_TABLE_ARRAY_LEN < 1,
-    "configured static table array length is too small (expecting at least 1)"
-);
+UACPI_BUILD_BUG_ON_WITH_MSG(UACPI_STATIC_TABLE_ARRAY_LEN < 1,
+                            "configured static table array length is too small (expecting at least 1)");
 
 #endif

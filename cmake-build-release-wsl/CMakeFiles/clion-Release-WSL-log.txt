@@ -1,0 +1,4 @@
+/usr/bin/cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" -S /mnt/c/Users/Neko/Desktop/KittyOS -B /mnt/c/Users/Neko/Desktop/KittyOS/cmake-build-release-wsl
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /mnt/c/Users/Neko/Desktop/KittyOS/cmake-build-release-wsl

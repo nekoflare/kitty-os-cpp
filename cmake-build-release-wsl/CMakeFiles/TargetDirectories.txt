@@ -1,0 +1,5 @@
+/mnt/c/Users/Neko/Desktop/KittyOS/cmake-build-release-wsl/CMakeFiles/KittyOS.dir
+/mnt/c/Users/Neko/Desktop/KittyOS/cmake-build-release-wsl/CMakeFiles/PostBuild.dir
+/mnt/c/Users/Neko/Desktop/KittyOS/cmake-build-release-wsl/CMakeFiles/PerformAll.dir
+/mnt/c/Users/Neko/Desktop/KittyOS/cmake-build-release-wsl/CMakeFiles/edit_cache.dir
+/mnt/c/Users/Neko/Desktop/KittyOS/cmake-build-release-wsl/CMakeFiles/rebuild_cache.dir

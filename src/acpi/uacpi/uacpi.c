@@ -1,21 +1,20 @@
-#include <uacpi/uacpi.h>
 #include <uacpi/acpi.h>
 #include <uacpi/platform/config.h>
+#include <uacpi/uacpi.h>
 
-#include <uacpi/internal/log.h>
 #include <uacpi/internal/context.h>
-#include <uacpi/internal/utilities.h>
-#include <uacpi/internal/tables.h>
-#include <uacpi/internal/interpreter.h>
-#include <uacpi/internal/namespace.h>
-#include <uacpi/internal/opregion.h>
-#include <uacpi/internal/registers.h>
 #include <uacpi/internal/event.h>
+#include <uacpi/internal/interpreter.h>
+#include <uacpi/internal/log.h>
+#include <uacpi/internal/namespace.h>
 #include <uacpi/internal/notify.h>
+#include <uacpi/internal/opregion.h>
 #include <uacpi/internal/osi.h>
 #include <uacpi/internal/registers.h>
+#include <uacpi/internal/tables.h>
+#include <uacpi/internal/utilities.h>
 
-struct uacpi_runtime_context g_uacpi_rt_ctx = { 0 };
+struct uacpi_runtime_context g_uacpi_rt_ctx = {0};
 
 void uacpi_context_set_log_level(uacpi_log_level lvl)
 {
@@ -64,7 +63,8 @@ void uacpi_context_set_proactive_table_checksum(uacpi_bool setting)
 
 const uacpi_char *uacpi_status_to_string(uacpi_status st)
 {
-    switch (st) {
+    switch (st)
+    {
     case UACPI_STATUS_OK:
         return "no error";
     case UACPI_STATUS_MAPPING_FAILED:
@@ -136,7 +136,8 @@ const uacpi_char *uacpi_status_to_string(uacpi_status st)
 }
 
 #ifndef UACPI_REDUCED_HARDWARE
-enum hw_mode {
+enum hw_mode
+{
     HW_MODE_ACPI = 0,
     HW_MODE_LEGACY = 1,
 };
@@ -163,17 +164,20 @@ static uacpi_status set_mode(enum hw_mode mode)
     uacpi_u64 raw_value, stalled_time = 0;
     struct acpi_fadt *fadt = &g_uacpi_rt_ctx.fadt;
 
-    if (uacpi_unlikely(!fadt->smi_cmd)) {
+    if (uacpi_unlikely(!fadt->smi_cmd))
+    {
         uacpi_error("SMI_CMD is not implemented by the firmware\n");
         return UACPI_STATUS_NOT_FOUND;
     }
 
-    if (uacpi_unlikely(!fadt->acpi_enable && !fadt->acpi_disable)) {
+    if (uacpi_unlikely(!fadt->acpi_enable && !fadt->acpi_disable))
+    {
         uacpi_error("mode transition is not implemented by the hardware\n");
         return UACPI_STATUS_NOT_FOUND;
     }
 
-    switch (mode) {
+    switch (mode)
+    {
     case HW_MODE_ACPI:
         raw_value = fadt->acpi_enable;
         break;
@@ -189,7 +193,8 @@ static uacpi_status set_mode(enum hw_mode mode)
         return ret;
 
     // Allow up to 5 seconds for the hardware to enter the desired mode
-    while (stalled_time < (5 * 1000 * 1000)) {
+    while (stalled_time < (5 * 1000 * 1000))
+    {
         if (read_mode() == mode)
             return UACPI_STATUS_OK;
 
@@ -213,17 +218,16 @@ static uacpi_status enter_mode(enum hw_mode mode, uacpi_bool *did_change)
 
     mode_str = mode == HW_MODE_LEGACY ? "legacy" : "acpi";
 
-    if (read_mode() == mode) {
+    if (read_mode() == mode)
+    {
         uacpi_trace("%s mode already enabled\n", mode_str);
         return UACPI_STATUS_OK;
     }
 
     ret = set_mode(mode);
-    if (uacpi_unlikely_error(ret)) {
-        uacpi_warn(
-            "unable to enter %s mode: %s\n",
-            mode_str, uacpi_status_to_string(ret)
-        );
+    if (uacpi_unlikely_error(ret))
+    {
+        uacpi_warn("unable to enter %s mode: %s\n", mode_str, uacpi_status_to_string(ret));
         return ret;
     }
 
@@ -249,7 +253,9 @@ static void enter_acpi_mode_initial(void)
     enter_mode(HW_MODE_ACPI, &g_uacpi_rt_ctx.was_in_legacy_mode);
 }
 #else
-static void enter_acpi_mode_initial(void) { }
+static void enter_acpi_mode_initial(void)
+{
+}
 #endif
 
 uacpi_init_level uacpi_get_current_init_level(void)
@@ -264,12 +270,16 @@ void uacpi_state_reset(void)
     uacpi_deinitialize_events();
     uacpi_deinitialize_notify();
     uacpi_deinitialize_opregion();
-    uacpi_deininitialize_registers();
     uacpi_deinitialize_tables();
 
 #ifndef UACPI_REDUCED_HARDWARE
     if (g_uacpi_rt_ctx.was_in_legacy_mode)
         uacpi_leave_acpi_mode();
+#endif
+
+    uacpi_deinitialize_registers();
+
+#ifndef UACPI_REDUCED_HARDWARE
     if (g_uacpi_rt_ctx.global_lock_event)
         uacpi_kernel_free_event(g_uacpi_rt_ctx.global_lock_event);
     if (g_uacpi_rt_ctx.global_lock_spinlock)
@@ -349,20 +359,16 @@ out_fatal_error:
     return ret;
 }
 
-struct table_load_stats {
+struct table_load_stats
+{
     uacpi_u32 load_counter;
     uacpi_u32 failure_counter;
 };
 
-static void trace_table_load_failure(
-    struct acpi_sdt_hdr *tbl, uacpi_log_level lvl, uacpi_status ret
-)
+static void trace_table_load_failure(struct acpi_sdt_hdr *tbl, uacpi_log_level lvl, uacpi_status ret)
 {
-    uacpi_log_lvl(
-        lvl,
-        "failed to load "UACPI_PRI_TBL_HDR": %s\n",
-        UACPI_FMT_TBL_HDR(tbl), uacpi_status_to_string(ret)
-    );
+    uacpi_log_lvl(lvl, "failed to load " UACPI_PRI_TBL_HDR ": %s\n", UACPI_FMT_TBL_HDR(tbl),
+                  uacpi_status_to_string(ret));
 }
 
 static uacpi_bool match_ssdt_or_psdt(struct uacpi_installed_table *tbl)
@@ -384,7 +390,7 @@ uacpi_status uacpi_namespace_load(void)
     struct uacpi_table tbl;
     uacpi_status ret;
     uacpi_u64 begin_ts, end_ts;
-    struct table_load_stats st = { 0 };
+    struct table_load_stats st = {0};
     uacpi_size cur_index;
 
     UACPI_ENSURE_INIT_LEVEL_IS(UACPI_INIT_LEVEL_SUBSYSTEM_INITIALIZED);
@@ -398,22 +404,26 @@ uacpi_status uacpi_namespace_load(void)
     begin_ts = uacpi_kernel_get_nanoseconds_since_boot();
 
     ret = uacpi_table_find_by_signature(ACPI_DSDT_SIGNATURE, &tbl);
-    if (uacpi_unlikely_error(ret)) {
+    if (uacpi_unlikely_error(ret))
+    {
         uacpi_error("unable to find DSDT: %s\n", uacpi_status_to_string(ret));
         goto out_fatal_error;
     }
 
     ret = uacpi_table_load_with_cause(tbl.index, UACPI_TABLE_LOAD_CAUSE_INIT);
-    if (uacpi_unlikely_error(ret)) {
+    if (uacpi_unlikely_error(ret))
+    {
         trace_table_load_failure(tbl.hdr, UACPI_LOG_ERROR, ret);
         st.failure_counter++;
     }
     st.load_counter++;
     uacpi_table_unref(&tbl);
 
-    for (cur_index = 0;; cur_index = tbl.index + 1) {
+    for (cur_index = 0;; cur_index = tbl.index + 1)
+    {
         ret = uacpi_table_match(cur_index, match_ssdt_or_psdt, &tbl);
-        if (ret != UACPI_STATUS_OK) {
+        if (ret != UACPI_STATUS_OK)
+        {
             if (uacpi_unlikely(ret != UACPI_STATUS_NOT_FOUND))
                 goto out_fatal_error;
 
@@ -421,7 +431,8 @@ uacpi_status uacpi_namespace_load(void)
         }
 
         ret = uacpi_table_load_with_cause(tbl.index, UACPI_TABLE_LOAD_CAUSE_INIT);
-        if (uacpi_unlikely_error(ret)) {
+        if (uacpi_unlikely_error(ret))
+        {
             trace_table_load_failure(tbl.hdr, UACPI_LOG_WARN, ret);
             st.failure_counter++;
         }
@@ -431,33 +442,30 @@ uacpi_status uacpi_namespace_load(void)
 
     end_ts = uacpi_kernel_get_nanoseconds_since_boot();
 
-    if (uacpi_unlikely(st.failure_counter != 0)) {
-        uacpi_info(
-            "loaded %u AML blob%s in %"UACPI_PRIu64"ms (%u error%s)\n",
-            st.load_counter, st.load_counter > 1 ? "s" : "",
-            UACPI_FMT64(elapsed_ms(begin_ts, end_ts)), st.failure_counter,
-            st.failure_counter > 1 ? "s" : ""
-        );
-    } else {
+    if (uacpi_unlikely(st.failure_counter != 0))
+    {
+        uacpi_info("loaded %u AML blob%s in %" UACPI_PRIu64 "ms (%u error%s)\n", st.load_counter,
+                   st.load_counter > 1 ? "s" : "", UACPI_FMT64(elapsed_ms(begin_ts, end_ts)), st.failure_counter,
+                   st.failure_counter > 1 ? "s" : "");
+    }
+    else
+    {
         uacpi_u64 ops = g_uacpi_rt_ctx.opcodes_executed;
         uacpi_u64 ops_per_sec = ops * UACPI_NANOSECONDS_PER_SEC;
 
         if (uacpi_likely(end_ts > begin_ts))
             ops_per_sec /= end_ts - begin_ts;
 
-        uacpi_info(
-            "successfully loaded %u AML blob%s, %"UACPI_PRIu64" ops in "
-            "%"UACPI_PRIu64"ms (avg %"UACPI_PRIu64"/s)\n",
-            st.load_counter, st.load_counter > 1 ? "s" : "",
-            UACPI_FMT64(ops), UACPI_FMT64(elapsed_ms(begin_ts, end_ts)),
-            UACPI_FMT64(ops_per_sec)
-        );
+        uacpi_info("successfully loaded %u AML blob%s, %" UACPI_PRIu64 " ops in "
+                   "%" UACPI_PRIu64 "ms (avg %" UACPI_PRIu64 "/s)\n",
+                   st.load_counter, st.load_counter > 1 ? "s" : "", UACPI_FMT64(ops),
+                   UACPI_FMT64(elapsed_ms(begin_ts, end_ts)), UACPI_FMT64(ops_per_sec));
     }
 
     ret = uacpi_initialize_events();
-    if (uacpi_unlikely_error(ret)) {
-        uacpi_error("event initialization failed: %s\n",
-                    uacpi_status_to_string(ret));
+    if (uacpi_unlikely_error(ret))
+    {
+        uacpi_error("event initialization failed: %s\n", uacpi_status_to_string(ret));
         goto out_fatal_error;
     }
 
@@ -469,7 +477,8 @@ out_fatal_error:
     return ret;
 }
 
-struct ns_init_context {
+struct ns_init_context
+{
     uacpi_size ini_executed;
     uacpi_size ini_errors;
     uacpi_size sta_executed;
@@ -491,10 +500,7 @@ static void ini_eval(struct ns_init_context *ctx, uacpi_namespace_node *node)
         ctx->ini_errors++;
 }
 
-static uacpi_status sta_eval(
-    struct ns_init_context *ctx, uacpi_namespace_node *node,
-    uacpi_u32 *value
-)
+static uacpi_status sta_eval(struct ns_init_context *ctx, uacpi_namespace_node *node, uacpi_u32 *value)
 {
     uacpi_status ret;
 
@@ -509,9 +515,7 @@ static uacpi_status sta_eval(
     return ret;
 }
 
-static uacpi_iteration_decision do_sta_ini(
-    void *opaque, uacpi_namespace_node *node, uacpi_u32 depth
-)
+static uacpi_iteration_decision do_sta_ini(void *opaque, uacpi_namespace_node *node, uacpi_u32 depth)
 {
     struct ns_init_context *ctx = opaque;
     uacpi_status ret;
@@ -525,7 +529,8 @@ static uacpi_iteration_decision do_sta_ini(
         return UACPI_ITERATION_DECISION_NEXT_PEER;
 
     ret = uacpi_namespace_node_type(node, &type);
-    switch (type) {
+    switch (type)
+    {
     case UACPI_OBJECT_DEVICE:
     case UACPI_OBJECT_PROCESSOR:
         ctx->devices++;
@@ -542,7 +547,8 @@ static uacpi_iteration_decision do_sta_ini(
     if (uacpi_unlikely_error(ret))
         return UACPI_ITERATION_DECISION_CONTINUE;
 
-    if (!(sta_ret & ACPI_STA_RESULT_DEVICE_PRESENT)) {
+    if (!(sta_ret & ACPI_STA_RESULT_DEVICE_PRESENT))
+    {
         if (!(sta_ret & ACPI_STA_RESULT_DEVICE_FUNCTIONING))
             return UACPI_ITERATION_DECISION_NEXT_PEER;
 
@@ -565,7 +571,7 @@ static uacpi_iteration_decision do_sta_ini(
 
 uacpi_status uacpi_namespace_initialize(void)
 {
-    struct ns_init_context ctx = { 0 };
+    struct ns_init_context ctx = {0};
     uacpi_namespace_node *root;
     uacpi_u64 begin_ts, end_ts;
     uacpi_address_space_handlers *handlers;
@@ -594,19 +600,19 @@ uacpi_status uacpi_namespace_initialize(void)
     ini_eval(&ctx, root);
 
     // Step 2 - Execute \_SB._INI
-    ini_eval(
-        &ctx, uacpi_namespace_get_predefined(UACPI_PREDEFINED_NAMESPACE_SB)
-    );
+    ini_eval(&ctx, uacpi_namespace_get_predefined(UACPI_PREDEFINED_NAMESPACE_SB));
 
     /*
      * Step 3 - Run _REG methods for all globally installed
      *          address space handlers.
      */
     handlers = uacpi_node_get_address_space_handlers(root);
-    if (handlers) {
+    if (handlers)
+    {
         handler = handlers->head;
 
-        while (handler) {
+        while (handler)
+        {
             if (uacpi_address_space_handler_is_default(handler))
                 uacpi_reg_all_opregions(root, handler->space);
 
@@ -615,25 +621,16 @@ uacpi_status uacpi_namespace_initialize(void)
     }
 
     // Step 4 - Run all other _STA and _INI methods
-    uacpi_namespace_for_each_child(
-        root, do_sta_ini, UACPI_NULL,
-        UACPI_OBJECT_ANY_BIT, UACPI_MAX_DEPTH_ANY, &ctx
-    );
+    uacpi_namespace_for_each_child(root, do_sta_ini, UACPI_NULL, UACPI_OBJECT_ANY_BIT, UACPI_MAX_DEPTH_ANY, &ctx);
 
     end_ts = uacpi_kernel_get_nanoseconds_since_boot();
 
-    uacpi_info(
-        "namespace initialization done in %"UACPI_PRIu64"ms: "
-        "%zu devices, %zu thermal zones\n",
-        UACPI_FMT64(elapsed_ms(begin_ts, end_ts)),
-        ctx.devices, ctx.thermal_zones
-    );
+    uacpi_info("namespace initialization done in %" UACPI_PRIu64 "ms: "
+               "%zu devices, %zu thermal zones\n",
+               UACPI_FMT64(elapsed_ms(begin_ts, end_ts)), ctx.devices, ctx.thermal_zones);
 
-    uacpi_trace(
-        "_STA calls: %zu (%zu errors), _INI calls: %zu (%zu errors)\n",
-        ctx.sta_executed, ctx.sta_errors, ctx.ini_executed,
-        ctx.ini_errors
-    );
+    uacpi_trace("_STA calls: %zu (%zu errors), _INI calls: %zu (%zu errors)\n", ctx.sta_executed, ctx.sta_errors,
+                ctx.ini_executed, ctx.ini_errors);
 
     g_uacpi_rt_ctx.init_level = UACPI_INIT_LEVEL_NAMESPACE_INITIALIZED;
 #ifdef UACPI_KERNEL_INITIALIZATION
@@ -645,10 +642,8 @@ out:
     return ret;
 }
 
-uacpi_status uacpi_eval(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    const uacpi_object_array *args, uacpi_object **out_obj
-)
+uacpi_status uacpi_eval(uacpi_namespace_node *parent, const uacpi_char *path, const uacpi_object_array *args,
+                        uacpi_object **out_obj)
 {
     struct uacpi_namespace_node *node;
     uacpi_control_method *method;
@@ -662,40 +657,42 @@ uacpi_status uacpi_eval(
     if (uacpi_unlikely_error(ret))
         return ret;
 
-    if (path != UACPI_NULL) {
-        ret = uacpi_namespace_node_resolve(
-            parent, path, UACPI_SHOULD_LOCK_NO,
-            UACPI_MAY_SEARCH_ABOVE_PARENT_NO, UACPI_PERMANENT_ONLY_YES,
-            &node
-        );
+    if (path != UACPI_NULL)
+    {
+        ret = uacpi_namespace_node_resolve(parent, path, UACPI_SHOULD_LOCK_NO, UACPI_MAY_SEARCH_ABOVE_PARENT_NO,
+                                           UACPI_PERMANENT_ONLY_YES, &node);
         if (uacpi_unlikely_error(ret))
             goto out_read_unlock;
-    } else {
+    }
+    else
+    {
         node = parent;
     }
 
     obj = uacpi_namespace_node_get_object(node);
-    if (uacpi_unlikely(obj == UACPI_NULL)) {
+    if (uacpi_unlikely(obj == UACPI_NULL))
+    {
         ret = UACPI_STATUS_INVALID_ARGUMENT;
         goto out_read_unlock;
     }
 
-    if (obj->type != UACPI_OBJECT_METHOD) {
+    if (obj->type != UACPI_OBJECT_METHOD)
+    {
         uacpi_object *new_obj;
 
         if (uacpi_unlikely(out_obj == UACPI_NULL))
             goto out_read_unlock;
 
         new_obj = uacpi_create_object(UACPI_OBJECT_UNINITIALIZED);
-        if (uacpi_unlikely(new_obj == UACPI_NULL)) {
+        if (uacpi_unlikely(new_obj == UACPI_NULL))
+        {
             ret = UACPI_STATUS_OUT_OF_MEMORY;
             goto out_read_unlock;
         }
 
-        ret = uacpi_object_assign(
-            new_obj, obj, UACPI_ASSIGN_BEHAVIOR_DEEP_COPY
-        );
-        if (uacpi_unlikely_error(ret)) {
+        ret = uacpi_object_assign(new_obj, obj, UACPI_ASSIGN_BEHAVIOR_DEEP_COPY);
+        if (uacpi_unlikely_error(ret))
+        {
             uacpi_object_unref(new_obj);
             goto out_read_unlock;
         }
@@ -723,65 +720,61 @@ out_no_write_lock:
     return ret;
 }
 
-uacpi_status uacpi_eval_simple(
-    uacpi_namespace_node *parent, const uacpi_char *path, uacpi_object **ret
-)
+uacpi_status uacpi_eval_simple(uacpi_namespace_node *parent, const uacpi_char *path, uacpi_object **ret)
 {
     return uacpi_eval(parent, path, UACPI_NULL, ret);
 }
 
-uacpi_status uacpi_execute(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    const uacpi_object_array *args
-)
+uacpi_status uacpi_execute(uacpi_namespace_node *parent, const uacpi_char *path, const uacpi_object_array *args)
 {
     return uacpi_eval(parent, path, args, UACPI_NULL);
 }
 
-uacpi_status uacpi_execute_simple(
-    uacpi_namespace_node *parent, const uacpi_char *path
-)
+uacpi_status uacpi_execute_simple(uacpi_namespace_node *parent, const uacpi_char *path)
 {
     return uacpi_eval(parent, path, UACPI_NULL, UACPI_NULL);
 }
 
-#define TRACE_BAD_RET(path_fmt, type, ...)                                 \
-    uacpi_warn(                                                            \
-        "unexpected '%s' object returned by method "path_fmt               \
-        ", expected type mask: %08X\n", uacpi_object_type_to_string(type), \
-        __VA_ARGS__                                                        \
-    )
+#define TRACE_BAD_RET(path_fmt, type, ...)                                                                             \
+    uacpi_warn("unexpected '%s' object returned by method " path_fmt ", expected type mask: %08X\n",                   \
+               uacpi_object_type_to_string(type), __VA_ARGS__)
 
-#define TRACE_NO_RET(path_fmt, ...)                                        \
-    uacpi_warn(                                                            \
-        "no value returned from method "path_fmt", expected type mask: "   \
-        "%08X\n", __VA_ARGS__                                              \
-    )
+#define TRACE_NO_RET(path_fmt, ...)                                                                                    \
+    uacpi_warn("no value returned from method " path_fmt ", expected type mask: "                                      \
+               "%08X\n",                                                                                               \
+               __VA_ARGS__)
 
-static void trace_invalid_return_type(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    uacpi_object_type_bits expected_mask, uacpi_object_type actual_type
-)
+static void trace_invalid_return_type(uacpi_namespace_node *parent, const uacpi_char *path,
+                                      uacpi_object_type_bits expected_mask, uacpi_object_type actual_type)
 {
     const uacpi_char *abs_path;
     uacpi_bool dynamic_abs_path = UACPI_FALSE;
 
-    if (parent == UACPI_NULL || (path != UACPI_NULL && path[0] == '\\')) {
+    if (parent == UACPI_NULL || (path != UACPI_NULL && path[0] == '\\'))
+    {
         abs_path = path;
-    } else {
+    }
+    else
+    {
         abs_path = uacpi_namespace_node_generate_absolute_path(parent);
         dynamic_abs_path = UACPI_TRUE;
     }
 
-    if (dynamic_abs_path && path != UACPI_NULL) {
+    if (dynamic_abs_path && path != UACPI_NULL)
+    {
         if (actual_type == UACPI_OBJECT_UNINITIALIZED)
             TRACE_NO_RET("%s.%s", abs_path, path, expected_mask);
         else
             TRACE_BAD_RET("%s.%s", actual_type, abs_path, path, expected_mask);
-    } else {
-        if (actual_type == UACPI_OBJECT_UNINITIALIZED) {
+    }
+    else
+    {
+        if (actual_type == UACPI_OBJECT_UNINITIALIZED)
+        {
             TRACE_NO_RET("%s", abs_path, expected_mask);
-        } else {
+        }
+        else
+        {
             TRACE_BAD_RET("%s", actual_type, abs_path, expected_mask);
         }
     }
@@ -790,11 +783,8 @@ static void trace_invalid_return_type(
         uacpi_free_dynamic_string(abs_path);
 }
 
-uacpi_status uacpi_eval_typed(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    const uacpi_object_array *args, uacpi_object_type_bits ret_mask,
-    uacpi_object **out_obj
-)
+uacpi_status uacpi_eval_typed(uacpi_namespace_node *parent, const uacpi_char *path, const uacpi_object_array *args,
+                              uacpi_object_type_bits ret_mask, uacpi_object **out_obj)
 {
     uacpi_status ret;
     uacpi_object *obj;
@@ -810,7 +800,8 @@ uacpi_status uacpi_eval_typed(
     if (obj != UACPI_NULL)
         returned_type = obj->type;
 
-    if (ret_mask && (ret_mask & (1 << returned_type)) == 0) {
+    if (ret_mask && (ret_mask & (1 << returned_type)) == 0)
+    {
         trace_invalid_return_type(parent, path, ret_mask, returned_type);
         uacpi_object_unref(obj);
         return UACPI_STATUS_TYPE_MISMATCH;
@@ -820,25 +811,19 @@ uacpi_status uacpi_eval_typed(
     return UACPI_STATUS_OK;
 }
 
-uacpi_status uacpi_eval_simple_typed(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    uacpi_object_type_bits ret_mask, uacpi_object **ret
-)
+uacpi_status uacpi_eval_simple_typed(uacpi_namespace_node *parent, const uacpi_char *path,
+                                     uacpi_object_type_bits ret_mask, uacpi_object **ret)
 {
     return uacpi_eval_typed(parent, path, UACPI_NULL, ret_mask, ret);
 }
 
-uacpi_status uacpi_eval_integer(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    const uacpi_object_array *args, uacpi_u64 *out_value
-)
+uacpi_status uacpi_eval_integer(uacpi_namespace_node *parent, const uacpi_char *path, const uacpi_object_array *args,
+                                uacpi_u64 *out_value)
 {
     uacpi_object *int_obj;
     uacpi_status ret;
 
-    ret = uacpi_eval_typed(
-        parent, path, args, UACPI_OBJECT_INTEGER_BIT, &int_obj
-    );
+    ret = uacpi_eval_typed(parent, path, args, UACPI_OBJECT_INTEGER_BIT, &int_obj);
     if (uacpi_unlikely_error(ret))
         return ret;
 
@@ -848,91 +833,54 @@ uacpi_status uacpi_eval_integer(
     return UACPI_STATUS_OK;
 }
 
-uacpi_status uacpi_eval_simple_integer(
-    uacpi_namespace_node *parent, const uacpi_char *path, uacpi_u64 *out_value
-)
+uacpi_status uacpi_eval_simple_integer(uacpi_namespace_node *parent, const uacpi_char *path, uacpi_u64 *out_value)
 {
     return uacpi_eval_integer(parent, path, UACPI_NULL, out_value);
 }
 
-uacpi_status uacpi_eval_buffer_or_string(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    const uacpi_object_array *args, uacpi_object **ret
-)
+uacpi_status uacpi_eval_buffer_or_string(uacpi_namespace_node *parent, const uacpi_char *path,
+                                         const uacpi_object_array *args, uacpi_object **ret)
 {
-    return uacpi_eval_typed(
-        parent, path, args,
-        UACPI_OBJECT_BUFFER_BIT | UACPI_OBJECT_STRING_BIT,
-        ret
-    );
+    return uacpi_eval_typed(parent, path, args, UACPI_OBJECT_BUFFER_BIT | UACPI_OBJECT_STRING_BIT, ret);
 }
 
-uacpi_status uacpi_eval_simple_buffer_or_string(
-    uacpi_namespace_node *parent, const uacpi_char *path, uacpi_object **ret
-)
+uacpi_status uacpi_eval_simple_buffer_or_string(uacpi_namespace_node *parent, const uacpi_char *path,
+                                                uacpi_object **ret)
 {
-    return uacpi_eval_typed(
-        parent, path, UACPI_NULL,
-        UACPI_OBJECT_BUFFER_BIT | UACPI_OBJECT_STRING_BIT,
-        ret
-    );
+    return uacpi_eval_typed(parent, path, UACPI_NULL, UACPI_OBJECT_BUFFER_BIT | UACPI_OBJECT_STRING_BIT, ret);
 }
 
-uacpi_status uacpi_eval_string(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    const uacpi_object_array *args, uacpi_object **ret
-)
+uacpi_status uacpi_eval_string(uacpi_namespace_node *parent, const uacpi_char *path, const uacpi_object_array *args,
+                               uacpi_object **ret)
 {
-    return uacpi_eval_typed(
-        parent, path, args, UACPI_OBJECT_STRING_BIT, ret
-    );
+    return uacpi_eval_typed(parent, path, args, UACPI_OBJECT_STRING_BIT, ret);
 }
 
-uacpi_status uacpi_eval_simple_string(
-    uacpi_namespace_node *parent, const uacpi_char *path, uacpi_object **ret
-)
+uacpi_status uacpi_eval_simple_string(uacpi_namespace_node *parent, const uacpi_char *path, uacpi_object **ret)
 {
-    return uacpi_eval_typed(
-        parent, path, UACPI_NULL, UACPI_OBJECT_STRING_BIT, ret
-    );
+    return uacpi_eval_typed(parent, path, UACPI_NULL, UACPI_OBJECT_STRING_BIT, ret);
 }
 
-uacpi_status uacpi_eval_buffer(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    const uacpi_object_array *args, uacpi_object **ret
-)
+uacpi_status uacpi_eval_buffer(uacpi_namespace_node *parent, const uacpi_char *path, const uacpi_object_array *args,
+                               uacpi_object **ret)
 {
-    return uacpi_eval_typed(
-        parent, path, args, UACPI_OBJECT_BUFFER_BIT, ret
-    );
+    return uacpi_eval_typed(parent, path, args, UACPI_OBJECT_BUFFER_BIT, ret);
 }
 
-uacpi_status uacpi_eval_simple_buffer(
-    uacpi_namespace_node *parent, const uacpi_char *path, uacpi_object **ret
-)
+uacpi_status uacpi_eval_simple_buffer(uacpi_namespace_node *parent, const uacpi_char *path, uacpi_object **ret)
 {
-    return uacpi_eval_typed(
-        parent, path, UACPI_NULL, UACPI_OBJECT_BUFFER_BIT, ret
-    );
+    return uacpi_eval_typed(parent, path, UACPI_NULL, UACPI_OBJECT_BUFFER_BIT, ret);
 }
 
-uacpi_status uacpi_eval_package(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    const uacpi_object_array *args, uacpi_object **ret
-)
+uacpi_status uacpi_eval_package(uacpi_namespace_node *parent, const uacpi_char *path, const uacpi_object_array *args,
+                                uacpi_object **ret)
 {
-    return uacpi_eval_typed(
-        parent, path, args, UACPI_OBJECT_PACKAGE_BIT, ret
-    );
+    return uacpi_eval_typed(parent, path, args, UACPI_OBJECT_PACKAGE_BIT, ret);
 }
 
-uacpi_status uacpi_eval_simple_package(
-    uacpi_namespace_node *parent, const uacpi_char *path, uacpi_object **ret
-)
+uacpi_status uacpi_eval_simple_package(uacpi_namespace_node *parent, const uacpi_char *path, uacpi_object **ret)
 {
-    return uacpi_eval_typed(
-        parent, path, UACPI_NULL, UACPI_OBJECT_PACKAGE_BIT, ret
-    );
+    return uacpi_eval_typed(parent, path, UACPI_NULL, UACPI_OBJECT_PACKAGE_BIT, ret);
 }
 
 uacpi_status uacpi_get_aml_bitness(uacpi_u8 *out_bitness)

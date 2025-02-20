@@ -1,0 +1,78 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "KittyOS",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "KittyOS::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-KittyOS-Release-c1621cf4943bc408d1bd.json",
+					"name" : "KittyOS",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "PerformAll::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-PerformAll-Release-92eeb9d38f26040c9695.json",
+					"name" : "PerformAll",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "PostBuild::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-PostBuild-Release-3922709d340af61c57ae.json",
+					"name" : "PostBuild",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/mnt/c/Users/Neko/Desktop/KittyOS/cmake-build-release-wsl",
+		"source" : "/mnt/c/Users/Neko/Desktop/KittyOS"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

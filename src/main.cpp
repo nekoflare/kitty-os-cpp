@@ -1,105 +1,160 @@
-#include <acpi/acpi.hpp>
-#include <dDraw/pixels.hpp>
-#include <debug.hpp>
-#include <dev/framebuffer.hpp>
-#include <exe/elf/elf.hpp>
-#include <hal/apic/apic.hpp>
-#include <hal/hal.hpp>
-#include <hal/io.hpp>
-#include <hal/ioapic/ioapic.hpp>
-#include <hal/pcie/pcie.hpp>
-#include <mem/heap.hpp>
-#include <mem/malloc.h>
-#include <mem/physical_memory.hpp>
-#include <mem/virtual_memory.hpp>
-#include <smbios/smbios.hpp>
-#include <stdint.h>
-#include <string.h>
-#include <sys/modules.hpp>
-#include <sys/runtime.hpp>
-#include <sys/symbols.hpp>
-#include <sys/test/tests.hpp>
-#include <sys/types.h>
-#include <us/syscalls.hpp>
-#include <mem/common_memory.hpp>
-#include <sqlite3.h>
-#include <uacpi/uacpi.h>
-#include <uacpi/event.h>
-#include <utilities/utilities.hpp>
+//
+// Created by Neko on 20.01.2025.
+//
 
-limine_framebuffer *main_framebuffer = nullptr;
+#include <acpi/acpi.h>
+#include <clock/clock.h>
+#include <clock/rtc.h>
+#include <cstring>
+#include <dbg/log.h>
+#include <fb/framebuffer.h>
+#include <fs/fs/virt_kernel/vk_sys.h>
+#include <hal/apic/apic.h>
+#include <hal/cpu/io.h>
+#include <hal/gdt/gdt.h>
+#include <hal/idt/idt.h>
+#include <hal/ioapic/ioapic.h>
+#include <hal/irq/irq.h>
+#include <hal/pcie/pcie.h>
+#include <kernel.h>
+#include <lib/klibc/runtime-blob.h>
+#include <lib/stb/stb_image.h>
+#include <local_storage.h>
+#include <mem/heap.h>
+#include <mem/physical.h>
+#include <mem/virtual.h>
+#include <smp/smp.h>
+#include <vfs/interfaces/vdi/vdi.h>
+#include <vfs/virt_fs.h>
 
-void timer()
+#include "lib/npf/nanoprintf.h"
+#include "smp/sched.h"
+#include "uacpi/event.h"
+#include "uacpi/resources.h"
+#include "uacpi/types.h"
+#include "uacpi/uacpi.h"
+#include "uacpi/utilities.h"
+
+static uacpi_interrupt_ret handle_power_button(uacpi_handle ctx)
 {
-    debug_printf(".");
+    /*
+     * Shut down right here using the helper we have defined above.
+     *
+     * Note that it's generally terrible practice to run any AML from
+     * an interrupt handler, as it's allowed to allocate, map, sleep,
+     * stall, acquire mutexes, etc. So, if possible in your kernel,
+     * instead schedule the shutdown callback to be run in a normal
+     * preemptible context later.
+     */
+    debug_print("Power button has been pressed!\n");
+    return UACPI_INTERRUPT_HANDLED;
 }
 
-void set_pit_frequency(uint16_t frequency)
+static uacpi_iteration_decision match_ps2k(void *user, uacpi_namespace_node *node, uacpi_u32 node_depth)
 {
-    uint16_t divisor = 1193180 / frequency;
+    // Found a PS2 keyboard! Do initialization below.
+    uacpi_resources *kb_res;
 
-    // Send control word to PIT (Channel 0, Mode 2, Binary)
-    outb(0x43, 0x34);
+    uacpi_status ret = uacpi_get_current_resources(node, &kb_res);
+    if (uacpi_unlikely_error(ret))
+    {
+        debug_print("unable to retrieve PS2K resources: %s", uacpi_status_to_string(ret));
+        return UACPI_ITERATION_DECISION_NEXT_PEER;
+    }
 
-    // Send the low byte of the divisor to Channel 0
-    outb(0x40, (uint8_t)(divisor & 0xFF));
+    debug_print("Found PS2 keyboard resources.\n");
 
-    // Send the high byte of the divisor to Channel 0
-    outb(0x40, (uint8_t)(divisor >> 8));
+    uacpi_free_resources(kb_res);
+
+    return UACPI_ITERATION_DECISION_CONTINUE;
 }
 
-extern "C" void kernel_main()
+#define PS2K_PNP_ID "PNP0303"
+
+void find_ps2_keyboard()
+{
+    uacpi_find_devices(PS2K_PNP_ID, match_ps2k, nullptr);
+}
+
+extern "C" [[noreturn]] void kernel_main(void)
 {
     initialize_runtime();
-    initialize_framebuffer();
-    initialize_flanterm();
-    initialize_hal();
-    initialize_phys_memory();
+    initialize_gdt();
+    initialize_idt();
+    initialize_physical_memory();
     initialize_virtual_memory();
-    set_kernel_page_map();
     initialize_heap();
+    initialize_local_storage();
     initialize_acpi();
-    initialize_smbios();
-    initialize_pcie();
     initialize_apic();
     initialize_ioapic();
-    initialize_irqs();
-    initialize_syscall(reinterpret_cast<uint64_t>(&syscall_handler), 0x8, 0x10, 0x8, 0x10, ~(1 << 9));
+    initialize_irq_vectors();
+    //initialize_clock();
+    initialize_rtc();
+    initialize_pcie();
+    initialize_framebuffer();
 
-    auto bgrt_width = get_bgrt_bitmap_width();
-    auto bgrt_height = get_bgrt_bitmap_height();
-
-    if (bgrt_width != -1 && bgrt_height != -1)
+    const auto framebuffer = get_framebuffer(0);
+    if (!framebuffer)
     {
-        auto fb = get_framebuffer(0);
-        draw_bgrt_bitmap(fb, fb->width - bgrt_width, fb->height - bgrt_height);
+        debug_print("No framebuffer\n");
     }
 
-    // print_smbios_entries();
+    draw_pixel(framebuffer, 100, 100, 255, 255, 255);
+    draw_rectangle(framebuffer, 100, 100, 100, 100, 255, 100, 25);
 
-    // attach_irq_handler(0, timer);
-    // set_pit_frequency(2);
-    // print_ioapic_descriptors();
+    auto sd = get_system_date();
+    debug_print("Date: %04llu-%02llu-%02llu Time: %02llu:%02llu:%02llu\n", sd.year, sd.month, sd.day, sd.hour,
+                sd.minute, sd.second);
 
-    std::vector<uint8_t> values;
+    debug_print("Hello World!\n");
 
-    for (size_t i = 0; 0xffff > i; i++) {
-        auto value = inb(i);
-        values.push_back(value);
+    auto [status, address] = virtual_to_physical(
+        get_kernel_page_map(),
+        (uint64_t)&kernel_main);
+    if (address) {
+        debug_print("%lx\n", address);
     }
-    hexdump(values.data(), values.size());
 
-    asm volatile ("cli; hlt");
+    auto hProcess = create_process("/kernel.elf", "Kernel main process", nullptr, USER, false);
+
+    allocate_memory_in_process(hProcess, 0x10000, 16);
+
+    uint8_t buf[8] = {0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xef};
+
+    debug_print("Writing to the process.\n");
+    bool bWrite = process_write(hProcess, 0x10000, &buf, sizeof(buf));
+
+    if (!bWrite)
+    {
+        debug_print("Couldn't write to the process.\n");
+        goto _end;
+    }
+
+    uint8_t rdBuf[8];
+
+    debug_print("Read from the process.\n");
+    process_read(hProcess, 0x10000, &buf, sizeof(buf));
+
+    for (auto v : rdBuf)
+    {
+        debug_print("%hhx ", v);
+    }
+    debug_print("\n");
+_end:
+    debug_print("hProcess = %p;", hProcess);
 
     /*
      * Start with this as the first step of the initialization. This loads all
      * tables, brings the event subsystem online, and enters ACPI mode. We pass
-     * in 0 as the flags as we don't want to override any default behavior for now.
+     * in 0 as the flags as we don't want to override any default behavior for
+     * now.
      */
     uacpi_status ret = uacpi_initialize(0);
-    if (uacpi_unlikely_error(ret)) {
-        debug_printf("uacpi_initialize error: %s", uacpi_status_to_string(ret));
-        asm volatile ("cli; hlt");
+    if (uacpi_unlikely_error(ret))
+    {
+        debug_print("uacpi_initialize error: %s", uacpi_status_to_string(ret));
+        asm volatile("cli; hlt");
     }
 
     /*
@@ -107,9 +162,10 @@ extern "C" void kernel_main()
      * for execution.
      */
     ret = uacpi_namespace_load();
-    if (uacpi_unlikely_error(ret)) {
-        debug_printf("uacpi_namespace_load error: %s", uacpi_status_to_string(ret));
-        asm volatile ("cli; hlt");
+    if (uacpi_unlikely_error(ret))
+    {
+        debug_print("uacpi_namespace_load error: %s", uacpi_status_to_string(ret));
+        asm volatile("cli; hlt");
     }
 
     /*
@@ -117,26 +173,36 @@ extern "C" void kernel_main()
      * as well as _REG for registered operation region handlers.
      */
     ret = uacpi_namespace_initialize();
-    if (uacpi_unlikely_error(ret)) {
-        debug_printf("uacpi_namespace_initialize error: %s", uacpi_status_to_string(ret));
-        asm volatile ("cli; hlt");
+    if (uacpi_unlikely_error(ret))
+    {
+        debug_print("uacpi_namespace_initialize error: %s", uacpi_status_to_string(ret));
+        asm volatile("cli; hlt");
     }
 
     /*
-     * Tell uACPI that we have marked all GPEs we wanted for wake (even though we haven't
-     * actually marked any, as we have no power management support right now). This is
-     * needed to let uACPI enable all unmarked GPEs that have a corresponding AML handler.
-     * These handlers are used by the firmware to dynamically execute AML code at runtime
-     * to e.g. react to thermal events or device hotplug.
+     * Tell uACPI that we have marked all GPEs we wanted for wake (even though we
+     * haven't actually marked any, as we have no power management support right
+     * now). This is needed to let uACPI enable all unmarked GPEs that have a
+     * corresponding AML handler. These handlers are used by the firmware to
+     * dynamically execute AML code at runtime to e.g. react to thermal events or
+     * device hotplug.
      */
     ret = uacpi_finalize_gpe_initialization();
-    if (uacpi_unlikely_error(ret)) {
-        debug_printf("uACPI GPE initialization error: %s", uacpi_status_to_string(ret));
-        asm volatile ("cli; hlt");
+    if (uacpi_unlikely_error(ret))
+    {
+        debug_print("uACPI GPE initialization error: %s", uacpi_status_to_string(ret));
+        asm volatile("cli; hlt");
+    }
+
+    uacpi_status _ret =
+        uacpi_install_fixed_event_handler(UACPI_FIXED_EVENT_POWER_BUTTON, handle_power_button, UACPI_NULL);
+    if (uacpi_unlikely_error(_ret))
+    {
+        debug_print("failed to install power button event callback: %s", uacpi_status_to_string(ret));
     }
 
     while (true)
     {
-        asm volatile("nop");
+        asm volatile("nop;");
     }
 }

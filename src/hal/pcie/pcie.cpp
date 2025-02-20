@@ -1,20 +1,22 @@
-#include <acpi/acpi.hpp>
-#include <debug.hpp>
-#include <hal/pcie/pcie.hpp>
-#include <hal/pcie/pcie_database.hpp>
-#include <mem/common_memory.hpp>
+//
+// Created by Neko on 25.01.2025.
+//
+
+#include "pcie.h"
+
+#include <acpi/acpi.h>
+#include <dbg/log.h>
+#include <mem/virtual.h>
 #include <vector>
 
-struct mcfg *mcfg = nullptr;
-void *mcfg_table_pointer = nullptr;
-
-std::vector<mcfg_entry *> mcfg_entries;
+static mcfg *pcie_table;
+static std::vector<mcfg_entry *> mcfg_entries;
 
 void traverse_pcie()
 {
-    debug_printf("Traversing PCI-e...\n");
+    debug_print("Traversing PCI-e...\n");
 
-    for (auto &entry : mcfg_entries)
+    for (const auto &entry : mcfg_entries)
     {
         for (auto bus = entry->start_bus; entry->end_bus > bus; bus++)
         {
@@ -22,22 +24,14 @@ void traverse_pcie()
             {
                 for (auto function = 0; 8 > function; function++)
                 {
-                    auto address = reinterpret_cast<void *>((((bus * 256) + (device * 8) + function) * 4096) +
-                                                            entry->base_address + get_higher_half_offset());
+                    const auto address =
+                        reinterpret_cast<void *>((bus * 256 + (device * 8) + function) * 4096 + entry->base_address +
+                                                 get_higher_half_memory_offset());
 
-                    auto pcie_header = reinterpret_cast<struct pcie_header *>(address);
-                    if (pcie_header->vendor_id != 0xffff && pcie_header->device_id != 0xffff)
+                    if (const auto header = static_cast<pcie_header *>(address);
+                        header->vendor_id != 0xffff && header->device_id != 0xffff)
                     {
-                        auto db_entry = find_in_pcie_database(pcie_header->vendor_id, pcie_header->device_id);
-                        if (db_entry)
-                        {
-                            debug_printf("Vendor: %s Device: %s\n", db_entry->vendor_name, db_entry->device_name);
-                        }
-                        else
-                        {
-                            debug_printf("Vendor ID: %04hX Device ID: %04hX\n", pcie_header->vendor_id,
-                                         pcie_header->device_id);
-                        }
+                        debug_print("Vendor: %04hX Device: %04hX\n", header->vendor_id, header->device_id);
                     }
                 }
             }
@@ -47,26 +41,53 @@ void traverse_pcie()
 
 void initialize_pcie()
 {
-    mcfg_table_pointer = get_acpi_table(MCFG_SIGNATURE);
-    if (mcfg_table_pointer == nullptr)
+    pcie_table = static_cast<mcfg *>(get_acpi_table(MCFG_SIGNATURE));
+    if (!pcie_table)
     {
-        debug_printf("No MCFG table has been found.\n");
+        debug_print("No PCI-e on this device.\n");
+
         return;
     }
 
-    mcfg = reinterpret_cast<struct mcfg *>(mcfg_table_pointer);
-    auto entry_count = (mcfg->sdt.length - sizeof(struct sdt) - sizeof(mcfg->reserved)) / sizeof(mcfg_entry);
-    debug_printf("Entry count: %zu\n", entry_count);
+    const auto entry_count = (pcie_table->sdt.length - sizeof(sdt) - sizeof(pcie_table->reserved)) / sizeof(mcfg_entry);
     for (size_t entry_index = 0; entry_count > entry_index; entry_index++)
     {
-        auto &entry = *reinterpret_cast<mcfg_entry *>(reinterpret_cast<uintptr_t>(mcfg) + sizeof(struct sdt) +
-                                                      sizeof(mcfg->reserved) + (entry_index * sizeof(mcfg_entry)));
+        auto &entry =
+            *reinterpret_cast<mcfg_entry *>(reinterpret_cast<uintptr_t>(pcie_table) + sizeof(sdt) +
+                                            sizeof(pcie_table->reserved) + (entry_index * sizeof(mcfg_entry)));
 
-        debug_printf("Base address: %016lX Start bus: %x End bus: %x\n", entry.base_address,
-                     static_cast<uint32_t>(entry.start_bus), static_cast<uint32_t>(entry.end_bus));
+        debug_print("Base address: %016lX Start bus: %x End bus: %x\n", entry.base_address,
+                    static_cast<uint32_t>(entry.start_bus), static_cast<uint32_t>(entry.end_bus));
 
         mcfg_entries.push_back(&entry);
     }
 
     traverse_pcie();
+}
+
+void pcie_raw_read(const uint16_t segment, const uint8_t bus, const uint8_t slot, const uint8_t function,
+                   const size_t offset, uint8_t *buffer, const size_t length)
+{
+    if (!buffer || length == 0)
+        return;
+
+    for (const auto &entry : mcfg_entries)
+    {
+        if (entry->segment_group != segment)
+            continue;
+
+        if (bus < entry->start_bus || bus > entry->end_bus)
+            continue;
+
+        const uintptr_t base_address = entry->base_address + get_higher_half_memory_offset();
+        const uintptr_t address =
+            base_address + ((bus - entry->start_bus) << 20) + (slot << 15) + (function << 12) + offset;
+
+        const auto *src = reinterpret_cast<uint8_t *>(address);
+        for (size_t i = 0; i < length; i++)
+        {
+            buffer[i] = src[i];
+        }
+        return;
+    }
 }

@@ -1,25 +1,23 @@
-#include <uacpi/namespace.h>
-#include <uacpi/internal/namespace.h>
-#include <uacpi/internal/types.h>
-#include <uacpi/internal/stdlib.h>
 #include <uacpi/internal/interpreter.h>
-#include <uacpi/internal/opregion.h>
 #include <uacpi/internal/log.h>
-#include <uacpi/internal/utilities.h>
 #include <uacpi/internal/mutex.h>
+#include <uacpi/internal/namespace.h>
+#include <uacpi/internal/opregion.h>
+#include <uacpi/internal/stdlib.h>
+#include <uacpi/internal/types.h>
+#include <uacpi/internal/utilities.h>
 #include <uacpi/kernel_api.h>
+#include <uacpi/namespace.h>
 
 #define UACPI_REV_VALUE 2
 #define UACPI_OS_VALUE "Microsoft Windows NT"
 
-#define MAKE_PREDEFINED(c0, c1, c2, c3)          \
-    {                                            \
-        .name.text = { c0, c1, c2, c3 },         \
-        .flags = UACPI_NAMESPACE_NODE_PREDEFINED \
+#define MAKE_PREDEFINED(c0, c1, c2, c3)                                                                                \
+    {                                                                                                                  \
+        .name.text = {c0, c1, c2, c3}, .flags = UACPI_NAMESPACE_NODE_PREDEFINED                                        \
     }
 
-static uacpi_namespace_node
-predefined_namespaces[UACPI_PREDEFINED_NAMESPACE_MAX + 1] = {
+static uacpi_namespace_node predefined_namespaces[UACPI_PREDEFINED_NAMESPACE_MAX + 1] = {
     [UACPI_PREDEFINED_NAMESPACE_ROOT] = MAKE_PREDEFINED('\\', 0, 0, 0),
     [UACPI_PREDEFINED_NAMESPACE_GPE] = MAKE_PREDEFINED('_', 'G', 'P', 'E'),
     [UACPI_PREDEFINED_NAMESPACE_PR] = MAKE_PREDEFINED('_', 'P', 'R', '_'),
@@ -54,13 +52,12 @@ uacpi_status uacpi_namespace_write_unlock(void)
     return uacpi_rw_unlock_write(&namespace_lock);
 }
 
-static uacpi_object *make_object_for_predefined(
-    enum uacpi_predefined_namespace ns
-)
+static uacpi_object *make_object_for_predefined(enum uacpi_predefined_namespace ns)
 {
     uacpi_object *obj;
 
-    switch (ns) {
+    switch (ns)
+    {
     case UACPI_PREDEFINED_NAMESPACE_ROOT:
         /*
          * The real root object is stored in the global context, whereas the \
@@ -81,7 +78,8 @@ static uacpi_object *make_object_for_predefined(
             return obj;
 
         obj->buffer->text = uacpi_kernel_alloc(sizeof(UACPI_OS_VALUE));
-        if (uacpi_unlikely(obj->buffer->text == UACPI_NULL)) {
+        if (uacpi_unlikely(obj->buffer->text == UACPI_NULL))
+        {
             uacpi_object_unref(obj);
             return UACPI_NULL;
         }
@@ -100,7 +98,8 @@ static uacpi_object *make_object_for_predefined(
 
     case UACPI_PREDEFINED_NAMESPACE_GL:
         obj = uacpi_create_object(UACPI_OBJECT_MUTEX);
-        if (uacpi_likely(obj != UACPI_NULL)) {
+        if (uacpi_likely(obj != UACPI_NULL))
+        {
             uacpi_shareable_ref(obj->mutex);
             g_uacpi_rt_ctx.global_lock_mutex = obj->mutex;
         }
@@ -129,7 +128,8 @@ static void namespace_node_detach_object(uacpi_namespace_node *node)
     uacpi_object *object;
 
     object = uacpi_namespace_node_get_object(node);
-    if (object != UACPI_NULL) {
+    if (object != UACPI_NULL)
+    {
         if (object->type == UACPI_OBJECT_OPERATION_REGION)
             uacpi_opregion_uninstall_handler(node);
 
@@ -142,7 +142,8 @@ static void free_namespace_node(uacpi_handle handle)
 {
     uacpi_namespace_node *node = handle;
 
-    if (uacpi_likely(!uacpi_namespace_node_is_predefined(node))) {
+    if (uacpi_likely(!uacpi_namespace_node_is_predefined(node)))
+    {
         uacpi_free(node, sizeof(*node));
         return;
     }
@@ -165,7 +166,8 @@ uacpi_status uacpi_initialize_namespace(void)
     if (uacpi_unlikely_error(ret))
         return ret;
 
-    for (ns = 0; ns <= UACPI_PREDEFINED_NAMESPACE_MAX; ns++) {
+    for (ns = 0; ns <= UACPI_PREDEFINED_NAMESPACE_MAX; ns++)
+    {
         node = &predefined_namespaces[ns];
         uacpi_shareable_init(node);
 
@@ -173,10 +175,9 @@ uacpi_status uacpi_initialize_namespace(void)
         if (uacpi_unlikely(obj == UACPI_NULL))
             return UACPI_STATUS_OUT_OF_MEMORY;
 
-        node->object = uacpi_create_internal_reference(
-            UACPI_REFERENCE_KIND_NAMED, obj
-        );
-        if (uacpi_unlikely(node->object == UACPI_NULL)) {
+        node->object = uacpi_create_internal_reference(UACPI_REFERENCE_KIND_NAMED, obj);
+        if (uacpi_unlikely(node->object == UACPI_NULL))
+        {
             uacpi_object_unref(obj);
             return UACPI_STATUS_OUT_OF_MEMORY;
         }
@@ -184,20 +185,17 @@ uacpi_status uacpi_initialize_namespace(void)
         uacpi_object_unref(obj);
     }
 
-    for (ns = UACPI_PREDEFINED_NAMESPACE_GPE;
-         ns <= UACPI_PREDEFINED_NAMESPACE_MAX; ns++) {
+    for (ns = UACPI_PREDEFINED_NAMESPACE_GPE; ns <= UACPI_PREDEFINED_NAMESPACE_MAX; ns++)
+    {
 
         /*
          * Skip the installation of \_OSI if it was disabled by user.
          * We still create the object, but it's not attached to the namespace.
          */
-        if (ns == UACPI_PREDEFINED_NAMESPACE_OSI &&
-            uacpi_check_flag(UACPI_FLAG_NO_OSI))
+        if (ns == UACPI_PREDEFINED_NAMESPACE_OSI && uacpi_check_flag(UACPI_FLAG_NO_OSI))
             continue;
 
-        uacpi_namespace_node_install(
-            uacpi_namespace_root(), &predefined_namespaces[ns]
-        );
+        uacpi_namespace_node_install(uacpi_namespace_root(), &predefined_namespaces[ns]);
     }
 
     return UACPI_STATUS_OK;
@@ -213,14 +211,16 @@ void uacpi_deinitialize_namespace(void)
 
     ret = uacpi_namespace_write_lock();
 
-    while (depth) {
+    while (depth)
+    {
         next = next == UACPI_NULL ? current->child : next->next;
 
         /*
          * The previous value of 'next' was the last child of this subtree,
          * we can now remove the entire scope of 'current->child'
          */
-        if (next == UACPI_NULL) {
+        if (next == UACPI_NULL)
+        {
             depth--;
 
             // Wipe the subtree
@@ -238,7 +238,8 @@ void uacpi_deinitialize_namespace(void)
          * We have more nodes to process, proceed to the next one, either the
          * child of the 'next' node, if one exists, or its peer
          */
-        if (next->child) {
+        if (next->child)
+        {
             depth++;
             current = next;
             next = UACPI_NULL;
@@ -267,11 +268,10 @@ uacpi_namespace_node *uacpi_namespace_root(void)
     return &predefined_namespaces[UACPI_PREDEFINED_NAMESPACE_ROOT];
 }
 
-uacpi_namespace_node *uacpi_namespace_get_predefined(
-    enum uacpi_predefined_namespace ns
-)
+uacpi_namespace_node *uacpi_namespace_get_predefined(enum uacpi_predefined_namespace ns)
 {
-    if (uacpi_unlikely(ns > UACPI_PREDEFINED_NAMESPACE_MAX)) {
+    if (uacpi_unlikely(ns > UACPI_PREDEFINED_NAMESPACE_MAX))
+    {
         uacpi_warn("requested invalid predefined namespace %d\n", ns);
         return UACPI_NULL;
     }
@@ -297,23 +297,23 @@ void uacpi_namespace_node_unref(uacpi_namespace_node *node)
     uacpi_shareable_unref_and_delete_if_last(node, free_namespace_node);
 }
 
-uacpi_status uacpi_namespace_node_install(
-    uacpi_namespace_node *parent,
-    uacpi_namespace_node *node
-)
+uacpi_status uacpi_namespace_node_install(uacpi_namespace_node *parent, uacpi_namespace_node *node)
 {
     if (parent == UACPI_NULL)
         parent = uacpi_namespace_root();
 
-    if (uacpi_unlikely(uacpi_namespace_node_is_dangling(node))) {
-        uacpi_warn("attempting to install a dangling namespace node %.4s\n",
-                   node->name.text);
+    if (uacpi_unlikely(uacpi_namespace_node_is_dangling(node)))
+    {
+        uacpi_warn("attempting to install a dangling namespace node %.4s\n", node->name.text);
         return UACPI_STATUS_NAMESPACE_NODE_DANGLING;
     }
 
-    if (parent->child == UACPI_NULL) {
+    if (parent->child == UACPI_NULL)
+    {
         parent->child = node;
-    } else {
+    }
+    else
+    {
         uacpi_namespace_node *prev = parent->child;
 
         while (prev->next != UACPI_NULL)
@@ -350,9 +350,9 @@ uacpi_status uacpi_namespace_node_uninstall(uacpi_namespace_node *node)
 {
     uacpi_namespace_node *prev;
 
-    if (uacpi_unlikely(uacpi_namespace_node_is_dangling(node))) {
-        uacpi_warn("attempting to uninstall a dangling namespace node %.4s\n",
-                   node->name.text);
+    if (uacpi_unlikely(uacpi_namespace_node_is_dangling(node)))
+    {
+        uacpi_warn("attempting to uninstall a dangling namespace node %.4s\n", node->name.text);
         return UACPI_STATUS_INTERNAL_ERROR;
     }
 
@@ -378,11 +378,9 @@ uacpi_status uacpi_namespace_node_uninstall(uacpi_namespace_node *node)
      * will attempt to remove the \BAR device upon exit from FOO, but that is
      * no longer possible as there's now a permanent child attached to it.
      */
-    if (uacpi_unlikely(node->child != UACPI_NULL)) {
-        uacpi_warn(
-            "refusing to uninstall node %.4s with a child (%.4s)\n",
-            node->name.text, node->child->name.text
-        );
+    if (uacpi_unlikely(node->child != UACPI_NULL))
+    {
+        uacpi_warn("refusing to uninstall node %.4s with a child (%.4s)\n", node->name.text, node->child->name.text);
         return UACPI_STATUS_DENIED;
     }
 
@@ -420,17 +418,18 @@ uacpi_status uacpi_namespace_node_uninstall(uacpi_namespace_node *node)
 
     prev = node->parent ? node->parent->child : UACPI_NULL;
 
-    if (prev == node) {
+    if (prev == node)
+    {
         node->parent->child = node->next;
-    } else {
+    }
+    else
+    {
         while (uacpi_likely(prev != UACPI_NULL) && prev->next != node)
             prev = prev->next;
 
-        if (uacpi_unlikely(prev == UACPI_NULL)) {
-            uacpi_warn(
-                "trying to uninstall a node %.4s (%p) not linked to any peer\n",
-                node->name.text, node
-            );
+        if (uacpi_unlikely(prev == UACPI_NULL))
+        {
+            uacpi_warn("trying to uninstall a node %.4s (%p) not linked to any peer\n", node->name.text, node);
             return UACPI_STATUS_INTERNAL_ERROR;
         }
 
@@ -443,17 +442,15 @@ uacpi_status uacpi_namespace_node_uninstall(uacpi_namespace_node *node)
     return UACPI_STATUS_OK;
 }
 
-uacpi_namespace_node *uacpi_namespace_node_find_sub_node(
-    uacpi_namespace_node *parent,
-    uacpi_object_name name
-)
+uacpi_namespace_node *uacpi_namespace_node_find_sub_node(uacpi_namespace_node *parent, uacpi_object_name name)
 {
     if (parent == UACPI_NULL)
         parent = uacpi_namespace_root();
 
     uacpi_namespace_node *node = parent->child;
 
-    while (node) {
+    while (node)
+    {
         if (node->name.id == name.id)
             return node;
 
@@ -463,16 +460,16 @@ uacpi_namespace_node *uacpi_namespace_node_find_sub_node(
     return UACPI_NULL;
 }
 
-static uacpi_object_name segment_to_name(
-    const uacpi_char **string, uacpi_size *in_out_size
-)
+static uacpi_object_name segment_to_name(const uacpi_char **string, uacpi_size *in_out_size)
 {
     uacpi_object_name out_name;
     const uacpi_char *cursor = *string;
     uacpi_size offset, bytes_left = *in_out_size;
 
-    for (offset = 0; offset < 4; offset++) {
-        if (bytes_left < 1 || *cursor == '.') {
+    for (offset = 0; offset < 4; offset++)
+    {
+        if (bytes_left < 1 || *cursor == '.')
+        {
             out_name.text[offset] = '_';
             continue;
         }
@@ -486,13 +483,10 @@ static uacpi_object_name segment_to_name(
     return out_name;
 }
 
-uacpi_status uacpi_namespace_node_resolve(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    enum uacpi_should_lock should_lock,
-    enum uacpi_may_search_above_parent may_search_above_parent,
-    enum uacpi_permanent_only permanent_only,
-    uacpi_namespace_node **out_node
-)
+uacpi_status uacpi_namespace_node_resolve(uacpi_namespace_node *parent, const uacpi_char *path,
+                                          enum uacpi_should_lock should_lock,
+                                          enum uacpi_may_search_above_parent may_search_above_parent,
+                                          enum uacpi_permanent_only permanent_only, uacpi_namespace_node **out_node)
 {
     uacpi_namespace_node *cur_node = parent;
     uacpi_status ret = UACPI_STATUS_OK;
@@ -506,21 +500,25 @@ uacpi_status uacpi_namespace_node_resolve(
 
     bytes_left = uacpi_strlen(path);
 
-    if (should_lock == UACPI_SHOULD_LOCK_YES) {
+    if (should_lock == UACPI_SHOULD_LOCK_YES)
+    {
         ret = uacpi_namespace_read_lock();
         if (uacpi_unlikely_error(ret))
             return ret;
     }
 
-    for (;;) {
+    for (;;)
+    {
         if (bytes_left == 0)
             goto out;
 
-        switch (*cursor) {
+        switch (*cursor)
+        {
         case '\\':
             single_nameseg = UACPI_FALSE;
 
-            if (prev_char == '^') {
+            if (prev_char == '^')
+            {
                 ret = UACPI_STATUS_INVALID_ARGUMENT;
                 goto out;
             }
@@ -531,7 +529,8 @@ uacpi_status uacpi_namespace_node_resolve(
             single_nameseg = UACPI_FALSE;
 
             // Tried to go behind root
-            if (uacpi_unlikely(cur_node == uacpi_namespace_root())) {
+            if (uacpi_unlikely(cur_node == uacpi_namespace_root()))
+            {
                 ret = UACPI_STATUS_INVALID_ARGUMENT;
                 goto out;
             }
@@ -544,7 +543,8 @@ uacpi_status uacpi_namespace_node_resolve(
 
         prev_char = *cursor;
 
-        switch (prev_char) {
+        switch (prev_char)
+        {
         case '^':
         case '\\':
             cursor++;
@@ -558,10 +558,12 @@ uacpi_status uacpi_namespace_node_resolve(
             break;
     }
 
-    while (bytes_left != 0) {
+    while (bytes_left != 0)
+    {
         uacpi_object_name nameseg;
 
-        if (*cursor == '.') {
+        if (*cursor == '.')
+        {
             cursor++;
             bytes_left--;
         }
@@ -571,14 +573,15 @@ uacpi_status uacpi_namespace_node_resolve(
             single_nameseg = UACPI_FALSE;
 
         cur_node = uacpi_namespace_node_find_sub_node(cur_node, nameseg);
-        if (cur_node == UACPI_NULL) {
-            if (may_search_above_parent == UACPI_MAY_SEARCH_ABOVE_PARENT_NO ||
-                !single_nameseg)
+        if (cur_node == UACPI_NULL)
+        {
+            if (may_search_above_parent == UACPI_MAY_SEARCH_ABOVE_PARENT_NO || !single_nameseg)
                 goto out;
 
             parent = parent->parent;
 
-            while (parent) {
+            while (parent)
+            {
                 cur_node = uacpi_namespace_node_find_sub_node(parent, nameseg);
                 if (cur_node != UACPI_NULL)
                     goto out;
@@ -591,20 +594,21 @@ uacpi_status uacpi_namespace_node_resolve(
     }
 
 out:
-    if (uacpi_unlikely(ret == UACPI_STATUS_INVALID_ARGUMENT)) {
+    if (uacpi_unlikely(ret == UACPI_STATUS_INVALID_ARGUMENT))
+    {
         uacpi_warn("invalid path '%s'\n", path);
         goto out_read_unlock;
     }
 
-    if (cur_node == UACPI_NULL) {
+    if (cur_node == UACPI_NULL)
+    {
         ret = UACPI_STATUS_NOT_FOUND;
         goto out_read_unlock;
     }
 
-    if (uacpi_namespace_node_is_temporary(cur_node) &&
-        permanent_only == UACPI_PERMANENT_ONLY_YES) {
-        uacpi_warn("denying access to temporary namespace node '%.4s'\n",
-                   cur_node->name.text);
+    if (uacpi_namespace_node_is_temporary(cur_node) && permanent_only == UACPI_PERMANENT_ONLY_YES)
+    {
+        uacpi_warn("denying access to temporary namespace node '%.4s'\n", cur_node->name.text);
         ret = UACPI_STATUS_DENIED;
         goto out_read_unlock;
     }
@@ -618,27 +622,18 @@ out_read_unlock:
     return ret;
 }
 
-uacpi_status uacpi_namespace_node_find(
-    uacpi_namespace_node *parent, const uacpi_char *path,
-    uacpi_namespace_node **out_node
-)
+uacpi_status uacpi_namespace_node_find(uacpi_namespace_node *parent, const uacpi_char *path,
+                                       uacpi_namespace_node **out_node)
 {
-    return uacpi_namespace_node_resolve(
-        parent, path, UACPI_SHOULD_LOCK_YES, UACPI_MAY_SEARCH_ABOVE_PARENT_NO,
-        UACPI_PERMANENT_ONLY_YES, out_node
-    );
+    return uacpi_namespace_node_resolve(parent, path, UACPI_SHOULD_LOCK_YES, UACPI_MAY_SEARCH_ABOVE_PARENT_NO,
+                                        UACPI_PERMANENT_ONLY_YES, out_node);
 }
 
-uacpi_status uacpi_namespace_node_resolve_from_aml_namepath(
-    uacpi_namespace_node *scope,
-    const uacpi_char *path,
-    uacpi_namespace_node **out_node
-)
+uacpi_status uacpi_namespace_node_resolve_from_aml_namepath(uacpi_namespace_node *scope, const uacpi_char *path,
+                                                            uacpi_namespace_node **out_node)
 {
-    return uacpi_namespace_node_resolve(
-        scope, path, UACPI_SHOULD_LOCK_YES, UACPI_MAY_SEARCH_ABOVE_PARENT_YES,
-        UACPI_PERMANENT_ONLY_YES, out_node
-    );
+    return uacpi_namespace_node_resolve(scope, path, UACPI_SHOULD_LOCK_YES, UACPI_MAY_SEARCH_ABOVE_PARENT_YES,
+                                        UACPI_PERMANENT_ONLY_YES, out_node);
 }
 
 uacpi_object *uacpi_namespace_node_get_object(const uacpi_namespace_node *node)
@@ -649,9 +644,7 @@ uacpi_object *uacpi_namespace_node_get_object(const uacpi_namespace_node *node)
     return uacpi_unwrap_internal_reference(node->object);
 }
 
-uacpi_object *uacpi_namespace_node_get_object_typed(
-    const uacpi_namespace_node *node, uacpi_object_type_bits type_mask
-)
+uacpi_object *uacpi_namespace_node_get_object_typed(const uacpi_namespace_node *node, uacpi_object_type_bits type_mask)
 {
     uacpi_object *obj;
 
@@ -665,10 +658,8 @@ uacpi_object *uacpi_namespace_node_get_object_typed(
     return obj;
 }
 
-uacpi_status uacpi_namespace_node_acquire_object_typed(
-    const uacpi_namespace_node *node, uacpi_object_type_bits type_mask,
-    uacpi_object **out_obj
-)
+uacpi_status uacpi_namespace_node_acquire_object_typed(const uacpi_namespace_node *node,
+                                                       uacpi_object_type_bits type_mask, uacpi_object **out_obj)
 {
     uacpi_status ret;
     uacpi_object *obj;
@@ -679,8 +670,8 @@ uacpi_status uacpi_namespace_node_acquire_object_typed(
 
     obj = uacpi_namespace_node_get_object(node);
 
-    if (uacpi_unlikely(obj == UACPI_NULL) ||
-        !uacpi_object_is_one_of(obj, type_mask)) {
+    if (uacpi_unlikely(obj == UACPI_NULL) || !uacpi_object_is_one_of(obj, type_mask))
+    {
         ret = UACPI_STATUS_INVALID_ARGUMENT;
         goto out;
     }
@@ -693,27 +684,23 @@ out:
     return ret;
 }
 
-uacpi_status uacpi_namespace_node_acquire_object(
-    const uacpi_namespace_node *node, uacpi_object **out_obj
-)
+uacpi_status uacpi_namespace_node_acquire_object(const uacpi_namespace_node *node, uacpi_object **out_obj)
 {
-    return uacpi_namespace_node_acquire_object_typed(
-        node, UACPI_OBJECT_ANY_BIT, out_obj
-    );
+    return uacpi_namespace_node_acquire_object_typed(node, UACPI_OBJECT_ANY_BIT, out_obj);
 }
 
-enum action {
+enum action
+{
     ACTION_REACQUIRE,
     ACTION_PUT,
 };
 
-static uacpi_status object_mutate_refcount(
-    uacpi_object *obj, void (*cb)(uacpi_object*)
-)
+static uacpi_status object_mutate_refcount(uacpi_object *obj, void (*cb)(uacpi_object *))
 {
-   uacpi_status ret = UACPI_STATUS_OK;
+    uacpi_status ret = UACPI_STATUS_OK;
 
-    if (uacpi_likely(!uacpi_object_is(obj, UACPI_OBJECT_REFERENCE))) {
+    if (uacpi_likely(!uacpi_object_is(obj, UACPI_OBJECT_REFERENCE)))
+    {
         cb(obj);
         return ret;
     }
@@ -735,9 +722,7 @@ static uacpi_status object_mutate_refcount(
     return ret;
 }
 
-uacpi_status uacpi_namespace_node_reacquire_object(
-    uacpi_object *obj
-)
+uacpi_status uacpi_namespace_node_reacquire_object(uacpi_object *obj)
 {
     return object_mutate_refcount(obj, uacpi_object_ref);
 }
@@ -752,9 +737,7 @@ uacpi_object_name uacpi_namespace_node_name(const uacpi_namespace_node *node)
     return node->name;
 }
 
-uacpi_status uacpi_namespace_node_type_unlocked(
-    const uacpi_namespace_node *node, uacpi_object_type *out_type
-)
+uacpi_status uacpi_namespace_node_type_unlocked(const uacpi_namespace_node *node, uacpi_object_type *out_type)
 {
     uacpi_object *obj;
 
@@ -769,9 +752,7 @@ uacpi_status uacpi_namespace_node_type_unlocked(
     return UACPI_STATUS_OK;
 }
 
-uacpi_status uacpi_namespace_node_type(
-    const uacpi_namespace_node *node, uacpi_object_type *out_type
-)
+uacpi_status uacpi_namespace_node_type(const uacpi_namespace_node *node, uacpi_object_type *out_type)
 {
     uacpi_status ret;
 
@@ -785,9 +766,8 @@ uacpi_status uacpi_namespace_node_type(
     return ret;
 }
 
-uacpi_status uacpi_namespace_node_is_one_of_unlocked(
-    const uacpi_namespace_node *node, uacpi_object_type_bits type_mask, uacpi_bool *out
-)
+uacpi_status uacpi_namespace_node_is_one_of_unlocked(const uacpi_namespace_node *node, uacpi_object_type_bits type_mask,
+                                                     uacpi_bool *out)
 {
     uacpi_object *obj;
 
@@ -803,10 +783,8 @@ uacpi_status uacpi_namespace_node_is_one_of_unlocked(
     return UACPI_STATUS_OK;
 }
 
-uacpi_status uacpi_namespace_node_is_one_of(
-    const uacpi_namespace_node *node, uacpi_object_type_bits type_mask,
-    uacpi_bool *out
-)
+uacpi_status uacpi_namespace_node_is_one_of(const uacpi_namespace_node *node, uacpi_object_type_bits type_mask,
+                                            uacpi_bool *out)
 {
     uacpi_status ret;
 
@@ -814,28 +792,22 @@ uacpi_status uacpi_namespace_node_is_one_of(
     if (uacpi_unlikely_error(ret))
         return ret;
 
-    ret = uacpi_namespace_node_is_one_of_unlocked(node,type_mask, out);
+    ret = uacpi_namespace_node_is_one_of_unlocked(node, type_mask, out);
 
     uacpi_namespace_read_unlock();
     return ret;
 }
 
-uacpi_status uacpi_namespace_node_is(
-    const uacpi_namespace_node *node, uacpi_object_type type, uacpi_bool *out
-)
+uacpi_status uacpi_namespace_node_is(const uacpi_namespace_node *node, uacpi_object_type type, uacpi_bool *out)
 {
-    return uacpi_namespace_node_is_one_of(
-        node, 1u << type, out
-    );
+    return uacpi_namespace_node_is_one_of(node, 1u << type, out);
 }
 
-uacpi_status uacpi_namespace_do_for_each_child(
-    uacpi_namespace_node *node, uacpi_iteration_callback descending_callback,
-    uacpi_iteration_callback ascending_callback,
-    uacpi_object_type_bits type_mask, uacpi_u32 max_depth,
-    enum uacpi_should_lock should_lock,
-    enum uacpi_permanent_only permanent_only, void *user
-)
+uacpi_status uacpi_namespace_do_for_each_child(uacpi_namespace_node *node, uacpi_iteration_callback descending_callback,
+                                               uacpi_iteration_callback ascending_callback,
+                                               uacpi_object_type_bits type_mask, uacpi_u32 max_depth,
+                                               enum uacpi_should_lock should_lock,
+                                               enum uacpi_permanent_only permanent_only, void *user)
 {
     uacpi_status ret = UACPI_STATUS_OK;
     uacpi_iteration_decision decision;
@@ -845,14 +817,14 @@ uacpi_status uacpi_namespace_do_for_each_child(
 
     UACPI_ENSURE_INIT_LEVEL_AT_LEAST(UACPI_INIT_LEVEL_SUBSYSTEM_INITIALIZED);
 
-    if (uacpi_unlikely(descending_callback == UACPI_NULL &&
-                       ascending_callback == UACPI_NULL))
+    if (uacpi_unlikely(descending_callback == UACPI_NULL && ascending_callback == UACPI_NULL))
         return UACPI_STATUS_INVALID_ARGUMENT;
 
     if (uacpi_unlikely(node == UACPI_NULL || max_depth == 0))
         return UACPI_STATUS_INVALID_ARGUMENT;
 
-    if (should_lock == UACPI_SHOULD_LOCK_YES) {
+    if (should_lock == UACPI_SHOULD_LOCK_YES)
+    {
         ret = uacpi_namespace_read_lock();
         if (uacpi_unlikely_error(ret))
             return ret;
@@ -863,22 +835,26 @@ uacpi_status uacpi_namespace_do_for_each_child(
 
     node = node->child;
 
-    while (depth) {
+    while (depth)
+    {
         uacpi_namespace_node_is_one_of_unlocked(node, type_mask, &matches);
-        if (!matches) {
+        if (!matches)
+        {
             decision = UACPI_ITERATION_DECISION_CONTINUE;
             goto do_next;
         }
 
-        if (permanent_only == UACPI_PERMANENT_ONLY_YES &&
-            uacpi_namespace_node_is_temporary(node)) {
+        if (permanent_only == UACPI_PERMANENT_ONLY_YES && uacpi_namespace_node_is_temporary(node))
+        {
             decision = UACPI_ITERATION_DECISION_NEXT_PEER;
             goto do_next;
         }
 
         cb = walking_up ? ascending_callback : descending_callback;
-        if (cb != UACPI_NULL) {
-            if (should_lock == UACPI_SHOULD_LOCK_YES) {
+        if (cb != UACPI_NULL)
+        {
+            if (should_lock == UACPI_SHOULD_LOCK_YES)
+            {
                 ret = uacpi_namespace_read_unlock();
                 if (uacpi_unlikely_error(ret))
                     return ret;
@@ -888,18 +864,23 @@ uacpi_status uacpi_namespace_do_for_each_child(
             if (decision == UACPI_ITERATION_DECISION_BREAK)
                 goto out;
 
-            if (should_lock == UACPI_SHOULD_LOCK_YES) {
+            if (should_lock == UACPI_SHOULD_LOCK_YES)
+            {
                 ret = uacpi_namespace_read_lock();
                 if (uacpi_unlikely_error(ret))
                     return ret;
             }
-        } else {
+        }
+        else
+        {
             decision = UACPI_ITERATION_DECISION_CONTINUE;
         }
 
     do_next:
-        if (walking_up) {
-            if (node->next) {
+        if (walking_up)
+        {
+            if (node->next)
+            {
                 node = node->next;
                 walking_up = UACPI_FALSE;
                 continue;
@@ -910,9 +891,11 @@ uacpi_status uacpi_namespace_do_for_each_child(
             continue;
         }
 
-        switch (decision) {
+        switch (decision)
+        {
         case UACPI_ITERATION_DECISION_CONTINUE:
-            if ((depth != max_depth) && (node->child != UACPI_NULL)) {
+            if ((depth != max_depth) && (node->child != UACPI_NULL))
+            {
                 node = node->child;
                 depth++;
                 continue;
@@ -933,33 +916,27 @@ out:
     return ret;
 }
 
-uacpi_status uacpi_namespace_for_each_child_simple(
-    uacpi_namespace_node *parent, uacpi_iteration_callback callback, void *user
-)
+uacpi_status uacpi_namespace_for_each_child_simple(uacpi_namespace_node *parent, uacpi_iteration_callback callback,
+                                                   void *user)
 {
-    return uacpi_namespace_do_for_each_child(
-        parent, callback, UACPI_NULL, UACPI_OBJECT_ANY_BIT, UACPI_MAX_DEPTH_ANY,
-        UACPI_SHOULD_LOCK_YES, UACPI_PERMANENT_ONLY_YES, user
-    );
+    return uacpi_namespace_do_for_each_child(parent, callback, UACPI_NULL, UACPI_OBJECT_ANY_BIT, UACPI_MAX_DEPTH_ANY,
+                                             UACPI_SHOULD_LOCK_YES, UACPI_PERMANENT_ONLY_YES, user);
 }
 
-uacpi_status uacpi_namespace_for_each_child(
-    uacpi_namespace_node *parent, uacpi_iteration_callback descending_callback,
-    uacpi_iteration_callback ascending_callback,
-    uacpi_object_type_bits type_mask, uacpi_u32 max_depth, void *user
-)
+uacpi_status uacpi_namespace_for_each_child(uacpi_namespace_node *parent, uacpi_iteration_callback descending_callback,
+                                            uacpi_iteration_callback ascending_callback,
+                                            uacpi_object_type_bits type_mask, uacpi_u32 max_depth, void *user)
 {
-    return uacpi_namespace_do_for_each_child(
-        parent, descending_callback, ascending_callback, type_mask, max_depth,
-        UACPI_SHOULD_LOCK_YES, UACPI_PERMANENT_ONLY_YES, user
-    );
+    return uacpi_namespace_do_for_each_child(parent, descending_callback, ascending_callback, type_mask, max_depth,
+                                             UACPI_SHOULD_LOCK_YES, UACPI_PERMANENT_ONLY_YES, user);
 }
 
 uacpi_size uacpi_namespace_node_depth(const uacpi_namespace_node *node)
 {
     uacpi_size depth = 0;
 
-    while (node->parent) {
+    while (node->parent)
+    {
         depth++;
         node = node->parent;
     }
@@ -967,16 +944,12 @@ uacpi_size uacpi_namespace_node_depth(const uacpi_namespace_node *node)
     return depth;
 }
 
-uacpi_namespace_node *uacpi_namespace_node_parent(
-    uacpi_namespace_node *node
-)
+uacpi_namespace_node *uacpi_namespace_node_parent(uacpi_namespace_node *node)
 {
     return node->parent;
 }
 
-const uacpi_char *uacpi_namespace_node_generate_absolute_path(
-    const uacpi_namespace_node *node
-)
+const uacpi_char *uacpi_namespace_node_generate_absolute_path(const uacpi_namespace_node *node)
 {
     uacpi_size depth, offset;
     uacpi_size bytes_needed;
@@ -1002,7 +975,8 @@ const uacpi_char *uacpi_namespace_node_generate_absolute_path(
     offset = bytes_needed - 1;
     path[offset] = '\0';
 
-    while (node != uacpi_namespace_root()) {
+    while (node != uacpi_namespace_root())
+    {
         offset -= sizeof(uacpi_object_name);
         uacpi_memcpy(&path[offset], node->name.text, sizeof(uacpi_object_name));
 

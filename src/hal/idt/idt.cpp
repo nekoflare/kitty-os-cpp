@@ -1,14 +1,17 @@
 //
-// Created by Piotr on 03.05.2024.
+// Created by Neko on 20.01.2025.
 //
 
-#include <acpi/acpi.hpp>
-#include <debug.hpp>
-#include <hal/apic/apic.hpp>
-#include <hal/hal.hpp>
-#include <hal/idt/idt.hpp>
-#include <mem/virtual_memory.hpp>
-#include <sys/symbols.hpp>
+#include "idt.h"
+
+#include <acpi/acpi.h>
+#include <cstdint>
+#include <dbg/log.h>
+#include <hal/apic/apic.h>
+#include <hal/irq/irq.h>
+#include <mem/virtual.h>
+
+#include "smp/smp.h"
 
 const char *exception_strings[32] = {"(#DE) Division Error",
                                      "(#DB) Debug",
@@ -50,124 +53,130 @@ static inline uint64_t read_cr2()
     return cr2;
 }
 
-static void print_page_fault_info(interrupt_frame &regs)
+static void print_page_fault_info(const interrupt_frame &regs)
 {
     // Print the faulting address from CR2
     uint64_t faulting_address = read_cr2();
-    debug_printf("Linear address where the issue happened: %016lX\n", faulting_address);
+    debug_print("Linear address where the issue happened: %016lX\n", faulting_address);
 
     // Decode the error code
     uint32_t error_code = regs.error_code;
 
-    debug_printf("The error has been caused by: ");
+    debug_print("The error has been caused by: ");
 
     if (error_code & (1 << 0))
     {
-        debug_printf("page-protection violation. ");
+        debug_print("page-protection violation. ");
     }
     else
     {
-        debug_printf("non-present page. ");
+        debug_print("non-present page. ");
     }
 
     if (error_code & (1 << 1))
     {
-        debug_printf("Write access. ");
+        debug_print("Write access. ");
     }
     else
     {
-        debug_printf("Read access. ");
+        debug_print("Read access. ");
     }
 
     if (error_code & (1 << 2))
     {
-        debug_printf("User mode. ");
+        debug_print("User mode. ");
     }
     else
     {
-        debug_printf("Kernel mode. ");
+        debug_print("Kernel mode. ");
     }
 
     if (error_code & (1 << 3))
     {
-        debug_printf("Reserved bit violation. ");
+        debug_print("Reserved bit violation. ");
     }
 
     if (error_code & (1 << 4))
     {
-        debug_printf("Instruction fetch. ");
+        debug_print("Instruction fetch. ");
     }
 
     if (error_code & (1 << 5))
     {
-        debug_printf("Protection key violation. ");
+        debug_print("Protection key violation. ");
     }
 
     if (error_code & (1 << 6))
     {
-        debug_printf("Shadow stack access violation. ");
+        debug_print("Shadow stack access violation. ");
     }
 
     if (error_code & (1 << 15))
     {
-        debug_printf("SGX violation. ");
+        debug_print("SGX violation. ");
     }
 
-    print_page_info(faulting_address);
-
-    debug_printf("\n");
+    debug_print("\n");
 }
-static void print_processor_flags(uint64_t rflags)
+
+static void print_processor_flags(const uint64_t rflags)
 {
     if (rflags & 0x00000001)
-        debug_printf("CF ");
+        debug_print("CF ");
     if (rflags & 0x00000004)
-        debug_printf("PF ");
+        debug_print("PF ");
     if (rflags & 0x00000010)
-        debug_printf("AF ");
+        debug_print("AF ");
     if (rflags & 0x00000040)
-        debug_printf("ZF ");
+        debug_print("ZF ");
     if (rflags & 0x00000080)
-        debug_printf("SF ");
+        debug_print("SF ");
     if (rflags & 0x00000100)
-        debug_printf("TF ");
+        debug_print("TF ");
     if (rflags & 0x00000200)
-        debug_printf("IF ");
+        debug_print("IF ");
     if (rflags & 0x00000400)
-        debug_printf("DF ");
+        debug_print("DF ");
     if (rflags & 0x00000800)
-        debug_printf("OF ");
+        debug_print("OF ");
     if (rflags & 0x00010000)
-        debug_printf("RF ");
+        debug_print("RF ");
     if (rflags & 0x00020000)
-        debug_printf("VM ");
+        debug_print("VM ");
     if (rflags & 0x00040000)
-        debug_printf("AC ");
+        debug_print("AC ");
     if (rflags & 0x00080000)
-        debug_printf("VIF ");
+        debug_print("VIF ");
     if (rflags & 0x00100000)
-        debug_printf("VIP ");
+        debug_print("VIP ");
     if (rflags & 0x00200000)
-        debug_printf("ID ");
+        debug_print("ID ");
     if (rflags & 0x80000000)
-        debug_printf("AI ");
-    debug_printf("\n");
+        debug_print("AI ");
+    debug_print("\n");
 }
 
-void print_registers(interrupt_frame *regs)
+void print_registers(const interrupt_frame *regs)
 {
-    debug_printf("RAX: %016lX RBX: %016lX RCX: %016lX RDX: %016lX\n", regs->rax, regs->rbx, regs->rcx, regs->rdx);
-    debug_printf("RSI: %016lX RDI: %016lX RBP: %016lX RSP: %016lX\n", regs->rsi, regs->rdi, regs->rbp, regs->rsp);
-    debug_printf("R8:  %016lX R9:  %016lX R10: %016lX R11: %016lX\n", regs->r8, regs->r9, regs->r10, regs->r11);
-    debug_printf("R12: %016lX R13: %016lX R14: %016lX R15: %016lX\n", regs->r12, regs->r13, regs->r14, regs->r15);
-    debug_printf("RIP: %016lX\n", regs->rip);
-    debug_printf("CS: %02lX  DS: %02lX SS: %02lX ES: %02lX FS: %02lX GS: %02lX\n", regs->cs, regs->ds, regs->ss,
-                 regs->es, regs->fs, regs->gs);
-    debug_printf("Orig RSP: %016lX CR3: %016lX\n", regs->orig_rsp, regs->cr3);
-    debug_printf("Error code: %016lX Interrupt index: %016lX\n", regs->error_code, regs->interrupt_number);
-    debug_printf("RFLAGS: ");
+    debug_print("RAX: %016lX RBX: %016lX RCX: %016lX RDX: %016lX\n", regs->rax, regs->rbx, regs->rcx, regs->rdx);
+    debug_print("RSI: %016lX RDI: %016lX RBP: %016lX RSP: %016lX\n", regs->rsi, regs->rdi, regs->rbp, regs->rsp);
+    debug_print("R8:  %016lX R9:  %016lX R10: %016lX R11: %016lX\n", regs->r8, regs->r9, regs->r10, regs->r11);
+    debug_print("R12: %016lX R13: %016lX R14: %016lX R15: %016lX\n", regs->r12, regs->r13, regs->r14, regs->r15);
+    debug_print("DR0: %016lX DR1: %016lX DR2: %016lX DR3: %016lX\n", regs->dr0, regs->dr1, regs->dr2, regs->dr3);
+    debug_print("DR4: %016lX DR5: %016lX DR6: %016lX DR7: %016lX\n", regs->dr4, regs->dr5, regs->dr6, regs->dr7);
+    debug_print("CR0: %016lX CR2: %016lX CR3: %016lX CR4: %016lX CR8: %016lX\n", regs->cr0, regs->cr2, regs->cr3,
+                regs->cr4, regs->cr8);
+    debug_print("CS:  %02lX  DS:  %02lX  SS:  %02lX  ES:  %02lX  FS:  %02lX GS: %02lX\n", regs->cs, regs->ds, regs->ss,
+                regs->es, regs->fs, regs->gs);
+    debug_print("RIP: %016lX\n", regs->rip);
+    debug_print("Orig RSP: %016lX CR3: %016lX\n", regs->orig_rsp, regs->cr3);
+    debug_print("Error code: %016lX Interrupt index: %016lX\n", regs->error_code, regs->interrupt_number);
+    debug_print("RFLAGS: ");
     print_processor_flags(regs->rflags);
-    debug_printf("%s\n", exception_strings[regs->interrupt_number]);
+    // Print Debug Registers
+
+    // Print Control Registers
+    debug_print("%s\n", exception_strings[regs->interrupt_number]);
 }
 
 extern "C" void interrupt_handler(interrupt_frame *frame)
@@ -180,24 +189,20 @@ extern "C" void interrupt_handler(interrupt_frame *frame)
         {
             print_page_fault_info(*frame);
         }
-
-        asm volatile("cli; hlt"); // exception.
+        asm volatile("cli; hlt");
+        asm volatile("cli; hlt");
     }
 
-    auto lapic_id = get_lapic_id(); // aka cpu id
-    receive_irq(frame->interrupt_number - 0x20, lapic_id);
-
-    // anything else is just apic telling me theres an interrupt.
-    apic_send_eoi(get_lapic_address());
+    // tell the apic to chill tf out
+    dispatch_irq(frame->interrupt_number);
+    apic_send_eoi(get_lapic_address() + get_higher_half_memory_offset());
 }
 
-void load_idt()
+void initialize_idt()
 {
     idtr idt_register = {.limit = sizeof(idt) - 1, .idt_address = reinterpret_cast<uint64_t>(&idt)};
 
-    flush_idt_asm(&idt_register);
-    enable_interrupts();
-}
+    load_idt_table(&idt_register);
 
-EXPORT_SYMBOL(enable_interrupts);
-EXPORT_SYMBOL(disable_interrupts);
+    asm volatile("sti");
+}

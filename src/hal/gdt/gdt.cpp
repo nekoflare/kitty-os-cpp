@@ -1,4 +1,8 @@
-#include <hal/gdt/gdt.hpp>
+//
+// Created by Neko on 20.01.2025.
+//
+
+#include <hal/gdt/gdt.h>
 
 struct gdt_segment_descriptor gdt[] = {
     // NULL
@@ -33,7 +37,7 @@ struct gdt_segment_descriptor gdt[] = {
     GDT_ENTRY(0, 0, 0, 0),
 };
 
-void load_gdt(void)
+void initialize_gdt()
 {
     struct gdtr gdtr = {.size = sizeof(gdt) - 1, .gdt_address = reinterpret_cast<uint64_t>(&gdt)};
 

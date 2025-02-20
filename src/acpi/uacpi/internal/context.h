@@ -1,13 +1,14 @@
 #pragma once
 
 #include <uacpi/acpi.h>
-#include <uacpi/types.h>
-#include <uacpi/uacpi.h>
+#include <uacpi/context.h>
 #include <uacpi/internal/dynamic_array.h>
 #include <uacpi/internal/shareable.h>
-#include <uacpi/context.h>
+#include <uacpi/types.h>
+#include <uacpi/uacpi.h>
 
-struct uacpi_runtime_context {
+struct uacpi_runtime_context
+{
     /*
      * A local copy of FADT that has been verified & converted to most optimal
      * format for faster access to the registers.
@@ -79,7 +80,8 @@ struct uacpi_runtime_context {
 
 static inline const uacpi_char *uacpi_init_level_to_string(uacpi_u8 lvl)
 {
-    switch (lvl) {
+    switch (lvl)
+    {
     case UACPI_INIT_LEVEL_EARLY:
         return "early";
     case UACPI_INIT_LEVEL_SUBSYSTEM_INITIALIZED:
@@ -93,32 +95,30 @@ static inline const uacpi_char *uacpi_init_level_to_string(uacpi_u8 lvl)
     }
 }
 
-#define UACPI_ENSURE_INIT_LEVEL_AT_LEAST(lvl)                               \
-    do {                                                                    \
-        if (uacpi_unlikely(g_uacpi_rt_ctx.init_level < lvl)) {              \
-            uacpi_error(                                                    \
-                "while evaluating %s: init level %d (%s) is too low, "      \
-                "expected at least %d (%s)\n", __FUNCTION__,                \
-                g_uacpi_rt_ctx.init_level,                                  \
-                uacpi_init_level_to_string(g_uacpi_rt_ctx.init_level), lvl, \
-                uacpi_init_level_to_string(lvl)                             \
-            );                                                              \
-            return UACPI_STATUS_INIT_LEVEL_MISMATCH;                        \
-        }                                                                   \
+#define UACPI_ENSURE_INIT_LEVEL_AT_LEAST(lvl)                                                                          \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if (uacpi_unlikely(g_uacpi_rt_ctx.init_level < lvl))                                                           \
+        {                                                                                                              \
+            uacpi_error("while evaluating %s: init level %d (%s) is too low, "                                         \
+                        "expected at least %d (%s)\n",                                                                 \
+                        __FUNCTION__, g_uacpi_rt_ctx.init_level,                                                       \
+                        uacpi_init_level_to_string(g_uacpi_rt_ctx.init_level), lvl, uacpi_init_level_to_string(lvl));  \
+            return UACPI_STATUS_INIT_LEVEL_MISMATCH;                                                                   \
+        }                                                                                                              \
     } while (0)
 
-#define UACPI_ENSURE_INIT_LEVEL_IS(lvl)                                     \
-    do {                                                                    \
-        if (uacpi_unlikely(g_uacpi_rt_ctx.init_level != lvl)) {             \
-            uacpi_error(                                                    \
-                "while evaluating %s: invalid init level %d (%s), "         \
-                "expected %d (%s)\n", __FUNCTION__,                         \
-                g_uacpi_rt_ctx.init_level,                                  \
-                uacpi_init_level_to_string(g_uacpi_rt_ctx.init_level), lvl, \
-                uacpi_init_level_to_string(lvl)                             \
-            );                                                              \
-            return UACPI_STATUS_INIT_LEVEL_MISMATCH;                        \
-        }                                                                   \
+#define UACPI_ENSURE_INIT_LEVEL_IS(lvl)                                                                                \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if (uacpi_unlikely(g_uacpi_rt_ctx.init_level != lvl))                                                          \
+        {                                                                                                              \
+            uacpi_error("while evaluating %s: invalid init level %d (%s), "                                            \
+                        "expected %d (%s)\n",                                                                          \
+                        __FUNCTION__, g_uacpi_rt_ctx.init_level,                                                       \
+                        uacpi_init_level_to_string(g_uacpi_rt_ctx.init_level), lvl, uacpi_init_level_to_string(lvl));  \
+            return UACPI_STATUS_INIT_LEVEL_MISMATCH;                                                                   \
+        }                                                                                                              \
     } while (0)
 
 extern struct uacpi_runtime_context g_uacpi_rt_ctx;

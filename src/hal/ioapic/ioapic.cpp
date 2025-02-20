@@ -1,8 +1,12 @@
-#include <acpi/acpi.hpp>
-#include <debug.hpp>
-#include <hal/ioapic/ioapic.hpp>
-#include <mem/common_memory.hpp>
-#include <sys/symbols.hpp>
+//
+// Created by Neko on 20.01.2025.
+//
+
+#include "ioapic.h"
+
+#include <acpi/acpi.h>
+#include <dbg/log.h>
+#include <mem/virtual.h>
 
 // Write to an IO APIC register
 void ioapic_write(uintptr_t ioapic_base, uint32_t reg, uint32_t value)
@@ -90,16 +94,12 @@ void initialize_ioapic()
     {
         const auto &entry = io_apics[i];
 
-        uintptr_t ioapic_base = entry.io_apic_address;
+        uintptr_t ioapic_base = entry.io_apic_address + get_higher_half_memory_offset();
         uint8_t max_redirections = get_ioapic_max_redirections(ioapic_base);
 
-        debug_printf("Initializing IOAPIC (ID=%u, Address=0x%08lX, Redirections=%u)\n", entry.io_apic_id, ioapic_base,
-                     max_redirections);
+        debug_print("Initializing IOAPIC (ID=%u, Address=0x%08lX, Redirections=%u)\n", entry.io_apic_id, ioapic_base,
+                    max_redirections);
 
-        debug_printf("IOAPIC (ID=%u) initialized and all IRQs masked.\n", entry.io_apic_id);
+        debug_print("IOAPIC (ID=%u) initialized and all IRQs masked.\n", entry.io_apic_id);
     }
 }
-
-EXPORT_SYMBOL(get_ioapic_max_redirections);
-EXPORT_SYMBOL(ioapic_set_redirection);
-EXPORT_SYMBOL(ioapic_get_redirection);

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <uacpi/platform/compiler.h>
 #include <uacpi/helpers.h>
+#include <uacpi/platform/compiler.h>
 #include <uacpi/types.h>
 
 /*
@@ -26,24 +26,24 @@
 #define ACPI_ECDT_SIGNATURE "ECDT"
 #define ACPI_RHCT_SIGNATURE "RHCT"
 
-#define ACPI_AS_ID_SYS_MEM       0x00
-#define ACPI_AS_ID_SYS_IO        0x01
+#define ACPI_AS_ID_SYS_MEM 0x00
+#define ACPI_AS_ID_SYS_IO 0x01
 #define ACPI_AS_ID_PCI_CFG_SPACE 0x02
-#define ACPI_AS_ID_EC            0x03
-#define ACPI_AS_ID_SMBUS         0x04
-#define ACPI_AS_ID_SYS_CMOS      0x05
-#define ACPI_AS_ID_PCI_BAR_TGT   0x06
-#define ACPI_AS_ID_IPMI          0x07
-#define ACPI_AS_ID_GP_IO         0x08
-#define ACPI_AS_ID_GENERIC_SBUS  0x09
-#define ACPI_AS_ID_PCC           0x0A
-#define ACPI_AS_ID_FFH           0x7F
-#define ACPI_AS_ID_OEM_BASE      0xC0
-#define ACPI_AS_ID_OEM_END       0xFF
+#define ACPI_AS_ID_EC 0x03
+#define ACPI_AS_ID_SMBUS 0x04
+#define ACPI_AS_ID_SYS_CMOS 0x05
+#define ACPI_AS_ID_PCI_BAR_TGT 0x06
+#define ACPI_AS_ID_IPMI 0x07
+#define ACPI_AS_ID_GP_IO 0x08
+#define ACPI_AS_ID_GENERIC_SBUS 0x09
+#define ACPI_AS_ID_PCC 0x0A
+#define ACPI_AS_ID_FFH 0x7F
+#define ACPI_AS_ID_OEM_BASE 0xC0
+#define ACPI_AS_ID_OEM_END 0xFF
 
-#define ACPI_ACCESS_UD    0
-#define ACPI_ACCESS_BYTE  1
-#define ACPI_ACCESS_WORD  2
+#define ACPI_ACCESS_UD 0
+#define ACPI_ACCESS_BYTE 1
+#define ACPI_ACCESS_WORD 2
 #define ACPI_ACCESS_DWORD 3
 #define ACPI_ACCESS_QWORD 4
 
@@ -106,7 +106,8 @@ UACPI_PACKED(struct acpi_entry_hdr {
 // acpi_madt->flags
 #define ACPI_PCAT_COMPAT (1 << 0)
 
-enum acpi_madt_entry_type {
+enum acpi_madt_entry_type
+{
     ACPI_MADT_ENTRY_TYPE_LAPIC = 0,
     ACPI_MADT_ENTRY_TYPE_IOAPIC = 1,
     ACPI_MADT_ENTRY_TYPE_INTERRUPT_SOURCE_OVERRIDE = 2,
@@ -136,7 +137,7 @@ enum acpi_madt_entry_type {
     ACPI_MADT_ENTRY_TYPE_APLIC = 0x1A,
     ACPI_MADT_ENTRY_TYPE_PLIC = 0x1B,
     ACPI_MADT_ENTRY_TYPE_RESERVED = 0x1C, // 0x1C..0x7F
-    ACPI_MADT_ENTRY_TYPE_OEM = 0x80, // 0x80..0xFF
+    ACPI_MADT_ENTRY_TYPE_OEM = 0x80,      // 0x80..0xFF
 };
 
 UACPI_PACKED(struct acpi_madt {
@@ -475,11 +476,11 @@ UACPI_PACKED(struct acpi_madt_plic {
     uacpi_u32 size;
     uacpi_u64 address;
     uacpi_u32 gsi_base;
-
 })
 UACPI_EXPECT_SIZEOF(struct acpi_madt_plic, 36);
 
-enum acpi_srat_entry_type {
+enum acpi_srat_entry_type
+{
     ACPI_SRAT_ENTRY_TYPE_PROCESSOR_AFFINITY = 0,
     ACPI_SRAT_ENTRY_TYPE_MEMORY_AFFINITY = 1,
     ACPI_SRAT_ENTRY_TYPE_X2APIC_AFFINITY = 2,
@@ -643,7 +644,8 @@ UACPI_PACKED(struct acpi_gtdt {
 })
 UACPI_EXPECT_SIZEOF(struct acpi_gtdt, 104);
 
-enum acpi_gtdt_entry_type {
+enum acpi_gtdt_entry_type
+{
     ACPI_GTDT_ENTRY_TYPE_TIMER = 0,
     ACPI_GTDT_ENTRY_TYPE_WATCHDOG = 1,
 };
@@ -693,40 +695,40 @@ UACPI_PACKED(struct acpi_gtdt_watchdog {
 UACPI_EXPECT_SIZEOF(struct acpi_gtdt_watchdog, 28);
 
 // acpi_fdt->iapc_flags
-#define ACPI_IA_PC_LEGACY_DEVS  (1 << 0)
-#define ACPI_IA_PC_8042         (1 << 1)
-#define ACPI_IA_PC_NO_VGA       (1 << 2)
-#define ACPI_IA_PC_NO_MSI       (1 << 3)
+#define ACPI_IA_PC_LEGACY_DEVS (1 << 0)
+#define ACPI_IA_PC_8042 (1 << 1)
+#define ACPI_IA_PC_NO_VGA (1 << 2)
+#define ACPI_IA_PC_NO_MSI (1 << 3)
 #define ACPI_IA_PC_NO_PCIE_ASPM (1 << 4)
-#define ACPI_IA_PC_NO_CMOS_RTC  (1 << 5)
+#define ACPI_IA_PC_NO_CMOS_RTC (1 << 5)
 
 // acpi_fdt->flags
-#define ACPI_WBINVD                    (1 << 0)
-#define ACPI_WBINVD_FLUSH              (1 << 1)
-#define ACPI_PROC_C1                   (1 << 2)
-#define ACPI_P_LVL2_UP                 (1 << 3)
-#define ACPI_PWR_BUTTON                (1 << 4)
-#define ACPI_SLP_BUTTON                (1 << 5)
-#define ACPI_FIX_RTC                   (1 << 6)
-#define ACPI_RTC_S4                    (1 << 7)
-#define ACPI_TMR_VAL_EXT               (1 << 8)
-#define ACPI_DCK_CAP                   (1 << 9)
-#define ACPI_RESET_REG_SUP             (1 << 10)
-#define ACPI_SEALED_CASE               (1 << 11)
-#define ACPI_HEADLESS                  (1 << 12)
-#define ACPI_CPU_SW_SLP                (1 << 13)
-#define ACPI_PCI_EXP_WAK               (1 << 14)
-#define ACPI_USE_PLATFORM_CLOCK        (1 << 15)
-#define ACPI_S4_RTC_STS_VALID          (1 << 16)
-#define ACPI_REMOTE_POWER_ON_CAPABLE   (1 << 17)
-#define ACPI_FORCE_APIC_CLUSTER_MODEL  (1 << 18)
+#define ACPI_WBINVD (1 << 0)
+#define ACPI_WBINVD_FLUSH (1 << 1)
+#define ACPI_PROC_C1 (1 << 2)
+#define ACPI_P_LVL2_UP (1 << 3)
+#define ACPI_PWR_BUTTON (1 << 4)
+#define ACPI_SLP_BUTTON (1 << 5)
+#define ACPI_FIX_RTC (1 << 6)
+#define ACPI_RTC_S4 (1 << 7)
+#define ACPI_TMR_VAL_EXT (1 << 8)
+#define ACPI_DCK_CAP (1 << 9)
+#define ACPI_RESET_REG_SUP (1 << 10)
+#define ACPI_SEALED_CASE (1 << 11)
+#define ACPI_HEADLESS (1 << 12)
+#define ACPI_CPU_SW_SLP (1 << 13)
+#define ACPI_PCI_EXP_WAK (1 << 14)
+#define ACPI_USE_PLATFORM_CLOCK (1 << 15)
+#define ACPI_S4_RTC_STS_VALID (1 << 16)
+#define ACPI_REMOTE_POWER_ON_CAPABLE (1 << 17)
+#define ACPI_FORCE_APIC_CLUSTER_MODEL (1 << 18)
 #define ACPI_FORCE_APIC_PHYS_DEST_MODE (1 << 19)
-#define ACPI_HW_REDUCED_ACPI           (1 << 20)
+#define ACPI_HW_REDUCED_ACPI (1 << 20)
 #define ACPI_LOW_POWER_S0_IDLE_CAPABLE (1 << 21)
 
 // acpi_fdt->arm_flags
 #define ACPI_ARM_PSCI_COMPLIANT (1 << 0)
-#define ACPI_ARM_PSCI_USE_HVC   (1 << 1)
+#define ACPI_ARM_PSCI_USE_HVC (1 << 1)
 
 UACPI_PACKED(struct acpi_fadt {
     struct acpi_sdt_hdr hdr;
@@ -789,13 +791,14 @@ UACPI_PACKED(struct acpi_fadt {
 UACPI_EXPECT_SIZEOF(struct acpi_fadt, 276);
 
 // acpi_facs->flags
-#define ACPI_S4BIOS_F               (1 << 0)
+#define ACPI_S4BIOS_F (1 << 0)
 #define ACPI_64BIT_WAKE_SUPPORTED_F (1 << 1)
 
 // acpi_facs->ospm_flags
-#define ACPI_64BIT_WAKE_F           (1 << 0)
+#define ACPI_64BIT_WAKE_F (1 << 0)
 
-struct acpi_facs {
+struct acpi_facs
+{
     uacpi_char signature[4];
     uacpi_u32 length;
     uacpi_u32 hardware_signature;
@@ -918,17 +921,10 @@ UACPI_EXPECT_SIZEOF(struct acpi_hpet, 56);
  * software writing 1 to it after resume (as indicated by a similar comment in
  * ACPICA)
  */
-#define ACPI_PM1_CNT_PRESERVE_MASK ( \
-    (1 << ACPI_PM1_CNT_RSVD0_IDX) |  \
-    (1 << ACPI_PM1_CNT_RSVD1_IDX) |  \
-    (1 << ACPI_PM1_CNT_RSVD2_IDX) |  \
-    (1 << ACPI_PM1_CNT_RSVD3_IDX) |  \
-    (1 << ACPI_PM1_CNT_RSVD4_IDX) |  \
-    (1 << ACPI_PM1_CNT_RSVD5_IDX) |  \
-    (1 << ACPI_PM1_CNT_IGN0_IDX ) |  \
-    (1 << ACPI_PM1_CNT_RSVD6_IDX) |  \
-    (1 << ACPI_PM1_CNT_RSVD7_IDX)    \
-)
+#define ACPI_PM1_CNT_PRESERVE_MASK                                                                                     \
+    ((1 << ACPI_PM1_CNT_RSVD0_IDX) | (1 << ACPI_PM1_CNT_RSVD1_IDX) | (1 << ACPI_PM1_CNT_RSVD2_IDX) |                   \
+     (1 << ACPI_PM1_CNT_RSVD3_IDX) | (1 << ACPI_PM1_CNT_RSVD4_IDX) | (1 << ACPI_PM1_CNT_RSVD5_IDX) |                   \
+     (1 << ACPI_PM1_CNT_IGN0_IDX) | (1 << ACPI_PM1_CNT_RSVD6_IDX) | (1 << ACPI_PM1_CNT_RSVD7_IDX))
 
 // PM2_CNT
 #define ACPI_PM2_CNT_ARB_DIS_IDX 0
@@ -948,12 +944,9 @@ UACPI_EXPECT_SIZEOF(struct acpi_hpet, 56);
 #define ACPI_SLP_CNT_SLP_TYP_MASK (ACPI_SLP_TYP_MAX << ACPI_SLP_CNT_SLP_TYP_IDX)
 #define ACPI_SLP_CNT_SLP_EN_MASK (1 << ACPI_SLP_CNT_SLP_EN_IDX)
 
-#define ACPI_SLP_CNT_PRESERVE_MASK ( \
-    (1 << ACPI_SLP_CNT_RSVD0_IDX) |  \
-    (1 << ACPI_SLP_CNT_IGN0_IDX)  |  \
-    (1 << ACPI_SLP_CNT_RSVD1_IDX) |  \
-    (1 << ACPI_SLP_CNT_RSVD2_IDX)    \
-)
+#define ACPI_SLP_CNT_PRESERVE_MASK                                                                                     \
+    ((1 << ACPI_SLP_CNT_RSVD0_IDX) | (1 << ACPI_SLP_CNT_IGN0_IDX) | (1 << ACPI_SLP_CNT_RSVD1_IDX) |                    \
+     (1 << ACPI_SLP_CNT_RSVD2_IDX))
 
 // SLEEP_STATUS_REG
 #define ACPI_SLP_STS_WAK_STS_IDX 7
@@ -1023,7 +1016,8 @@ UACPI_PACKED(struct acpi_rhct {
 })
 UACPI_EXPECT_SIZEOF(struct acpi_rhct, 56);
 
-enum acpi_rhct_entry_type {
+enum acpi_rhct_entry_type
+{
     ACPI_RHCT_ENTRY_TYPE_ISA_STRING = 0,
     ACPI_RHCT_ENTRY_TYPE_CMO = 1,
     ACPI_RHCT_ENTRY_TYPE_MMU = 2,
@@ -1046,7 +1040,8 @@ UACPI_PACKED(struct acpi_rhct_cmo {
 })
 UACPI_EXPECT_SIZEOF(struct acpi_rhct_cmo, 10);
 
-enum acpi_rhct_mmu_type {
+enum acpi_rhct_mmu_type
+{
     ACPI_RHCT_MMU_TYPE_SV39 = 0,
     ACPI_RHCT_MMU_TYPE_SV48 = 1,
     ACPI_RHCT_MMU_TYPE_SV57 = 2,
@@ -1110,10 +1105,8 @@ UACPI_EXPECT_SIZEOF(struct acpi_rhct_hart_info, 12);
  * Resources as encoded by the raw AML byte stream.
  * For decode API & human usable structures refer to uacpi/resources.h
  */
-UACPI_PACKED(struct acpi_small_item {
-    uacpi_u8 type_and_length;
-})
-UACPI_EXPECT_SIZEOF(struct acpi_small_item,  1);
+UACPI_PACKED(struct acpi_small_item { uacpi_u8 type_and_length; })
+UACPI_EXPECT_SIZEOF(struct acpi_small_item, 1);
 
 UACPI_PACKED(struct acpi_resource_irq {
     struct acpi_small_item common;
@@ -1135,9 +1128,7 @@ UACPI_PACKED(struct acpi_resource_start_dependent {
 })
 UACPI_EXPECT_SIZEOF(struct acpi_resource_start_dependent, 2);
 
-UACPI_PACKED(struct acpi_resource_end_dependent {
-    struct acpi_small_item common;
-})
+UACPI_PACKED(struct acpi_resource_end_dependent { struct acpi_small_item common; })
 UACPI_EXPECT_SIZEOF(struct acpi_resource_end_dependent, 1);
 
 UACPI_PACKED(struct acpi_resource_io {
@@ -1348,9 +1339,7 @@ UACPI_PACKED(struct acpi_resource_serial_uart {
 })
 UACPI_EXPECT_SIZEOF(struct acpi_resource_serial_uart, 22);
 
-UACPI_PACKED(struct acpi_resource_serial_csi2 {
-    struct acpi_resource_serial common;
-})
+UACPI_PACKED(struct acpi_resource_serial_csi2 { struct acpi_resource_serial common; })
 UACPI_EXPECT_SIZEOF(struct acpi_resource_serial_csi2, 12);
 
 UACPI_PACKED(struct acpi_resource_pin_function {
